@@ -8,5 +8,9 @@
             android:icon="@drawable/ic_list_black"
             android:title="@string/nav_title_entries"
             />
+        <item
+            android:id="@+id/nav_second_page"
+            android:title="Second Page"
+            />
     </group>
 </menu>
