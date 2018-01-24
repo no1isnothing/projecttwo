@@ -1,13 +1,12 @@
 package com.thebipolaroptimist.projecttwo;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class SecondActivity extends BaseActivity {
+public class SummaryActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setContentView(R.layout.activity_second);
+        setContentView(R.layout.activity_summary);
         super.onCreate(savedInstanceState);
     }
 }

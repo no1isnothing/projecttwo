@@ -9,8 +9,8 @@
             android:title="@string/nav_title_entries"
             />
         <item
-            android:id="@+id/nav_second_page"
-            android:title="Second Page"
+            android:id="@+id/nav_summary_page"
+            android:title="Summary Page"
             />
     </group>
 </menu>

@@ -1,7 +1,6 @@
 package com.thebipolaroptimist.projecttwo;
 
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,7 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 public class BaseActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
@@ -37,8 +35,6 @@ public class BaseActivity extends AppCompatActivity {
         mDrawerLayout.addDrawerListener(mDrawerToggle);
 
         mDrawerToggle.syncState();
-        //getActionBar().setDisplayHomeAsUpEnabled(true);
-        //getActionBar().setHomeButtonEnabled(true);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -76,6 +72,11 @@ public class BaseActivity extends AppCompatActivity {
             return true;
         }
         // Handle your other action bar items...
+        if(item.getItemId() == R.id.action_settings)
+        {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -98,12 +99,13 @@ public class BaseActivity extends AppCompatActivity {
                     Intent intent = new Intent(getApplicationContext(), EntryListActivity.class);
                     startActivity(intent);
                     break;
-                case R.id.nav_second_page:
-                    Intent intent2 = new Intent(getApplicationContext(), SecondActivity.class);
+                case R.id.nav_summary_page:
+                    Intent intent2 = new Intent(getApplicationContext(), SummaryActivity.class);
                     startActivity(intent2);
                     break;
 
             }
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             return true;
         }
     }
