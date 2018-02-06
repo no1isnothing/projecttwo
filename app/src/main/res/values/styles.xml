@@ -10,6 +10,15 @@
         <item name="android:background">@color/primaryDarkColor</item>
     </style>
 
+    <style name="AppTheme.ActionBar" parent="Theme.AppCompat.Light">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/primaryColor</item>
+        <item name="colorPrimaryDark">@color/primaryDarkColor</item>
+        <item name="colorAccent">@color/primaryLightColor</item>
+        <item name="android:textColor">@color/primaryTextColor</item>
+        <item name="android:background">@color/primaryDarkColor</item>
+    </style>
+
     <style name="PopupMenuStyle" parent="Theme.AppCompat.Light">
         <item name="android:background">@color/secondaryDarkColor</item>
     </style>
