@@ -6,7 +6,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.Toast;
 
 import com.thebipolaroptimist.projecttwo.db.ProjectTwoDataSource;
 import com.thebipolaroptimist.projecttwo.models.Entry;
@@ -21,7 +20,6 @@ public class EntryListActivity extends BaseActivity {
     private EntryAdapter mAdapter;
     public static final int CREATE_ENTRY = 1001;
     public static final String ENTRY_FIELD_ID = "entry_id";
-    public static final String ENTRY_FIELD_NAME = "entry_name";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +31,8 @@ public class EntryListActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), EntryCreateActivity.class);
-                startActivityForResult(intent,CREATE_ENTRY);
+                //startActivityForResult(intent,CREATE_ENTRY);
+                startActivity(intent);
             }
         });
 
@@ -46,14 +45,14 @@ public class EntryListActivity extends BaseActivity {
         mRecyclerView.setAdapter(mAdapter);
     }
 
-    //fix this after the create is updated
     public void openEntryForEdit(int entryPosition)
     {
         Intent intent = new Intent(getApplicationContext(), EntryCreateActivity.class);
         String entryId =  mAdapter.getEntryId(entryPosition);
         intent.putExtra(ENTRY_FIELD_ID, entryId);
-        intent.putExtra(ENTRY_FIELD_NAME, mDataSource.getEntry(entryId).getEntryName());
-        startActivityForResult(intent, CREATE_ENTRY);
+        //intent.putExtra(ENTRY_FIELD_NAME, mDataSource.getEntry(entryId).getEntryNote());
+        //startActivityForResult(intent, CREATE_ENTRY);
+        startActivity(intent);
     }
 
     @Override
@@ -63,26 +62,26 @@ public class EntryListActivity extends BaseActivity {
         super.onDestroy();
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if(requestCode == CREATE_ENTRY && resultCode == RESULT_OK)
-        {
-            String name = data.getStringExtra(ENTRY_FIELD_NAME);
-
-            if(data.hasExtra(ENTRY_FIELD_ID))
-            {
-                //update entry in datasource
-                String id = data.getStringExtra(ENTRY_FIELD_ID);
-                mDataSource.updateEntry(id, name);
-            } else {
-                //create new entry
-                Entry entry = new Entry();
-                entry.setEntryName(name);
-                mDataSource.createEntry(entry);
-            }
-        }
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//
+//        if(requestCode == CREATE_ENTRY && resultCode == RESULT_OK)
+//        {
+//            String name = data.getStringExtra(ENTRY_FIELD_NAME);
+//
+//            if(data.hasExtra(ENTRY_FIELD_ID))
+//            {
+//                //update entry in datasource
+//                String id = data.getStringExtra(ENTRY_FIELD_ID);
+//                mDataSource.updateEntry(id, name);
+//            } else {
+//                //create new entry
+//                Entry entry = new Entry();
+//                entry.setEntryNote(name);
+//                mDataSource.createEntry(entry);
+//            }
+//        }
+//    }
 }
 

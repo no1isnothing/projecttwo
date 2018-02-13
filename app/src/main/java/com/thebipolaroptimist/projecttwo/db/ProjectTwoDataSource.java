@@ -3,6 +3,7 @@ package com.thebipolaroptimist.projecttwo.db;
 import android.util.Log;
 
 import com.thebipolaroptimist.projecttwo.models.Entry;
+import com.thebipolaroptimist.projecttwo.models.EntryDTO;
 
 import java.util.List;
 
@@ -40,7 +41,7 @@ public class ProjectTwoDataSource {
         Log.d(TAG, "createEntry: the id: " + entry.getId());
     }
 
-    public void updateEntry(final String id, final String name)
+    public void updateEntry(final String id, final EntryDTO entryDTO)
     {
         realm.executeTransaction(new Realm.Transaction()
         {
@@ -48,7 +49,14 @@ public class ProjectTwoDataSource {
             @Override
             public void execute(Realm realm) {
                 Entry entry = realm.where(Entry.class).equalTo("id", id).findFirst();
-                entry.setEntryName(name);
+                if(entry == null)
+                {
+                    entry = new Entry();
+                }
+                entry.setEntryNote(entryDTO.entryNote);
+                entry.setEntryTime(entryDTO.entryTime);
+                entry.setOverallMood(entryDTO.overallMood);
+                realm.insertOrUpdate(entry);
             }
         });
     }

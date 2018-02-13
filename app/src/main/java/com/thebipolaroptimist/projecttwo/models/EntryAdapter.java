@@ -3,7 +3,6 @@ package com.thebipolaroptimist.projecttwo.models;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +23,6 @@ public class EntryAdapter extends RealmRecyclerViewAdapter<Entry,EntryAdapter.Vi
         mContext = context;
     }
 
-
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.entry_item, parent, false);
@@ -34,7 +32,8 @@ public class EntryAdapter extends RealmRecyclerViewAdapter<Entry,EntryAdapter.Vi
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.entryView.setText(getData().get(position).getEntryName());
+        holder.entryNote.setText(getData().get(position).getEntryNote());
+        holder.entryTimestamp.setText(getData().get(position).getEntryTime());
     }
 
     public String getEntryId(int position)
@@ -45,10 +44,13 @@ public class EntryAdapter extends RealmRecyclerViewAdapter<Entry,EntryAdapter.Vi
     public static class ViewHolder extends RecyclerView.ViewHolder
     {
         private static final String TAG = "ViewHolder";
-        public TextView entryView;
+        public TextView entryNote;
+        public TextView entryTimestamp;
+
         public ViewHolder(View itemView, final Context context) {
             super(itemView);
-            entryView = (TextView) itemView.findViewById(R.id.entry_text);
+            entryNote = itemView.findViewById(R.id.entry_text);
+            entryTimestamp = itemView.findViewById(R.id.entry_timestamp);
             LinearLayout layout = (LinearLayout) itemView.findViewById(R.id.entry_layout);
 
             layout.setOnClickListener(new View.OnClickListener() {

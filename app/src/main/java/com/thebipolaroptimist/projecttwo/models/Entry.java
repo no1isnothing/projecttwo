@@ -9,7 +9,9 @@ public class Entry extends RealmObject
 {
     @PrimaryKey
     private String id = UUID.randomUUID().toString();
-    private String entryName;
+    private String entryNote;
+    private String entryTime;
+    private int overallMood;
 
     public Entry()
     {
@@ -24,11 +26,27 @@ public class Entry extends RealmObject
         this.id = id;
     }
 
-    public String getEntryName() {
-        return entryName;
+    public String getEntryNote() {
+        return entryNote;
     }
 
-    public void setEntryName(String entryName) {
-        this.entryName = entryName;
+    public void setEntryNote(String entryNote) {
+        this.entryNote = entryNote;
+    }
+
+    public String getEntryTime() {
+        return entryTime;
+    }
+
+    public void setEntryTime(String entryTime) {
+        this.entryTime = entryTime;
+    }
+
+    public int getOverallMood() {
+        return overallMood;
+    }
+
+    public void setOverallMood(int overallMood) {
+        this.overallMood = overallMood;
     }
 }
