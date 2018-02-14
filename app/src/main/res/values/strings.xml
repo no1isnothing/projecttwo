@@ -5,4 +5,8 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_settings">Settings</string>
+    <string name="notes">Notes</string>
+    <string name="save">Save</string>
+    <string name="overall_mood">Overall Mood</string>
+    <string name="select_type_to_add_detail">Select Type to Add Detail</string>
 </resources>

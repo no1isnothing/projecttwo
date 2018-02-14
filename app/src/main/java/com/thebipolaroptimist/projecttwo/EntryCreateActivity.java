@@ -26,24 +26,24 @@ public class EntryCreateActivity extends AppCompatActivity {
     private EditText mEditNote;
     private Button mButtonSave;
     private String mId; //make sure this field is getting reset
-    private AppCompatSpinner mSpinner;
-    private SeekBar mSeekBar;
+    private AppCompatSpinner mSpinnerEntryType;
+    private SeekBar mSeekBarMood;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entry_create);
 
-        mEditNote = findViewById(R.id.notes);
+        mEditNote = findViewById(R.id.edit_notes);
         mButtonSave = findViewById(R.id.button_save);
-        mSpinner = findViewById(R.id.spinner);
-        mSeekBar = findViewById(R.id.moodBar);
+        mSpinnerEntryType = findViewById(R.id.spinner_entry_type);
+        mSeekBarMood = findViewById(R.id.seekbar_overall_mood);
 
         String[] entryTypes = {"", "Mood", "Incident", "Activity"}; //TODO extract this
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, entryTypes);
-        mSpinner.setAdapter(adapter);
+        mSpinnerEntryType.setAdapter(adapter);
 
-        mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        mSpinnerEntryType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Log.i(TAG, "Position Selected " + position);
@@ -78,7 +78,7 @@ public class EntryCreateActivity extends AppCompatActivity {
         {
             Entry entry = mDataSource.getEntry(mId);
             mEditNote.setText(entry.getEntryNote());
-            mSeekBar.setProgress(entry.getOverallMood());
+            mSeekBarMood.setProgress(entry.getOverallMood());
        }
 
         mButtonSave.setOnClickListener(new View.OnClickListener() {
@@ -97,16 +97,11 @@ public class EntryCreateActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        /*Intent intent = new Intent();
-        setResult(RESULT_OK, intent);
-        String name = mEditNote.getText().toString();
-        intent.putExtra(EntryListActivity.ENTRY_FIELD_NAME, name);
-        */
         EntryDTO entryDTO = new EntryDTO();
         entryDTO.entryNote = mEditNote.getText().toString();
         Long time = System.currentTimeMillis()/1000;
         entryDTO.entryTime = time.toString();
-        entryDTO.overallMood = mSeekBar.getProgress();
+        entryDTO.overallMood = mSeekBarMood.getProgress();
         mDataSource.updateEntry(mId, entryDTO);
 
         super.onBackPressed();
