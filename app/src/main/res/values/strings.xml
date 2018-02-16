@@ -9,4 +9,7 @@
     <string name="save">Save</string>
     <string name="overall_mood">Overall Mood</string>
     <string name="select_type_to_add_detail">Select Type to Add Detail</string>
+    <string name="activity">Activity</string>
+    <string name="incident">Incident</string>
+    <string name="mood">Mood</string>
 </resources>

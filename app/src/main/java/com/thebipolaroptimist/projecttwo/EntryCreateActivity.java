@@ -6,6 +6,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatSpinner;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -20,13 +23,14 @@ import com.thebipolaroptimist.projecttwo.dialogs.MoodDialog;
 import com.thebipolaroptimist.projecttwo.models.Entry;
 import com.thebipolaroptimist.projecttwo.models.EntryDTO;
 
+import io.github.yavski.fabspeeddial.FabSpeedDial;
+import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
+
 public class EntryCreateActivity extends AppCompatActivity {
     public static final String TAG = "EntryCreaete";
     private ProjectTwoDataSource mDataSource;
     private EditText mEditNote;
-    private Button mButtonSave;
     private String mId; //make sure this field is getting reset
-    private AppCompatSpinner mSpinnerEntryType;
     private SeekBar mSeekBarMood;
 
     @Override
@@ -35,40 +39,33 @@ public class EntryCreateActivity extends AppCompatActivity {
         setContentView(R.layout.activity_entry_create);
 
         mEditNote = findViewById(R.id.edit_notes);
-        mButtonSave = findViewById(R.id.button_save);
-        mSpinnerEntryType = findViewById(R.id.spinner_entry_type);
         mSeekBarMood = findViewById(R.id.seekbar_overall_mood);
 
-        String[] entryTypes = {"", "Mood", "Incident", "Activity"}; //TODO extract this
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, entryTypes);
-        mSpinnerEntryType.setAdapter(adapter);
-
-        mSpinnerEntryType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        FabSpeedDial fabSpeedDial = (FabSpeedDial) findViewById(R.id.fab_add_detail);
+        fabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Log.i(TAG, "Position Selected " + position);
-                switch (position)
+            public boolean onMenuItemSelected(MenuItem menuItem) {
+                Log.i(TAG, "Menu item id" + menuItem.getItemId());
+
+                switch (menuItem.getItemId())
                 {
-                    case 1:
-                        DialogFragment dialog = new MoodDialog();
-                        dialog.show(getSupportFragmentManager(), "MoodDialog");
-                        break;
-                    case 2:
-                        DialogFragment dialogFragment = new IncidentDialog();
-                        dialogFragment.show(getSupportFragmentManager(), "IncidentDialog");
-                        break;
-                    case 3:
+                    case R.id.action_activity:
                         DialogFragment aDialog = new ActivityDialog();
                         aDialog.show(getSupportFragmentManager(), "ActivityDialog");
                         break;
+                    case R.id.action_incident:
+                        DialogFragment dialogFragment = new IncidentDialog();
+                        dialogFragment.show(getSupportFragmentManager(), "IncidentDialog");
+                        break;
+                    case R.id.action_mood:
+                        DialogFragment dialog = new MoodDialog();
+                        dialog.show(getSupportFragmentManager(), "MoodDialog");
+                        break;
                 }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                Log.i(TAG, "Nothing selected");
+                return true;
             }
         });
+
         mDataSource = new ProjectTwoDataSource();
         mDataSource.open();
 
@@ -80,13 +77,25 @@ public class EntryCreateActivity extends AppCompatActivity {
             mEditNote.setText(entry.getEntryNote());
             mSeekBarMood.setProgress(entry.getOverallMood());
        }
+    }
 
-        mButtonSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.nav_item_entry_create, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.nav_item_ec_save)
+        {
+            onSave();
+        } else if(item.getItemId() == android.R.id.home)
+        {
+            onBackPressed();
+        }
+        return true;
     }
 
     @Override
@@ -95,15 +104,19 @@ public class EntryCreateActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
+    private void onSave()
+    {
+        EntryDTO entryDTO = new EntryDTO();
+        entryDTO.entryNote=mEditNote.getText().toString();
+        Long time = System.currentTimeMillis()/1000;
+        entryDTO.entryTime=time.toString();
+        entryDTO.overallMood=mSeekBarMood.getProgress();
+        mDataSource.updateEntry(mId,entryDTO);
+        finish();
+    }
+
     @Override
     public void onBackPressed() {
-        EntryDTO entryDTO = new EntryDTO();
-        entryDTO.entryNote = mEditNote.getText().toString();
-        Long time = System.currentTimeMillis()/1000;
-        entryDTO.entryTime = time.toString();
-        entryDTO.overallMood = mSeekBarMood.getProgress();
-        mDataSource.updateEntry(mId, entryDTO);
-
         super.onBackPressed();
         finish();
     }
