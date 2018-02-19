@@ -12,4 +12,6 @@
     <string name="activity">Activity</string>
     <string name="incident">Incident</string>
     <string name="mood">Mood</string>
+    <string name="discard_message">Are you sure you want to discard changes?</string>
+    <string name="discard">Discard</string>
 </resources>

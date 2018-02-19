@@ -56,6 +56,7 @@ public class ProjectTwoDataSource {
                 entry.setEntryNote(entryDTO.entryNote);
                 entry.setEntryTime(entryDTO.entryTime);
                 entry.setOverallMood(entryDTO.overallMood);
+                entry.setLastEditTime(entryDTO.lastEditedTime);
                 realm.insertOrUpdate(entry);
             }
         });

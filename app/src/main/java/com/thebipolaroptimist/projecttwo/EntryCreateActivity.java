@@ -18,6 +18,7 @@ import android.widget.SeekBar;
 
 import com.thebipolaroptimist.projecttwo.db.ProjectTwoDataSource;
 import com.thebipolaroptimist.projecttwo.dialogs.ActivityDialog;
+import com.thebipolaroptimist.projecttwo.dialogs.ConfirmDiscardDialog;
 import com.thebipolaroptimist.projecttwo.dialogs.IncidentDialog;
 import com.thebipolaroptimist.projecttwo.dialogs.MoodDialog;
 import com.thebipolaroptimist.projecttwo.models.Entry;
@@ -26,12 +27,13 @@ import com.thebipolaroptimist.projecttwo.models.EntryDTO;
 import io.github.yavski.fabspeeddial.FabSpeedDial;
 import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
 
-public class EntryCreateActivity extends AppCompatActivity {
+public class EntryCreateActivity extends AppCompatActivity implements ConfirmDiscardDialog.ConfirmDiscardDialogListener {
     public static final String TAG = "EntryCreaete";
     private ProjectTwoDataSource mDataSource;
     private EditText mEditNote;
     private String mId; //make sure this field is getting reset
     private SeekBar mSeekBarMood;
+    private String mEntryTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +43,7 @@ public class EntryCreateActivity extends AppCompatActivity {
         mEditNote = findViewById(R.id.edit_notes);
         mSeekBarMood = findViewById(R.id.seekbar_overall_mood);
 
-        FabSpeedDial fabSpeedDial = (FabSpeedDial) findViewById(R.id.fab_add_detail);
+        FabSpeedDial fabSpeedDial = findViewById(R.id.fab_add_detail);
         fabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
             @Override
             public boolean onMenuItemSelected(MenuItem menuItem) {
@@ -76,7 +78,10 @@ public class EntryCreateActivity extends AppCompatActivity {
             Entry entry = mDataSource.getEntry(mId);
             mEditNote.setText(entry.getEntryNote());
             mSeekBarMood.setProgress(entry.getOverallMood());
+            mEntryTime = entry.getEntryTime();
        }
+
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_black);
     }
 
     @Override
@@ -108,8 +113,16 @@ public class EntryCreateActivity extends AppCompatActivity {
     {
         EntryDTO entryDTO = new EntryDTO();
         entryDTO.entryNote=mEditNote.getText().toString();
-        Long time = System.currentTimeMillis()/1000;
-        entryDTO.entryTime=time.toString();
+
+        Long time = System.currentTimeMillis()/1000; // be last
+        entryDTO.lastEditedTime=time.toString();
+        if(mEntryTime == null)
+        {
+            entryDTO.entryTime = entryDTO.lastEditedTime;
+        } else
+        {
+            entryDTO.entryTime = mEntryTime;
+        }
         entryDTO.overallMood=mSeekBarMood.getProgress();
         mDataSource.updateEntry(mId,entryDTO);
         finish();
@@ -117,7 +130,18 @@ public class EntryCreateActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        DialogFragment dialogFragment = new ConfirmDiscardDialog();
+        dialogFragment.show(getSupportFragmentManager(), "ConfirmDiscardDialog");
+    }
+
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog) {
         super.onBackPressed();
         finish();
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog) {
+        onSave();
     }
 }

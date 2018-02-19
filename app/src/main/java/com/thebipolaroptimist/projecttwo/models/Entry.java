@@ -12,6 +12,7 @@ public class Entry extends RealmObject
     private String entryNote;
     private String entryTime;
     private int overallMood;
+    private String lastEditTime;
 
     public Entry()
     {
@@ -48,5 +49,13 @@ public class Entry extends RealmObject
 
     public void setOverallMood(int overallMood) {
         this.overallMood = overallMood;
+    }
+
+    public String getLastEditTime() {
+        return lastEditTime;
+    }
+
+    public void setLastEditTime(String lastEditTime) {
+        this.lastEditTime = lastEditTime;
     }
 }
