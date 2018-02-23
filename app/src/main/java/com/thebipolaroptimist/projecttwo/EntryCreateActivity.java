@@ -4,15 +4,10 @@ import android.content.Intent;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.AppCompatSpinner;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SeekBar;
 
@@ -23,17 +18,21 @@ import com.thebipolaroptimist.projecttwo.dialogs.IncidentDialog;
 import com.thebipolaroptimist.projecttwo.dialogs.MoodDialog;
 import com.thebipolaroptimist.projecttwo.models.Entry;
 import com.thebipolaroptimist.projecttwo.models.EntryDTO;
+import com.thebipolaroptimist.projecttwo.models.MoodDataDTO;
+
+import java.util.List;
 
 import io.github.yavski.fabspeeddial.FabSpeedDial;
 import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
 
-public class EntryCreateActivity extends AppCompatActivity implements ConfirmDiscardDialog.ConfirmDiscardDialogListener {
+public class EntryCreateActivity extends AppCompatActivity implements ConfirmDiscardDialog.ConfirmDiscardDialogListener, MoodDialog.MoodDialogListener
+{
     public static final String TAG = "EntryCreaete";
     private ProjectTwoDataSource mDataSource;
     private EditText mEditNote;
     private String mId; //make sure this field is getting reset
     private SeekBar mSeekBarMood;
-    private String mEntryTime;
+    private EntryDTO mEntryDTO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +42,26 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
         mEditNote = findViewById(R.id.edit_notes);
         mSeekBarMood = findViewById(R.id.seekbar_overall_mood);
 
+        mDataSource = new ProjectTwoDataSource();
+        mDataSource.open();
+
+        //fill out data if entry already exists
+        Intent intent = getIntent();
+        mId = intent.getStringExtra(EntryListActivity.ENTRY_FIELD_ID);
+        if(mId != null)
+        {
+            Entry entry = mDataSource.getEntry(mId);
+            if(mEntryDTO == null)
+            {
+                mEntryDTO = new EntryDTO();
+            }
+            EntryDTO.EntryToEntryDTO(entry, mEntryDTO);
+            mEditNote.setText(mEntryDTO.entryNote);
+            mSeekBarMood.setProgress(mEntryDTO.overallMood);
+
+        }
+
+        //set up speed dial to add different kinds of detail
         FabSpeedDial fabSpeedDial = findViewById(R.id.fab_add_detail);
         fabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
             @Override
@@ -61,25 +80,20 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
                         break;
                     case R.id.action_mood:
                         DialogFragment dialog = new MoodDialog();
+                        //Send mood data if it exists
+                        if(mEntryDTO != null) {
+                            Bundle bundle = new Bundle();
+                            for (MoodDataDTO moodDataDTO : mEntryDTO.moodDataList) {
+                                bundle.putInt(moodDataDTO.type, moodDataDTO.intensity);
+                            }
+                            dialog.setArguments(bundle);
+                        }
                         dialog.show(getSupportFragmentManager(), "MoodDialog");
                         break;
                 }
                 return true;
             }
         });
-
-        mDataSource = new ProjectTwoDataSource();
-        mDataSource.open();
-
-        Intent intent = getIntent();
-        mId = intent.getStringExtra(EntryListActivity.ENTRY_FIELD_ID);
-        if(mId != null)
-        {
-            Entry entry = mDataSource.getEntry(mId);
-            mEditNote.setText(entry.getEntryNote());
-            mSeekBarMood.setProgress(entry.getOverallMood());
-            mEntryTime = entry.getEntryTime();
-       }
 
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_black);
     }
@@ -111,20 +125,23 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
 
     private void onSave()
     {
-        EntryDTO entryDTO = new EntryDTO();
-        entryDTO.entryNote=mEditNote.getText().toString();
+        if(mEntryDTO == null)
+        {
+            mEntryDTO = new EntryDTO();
+        }
+        mEntryDTO.entryNote=mEditNote.getText().toString();
 
         Long time = System.currentTimeMillis()/1000; // be last
-        entryDTO.lastEditedTime=time.toString();
-        if(mEntryTime == null)
+        mEntryDTO.lastEditedTime=time.toString();
+
+        if(mEntryDTO.entryTime == null)
         {
-            entryDTO.entryTime = entryDTO.lastEditedTime;
-        } else
-        {
-            entryDTO.entryTime = mEntryTime;
+            mEntryDTO.entryTime = mEntryDTO.lastEditedTime;
         }
-        entryDTO.overallMood=mSeekBarMood.getProgress();
-        mDataSource.updateEntry(mId,entryDTO);
+        mEntryDTO.overallMood=mSeekBarMood.getProgress();
+
+        mDataSource.updateEntry(mId, mEntryDTO);
+
         finish();
     }
 
@@ -143,5 +160,18 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
     @Override
     public void onDialogNegativeClick(DialogFragment dialog) {
         onSave();
+    }
+
+    @Override
+    public void onMoodDialogPositiveClick(List<MoodDataDTO> moodList) {
+        if(mEntryDTO == null)
+        {
+            mEntryDTO = new EntryDTO();
+        }
+        mEntryDTO.moodDataList = moodList;
+
+        for (MoodDataDTO moodDataDTO : moodList) {
+            Log.i(TAG, "Moood " + moodDataDTO.type + " Intensity " + moodDataDTO.intensity);
+        }
     }
 }

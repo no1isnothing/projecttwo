@@ -1,7 +1,9 @@
 package com.thebipolaroptimist.projecttwo.models;
 
+import java.util.List;
 import java.util.UUID;
 
+import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -13,6 +15,7 @@ public class Entry extends RealmObject
     private String entryTime;
     private int overallMood;
     private String lastEditTime;
+    private RealmList<MoodData> moodDataList;
 
     public Entry()
     {
@@ -57,5 +60,17 @@ public class Entry extends RealmObject
 
     public void setLastEditTime(String lastEditTime) {
         this.lastEditTime = lastEditTime;
+    }
+
+    public List<MoodData> getMoodDataList() {
+        return moodDataList;
+    }
+
+    public void setMoodDataList(RealmList<MoodData> moodDataList) {
+        if(this.moodDataList == null)
+        {
+            this.moodDataList = new RealmList<>();
+        }
+        this.moodDataList.addAll(moodDataList);
     }
 }
