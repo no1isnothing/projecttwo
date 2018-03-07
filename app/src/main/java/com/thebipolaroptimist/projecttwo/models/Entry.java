@@ -11,11 +11,12 @@ public class Entry extends RealmObject
 {
     @PrimaryKey
     private String id = UUID.randomUUID().toString();
+
     private String entryNote;
     private String entryTime;
     private int overallMood;
     private String lastEditTime;
-    private RealmList<MoodData> moodDataList;
+    private RealmList<Detail> detailList;
 
     public Entry()
     {
@@ -62,15 +63,15 @@ public class Entry extends RealmObject
         this.lastEditTime = lastEditTime;
     }
 
-    public List<MoodData> getMoodDataList() {
-        return moodDataList;
+    public List<Detail> getDetailList() {
+        return detailList;
     }
 
-    public void setMoodDataList(RealmList<MoodData> moodDataList) {
-        if(this.moodDataList == null)
+    public void setDetailList(RealmList<Detail> detailList) {
+        if(this.detailList == null)
         {
-            this.moodDataList = new RealmList<>();
+            this.detailList = new RealmList<>();
         }
-        this.moodDataList.addAll(moodDataList);
+        this.detailList.addAll(detailList);
     }
 }

@@ -4,13 +4,10 @@ import android.util.Log;
 
 import com.thebipolaroptimist.projecttwo.models.Entry;
 import com.thebipolaroptimist.projecttwo.models.EntryDTO;
-import com.thebipolaroptimist.projecttwo.models.MoodData;
-import com.thebipolaroptimist.projecttwo.models.MoodDataDTO;
 
 import java.util.List;
 
 import io.realm.Realm;
-import io.realm.RealmList;
 
 public class ProjectTwoDataSource {
     private static final String TAG = "ProjectTwoDataSource";

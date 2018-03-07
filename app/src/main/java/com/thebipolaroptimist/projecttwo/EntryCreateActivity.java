@@ -18,7 +18,7 @@ import com.thebipolaroptimist.projecttwo.dialogs.IncidentDialog;
 import com.thebipolaroptimist.projecttwo.dialogs.MoodDialog;
 import com.thebipolaroptimist.projecttwo.models.Entry;
 import com.thebipolaroptimist.projecttwo.models.EntryDTO;
-import com.thebipolaroptimist.projecttwo.models.MoodDataDTO;
+import com.thebipolaroptimist.projecttwo.models.DetailDTO;
 
 import java.util.List;
 
@@ -83,8 +83,10 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
                         //Send mood data if it exists
                         if(mEntryDTO != null) {
                             Bundle bundle = new Bundle();
-                            for (MoodDataDTO moodDataDTO : mEntryDTO.moodDataList) {
-                                bundle.putInt(moodDataDTO.type, moodDataDTO.intensity);
+                            for (DetailDTO detailDTO : mEntryDTO.detailList) {
+                                if(detailDTO.category.equals("Mood")) { //TODO map string literal to selected id
+                                    bundle.putInt(detailDTO.detailType, Integer.parseInt(detailDTO.detailData));
+                                }
                             }
                             dialog.setArguments(bundle);
                         }
@@ -163,15 +165,15 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
     }
 
     @Override
-    public void onMoodDialogPositiveClick(List<MoodDataDTO> moodList) {
+    public void onMoodDialogPositiveClick(List<DetailDTO> moodList) {
         if(mEntryDTO == null)
         {
             mEntryDTO = new EntryDTO();
         }
-        mEntryDTO.moodDataList = moodList;
+        mEntryDTO.detailList = moodList;
 
-        for (MoodDataDTO moodDataDTO : moodList) {
-            Log.i(TAG, "Moood " + moodDataDTO.type + " Intensity " + moodDataDTO.intensity);
+        for (DetailDTO moodDetailDTO : moodList) {
+            Log.i(TAG, "Moood " + moodDetailDTO.detailType + " Intensity " + moodDetailDTO.detailData);
         }
     }
 }

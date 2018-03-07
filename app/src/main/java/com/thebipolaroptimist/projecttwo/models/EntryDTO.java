@@ -13,7 +13,7 @@ public class EntryDTO {
     public String entryTime;
     public String lastEditedTime;
     public int overallMood;
-    public List<MoodDataDTO> moodDataList;
+    public List<DetailDTO> detailList;
 
     static public void EntryDTOToEntry(EntryDTO entryDTO, Entry entry)
     {
@@ -21,16 +21,17 @@ public class EntryDTO {
         entry.setEntryTime(entryDTO.entryTime);
         entry.setOverallMood(entryDTO.overallMood);
         entry.setLastEditTime(entryDTO.lastEditedTime);
-        RealmList<MoodData> moodData = new RealmList<>();
-        if(entryDTO.moodDataList != null) {
-            for (MoodDataDTO moodDataDTO : entryDTO.moodDataList) {
-                MoodData data = new MoodData();
-                data.setIntensity(moodDataDTO.intensity);
-                data.setType(moodDataDTO.type);
-                moodData.add(data);
+        RealmList<Detail> details = new RealmList<>();
+        if(entryDTO.detailList != null) {
+            for (DetailDTO detailDTO : entryDTO.detailList) {
+                Detail data = new Detail();
+                data.setDetailType(detailDTO.detailType);
+                data.setCategory(detailDTO.category);
+                data.setDetailData(detailDTO.detailData);
+                details.add(data);
             }
         }
-        entry.setMoodDataList(moodData);
+        entry.setDetailList(details);
     }
 
     static public void EntryToEntryDTO(Entry entry, EntryDTO entryDTO)
@@ -40,16 +41,17 @@ public class EntryDTO {
         entryDTO.overallMood = entry.getOverallMood();
         entryDTO.lastEditedTime = entry.getLastEditTime();
 
-        if(entryDTO.moodDataList == null)
+        if(entryDTO.detailList == null)
         {
-            entryDTO.moodDataList = new ArrayList<>();
+            entryDTO.detailList = new ArrayList<>();
         }
 
-        for (MoodData moodData : entry.getMoodDataList()) {
-            MoodDataDTO moodDataDTO = new MoodDataDTO();
-            moodDataDTO.intensity = moodData.getIntensity();
-            moodDataDTO.type = moodData.getType();
-            entryDTO.moodDataList.add(moodDataDTO);
+        for (Detail detail : entry.getDetailList()) {
+            DetailDTO detailDTO = new DetailDTO();
+            detailDTO.detailType = detail.getDetailType();
+            detailDTO.category = detail.getCategory();
+            detailDTO.detailData = detail.getDetailData();
+            entryDTO.detailList.add(detailDTO);
         }
     }
 }

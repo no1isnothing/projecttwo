@@ -11,7 +11,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.thebipolaroptimist.projecttwo.R;
-import com.thebipolaroptimist.projecttwo.models.MoodDataDTO;
+import com.thebipolaroptimist.projecttwo.models.DetailDTO;
 import com.thebipolaroptimist.projecttwo.views.SelectableSeekBar;
 
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ public class MoodDialog extends DialogFragment {
 
     public interface MoodDialogListener
     {
-        void onMoodDialogPositiveClick(List<MoodDataDTO> moodDataDTOList);
+        void onMoodDialogPositiveClick(List<DetailDTO> moodDataDTOList);
     }
 
     @Override
@@ -46,7 +46,7 @@ public class MoodDialog extends DialogFragment {
 
         //Dynamically add seek bars and fill in with data
         //if it's available
-        String[] moods = {"Manic", "Depressed"}; //Move to settings
+        String[] moods = {"Manic", "Depressed"}; //TODO Move to settings
         Bundle args = getArguments();
         for (String mood : moods) {
             SelectableSeekBar bar = new SelectableSeekBar(getActivity(), null);
@@ -62,18 +62,19 @@ public class MoodDialog extends DialogFragment {
         builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                List<MoodDataDTO> moodDataDTOList = new ArrayList<>();
+                List<DetailDTO> moodDetailDTOList = new ArrayList<>();
                 for(int i = 0; i < layout.getChildCount(); i++) {
                     SelectableSeekBar bar = (SelectableSeekBar) layout.getChildAt(i);
                     if(bar.isEnabled()) {
-                        MoodDataDTO moodDataDTO = new MoodDataDTO();
-                        moodDataDTO.intensity = bar.getValue();
-                        moodDataDTO.type = bar.getTitle();
-                        moodDataDTOList.add(moodDataDTO);
+                        DetailDTO moodDetailDTO = new DetailDTO();
+                        moodDetailDTO.category = "Mood"; //TODO match to string in activity
+                        moodDetailDTO.detailData = Integer.toString(bar.getValue());
+                        moodDetailDTO.detailType = bar.getTitle();
+                        moodDetailDTOList.add(moodDetailDTO);
                     }
                 }
 
-                mListener.onMoodDialogPositiveClick(moodDataDTOList);
+                mListener.onMoodDialogPositiveClick(moodDetailDTOList);
             }
         });
 
