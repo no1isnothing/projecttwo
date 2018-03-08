@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.ExpandableListView;
 import android.widget.SeekBar;
 
 import com.thebipolaroptimist.projecttwo.db.ProjectTwoDataSource;
@@ -16,16 +17,22 @@ import com.thebipolaroptimist.projecttwo.dialogs.ActivityDialog;
 import com.thebipolaroptimist.projecttwo.dialogs.ConfirmDiscardDialog;
 import com.thebipolaroptimist.projecttwo.dialogs.IncidentDialog;
 import com.thebipolaroptimist.projecttwo.dialogs.MoodDialog;
+import com.thebipolaroptimist.projecttwo.models.DetailsAdapter;
 import com.thebipolaroptimist.projecttwo.models.Entry;
 import com.thebipolaroptimist.projecttwo.models.EntryDTO;
 import com.thebipolaroptimist.projecttwo.models.DetailDTO;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.github.yavski.fabspeeddial.FabSpeedDial;
 import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
 
-public class EntryCreateActivity extends AppCompatActivity implements ConfirmDiscardDialog.ConfirmDiscardDialogListener, MoodDialog.MoodDialogListener
+
+//TODO update UI when data is added from dialogs
+public class EntryCreateActivity extends AppCompatActivity implements ConfirmDiscardDialog.ConfirmDiscardDialogListener, MoodDialog.MoodDialogListener, ActivityDialog.ActivityDialogListener
 {
     public static final String TAG = "EntryCreaete";
     private ProjectTwoDataSource mDataSource;
@@ -59,6 +66,9 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
             mEditNote.setText(mEntryDTO.entryNote);
             mSeekBarMood.setProgress(mEntryDTO.overallMood);
 
+            DetailsAdapter detailsAdapter = new DetailsAdapter(this, mEntryDTO.detailCategories, mEntryDTO.categoriesToDetails);
+            ExpandableListView detailsView = findViewById(R.id.list_details);
+            detailsView.setAdapter(detailsAdapter);
         }
 
         //set up speed dial to add different kinds of detail
@@ -81,12 +91,13 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
                     case R.id.action_mood:
                         DialogFragment dialog = new MoodDialog();
                         //Send mood data if it exists
-                        if(mEntryDTO != null) {
+                        if(mEntryDTO != null && mEntryDTO.categoriesToDetails != null) {
                             Bundle bundle = new Bundle();
-                            for (DetailDTO detailDTO : mEntryDTO.detailList) {
-                                if(detailDTO.category.equals("Mood")) { //TODO map string literal to selected id
-                                    bundle.putInt(detailDTO.detailType, Integer.parseInt(detailDTO.detailData));
-                                }
+                            Map<String, DetailDTO> detailDTOMap = mEntryDTO.categoriesToDetails.get("Mood");
+                            List<String> keys = (List<String>) detailDTOMap.keySet();
+                            for (String key : keys) {
+                                DetailDTO detailDTO = detailDTOMap.get(key);
+                                bundle.putInt(detailDTO.detailType, Integer.parseInt(detailDTO.detailData));
                             }
                             dialog.setArguments(bundle);
                         }
@@ -170,10 +181,40 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
         {
             mEntryDTO = new EntryDTO();
         }
-        mEntryDTO.detailList = moodList;
+
+        Map<String, DetailDTO> detailDTOMap = mEntryDTO.categoriesToDetails.get("Mood");
+
+        if(detailDTOMap ==null)
+        {
+            detailDTOMap = new HashMap<>();
+            mEntryDTO.categoriesToDetails.put("Mood", detailDTOMap);
+            mEntryDTO.detailCategories.add("Mood");
+        }
+
+        for (DetailDTO detailDTO : moodList) {
+            detailDTOMap.put(detailDTO.detailType, detailDTO);
+        }
 
         for (DetailDTO moodDetailDTO : moodList) {
             Log.i(TAG, "Moood " + moodDetailDTO.detailType + " Intensity " + moodDetailDTO.detailData);
         }
+    }
+
+    @Override
+    public void onActivityDialogPositiveClick(DetailDTO activityDetailDTO) {
+        if(mEntryDTO == null)
+        {
+            mEntryDTO = new EntryDTO();
+        }
+
+        Map<String, DetailDTO> detailDTOMap = mEntryDTO.categoriesToDetails.get("Activity");
+        if(detailDTOMap == null)
+        {
+            detailDTOMap = new HashMap<>();
+            mEntryDTO.categoriesToDetails.put("Activity", detailDTOMap);
+            mEntryDTO.detailCategories.add("Activity");
+        }
+
+        detailDTOMap.put(activityDetailDTO.detailType, activityDetailDTO);
     }
 }

@@ -59,6 +59,7 @@ public class MoodDialog extends DialogFragment {
         }
 
         //Send data back to Activity
+        //TODO see why this is adding all options instead of only selected ones
         builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

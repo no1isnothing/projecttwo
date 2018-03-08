@@ -4,16 +4,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="8dp"
     tools:context="com.thebipolaroptimist.projecttwo.EntryCreateActivity"
-    tools:layout_editor_absoluteY="81dp"
-    android:padding="8dp">
+    tools:layout_editor_absoluteY="81dp">
 
+    <!--TODO fix this layout -->
     <EditText
         android:id="@+id/edit_notes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:hint="@string/notes"
+        app:layout_constraintBottom_toTopOf="@+id/listView"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/seekbar_overall_mood" />
 
     <SeekBar
@@ -22,8 +27,8 @@
         android:layout_height="14dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="40dp"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_label_overall_mood" />
 
     <TextView
@@ -37,6 +42,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <RelativeLayout
+        android:id="@+id/listView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_notes">
+
+        <ExpandableListView
+            android:id="@+id/list_details"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="8dp" />
+    </RelativeLayout>
 
     <io.github.yavski.fabspeeddial.FabSpeedDial
         android:id="@+id/fab_add_detail"
@@ -54,3 +73,4 @@
         app:miniFabTitleTextColor="?attr/colorPrimaryDark" />
 
 </android.support.constraint.ConstraintLayout>
+

@@ -2,7 +2,10 @@ package com.thebipolaroptimist.projecttwo.models;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import io.realm.RealmList;
@@ -13,7 +16,15 @@ public class EntryDTO {
     public String entryTime;
     public String lastEditedTime;
     public int overallMood;
-    public List<DetailDTO> detailList;
+    //public List<DetailDTO> detailList;
+    public List<String> detailCategories;
+    public Map<String, Map<String,DetailDTO>> categoriesToDetails;
+
+    public EntryDTO()
+    {
+        detailCategories = new ArrayList<>();
+        categoriesToDetails = new HashMap<>();
+    }
 
     static public void EntryDTOToEntry(EntryDTO entryDTO, Entry entry)
     {
@@ -22,13 +33,18 @@ public class EntryDTO {
         entry.setOverallMood(entryDTO.overallMood);
         entry.setLastEditTime(entryDTO.lastEditedTime);
         RealmList<Detail> details = new RealmList<>();
-        if(entryDTO.detailList != null) {
-            for (DetailDTO detailDTO : entryDTO.detailList) {
-                Detail data = new Detail();
-                data.setDetailType(detailDTO.detailType);
-                data.setCategory(detailDTO.category);
-                data.setDetailData(detailDTO.detailData);
-                details.add(data);
+        if(entryDTO.categoriesToDetails != null && entryDTO.detailCategories != null) {
+            for(String category : entryDTO.detailCategories) {
+                Map<String, DetailDTO> detailMap = entryDTO.categoriesToDetails.get(category);
+                Set<String> keys = detailMap.keySet();
+                for(String key : keys) {
+                    DetailDTO detailDTO = detailMap.get(key);
+                    Detail data = new Detail();
+                    data.setDetailType(detailDTO.detailType);
+                    data.setCategory(detailDTO.category);
+                    data.setDetailData(detailDTO.detailData);
+                    details.add(data);
+                }
             }
         }
         entry.setDetailList(details);
@@ -41,9 +57,14 @@ public class EntryDTO {
         entryDTO.overallMood = entry.getOverallMood();
         entryDTO.lastEditedTime = entry.getLastEditTime();
 
-        if(entryDTO.detailList == null)
+        if(entryDTO.detailCategories == null)
         {
-            entryDTO.detailList = new ArrayList<>();
+            entryDTO.detailCategories = new ArrayList<>();
+        }
+
+        if(entryDTO.categoriesToDetails == null)
+        {
+            entryDTO.categoriesToDetails = new HashMap<>();
         }
 
         for (Detail detail : entry.getDetailList()) {
@@ -51,7 +72,16 @@ public class EntryDTO {
             detailDTO.detailType = detail.getDetailType();
             detailDTO.category = detail.getCategory();
             detailDTO.detailData = detail.getDetailData();
-            entryDTO.detailList.add(detailDTO);
+
+
+            Map<String, DetailDTO> detailMap = entryDTO.categoriesToDetails.get(detail.getCategory());
+            if(detailMap == null)
+            {
+                detailMap = new HashMap<>();
+                entryDTO.detailCategories.add(detailDTO.category);
+                entryDTO.categoriesToDetails.put(detailDTO.category, detailMap);
+            }
+            detailMap.put(detailDTO.detailType, detailDTO);
         }
     }
 }
