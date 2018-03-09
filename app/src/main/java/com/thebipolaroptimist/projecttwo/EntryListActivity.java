@@ -18,7 +18,6 @@ public class EntryListActivity extends BaseActivity {
     private RecyclerView mRecyclerView;
     private ProjectTwoDataSource mDataSource;
     private EntryAdapter mAdapter;
-    public static final int CREATE_ENTRY = 1001;
     public static final String ENTRY_FIELD_ID = "entry_id";
 
     @Override
@@ -26,12 +25,11 @@ public class EntryListActivity extends BaseActivity {
         setContentView(R.layout.activity_entry_list);
         super.onCreate(savedInstanceState);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_add);
+        FloatingActionButton fab = findViewById(R.id.fab_add);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), EntryCreateActivity.class);
-                //startActivityForResult(intent,CREATE_ENTRY);
                 startActivity(intent);
             }
         });
@@ -50,8 +48,6 @@ public class EntryListActivity extends BaseActivity {
         Intent intent = new Intent(getApplicationContext(), EntryCreateActivity.class);
         String entryId =  mAdapter.getEntryId(entryPosition);
         intent.putExtra(ENTRY_FIELD_ID, entryId);
-        //intent.putExtra(ENTRY_FIELD_NAME, mDataSource.getEntry(entryId).getEntryNote());
-        //startActivityForResult(intent, CREATE_ENTRY);
         startActivity(intent);
     }
 
@@ -61,27 +57,5 @@ public class EntryListActivity extends BaseActivity {
         mDataSource.close();
         super.onDestroy();
     }
-
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//
-//        if(requestCode == CREATE_ENTRY && resultCode == RESULT_OK)
-//        {
-//            String name = data.getStringExtra(ENTRY_FIELD_NAME);
-//
-//            if(data.hasExtra(ENTRY_FIELD_ID))
-//            {
-//                //update entry in datasource
-//                String id = data.getStringExtra(ENTRY_FIELD_ID);
-//                mDataSource.updateEntry(id, name);
-//            } else {
-//                //create new entry
-//                Entry entry = new Entry();
-//                entry.setEntryNote(name);
-//                mDataSource.createEntry(entry);
-//            }
-//        }
-//    }
 }
 

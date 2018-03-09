@@ -1,5 +1,7 @@
 package com.thebipolaroptimist.projecttwo.models;
 
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -7,6 +9,12 @@ import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
+
+/**
+ * This class represents an entry into the journal
+ * All entries have time, optional note and overallmood
+ * In addition there can be any number of details added to an entry
+ */
 public class Entry extends RealmObject
 {
     @PrimaryKey
@@ -33,6 +41,19 @@ public class Entry extends RealmObject
 
     public String getEntryNote() {
         return entryNote;
+    }
+
+    public String getEntrySummary()
+    {
+        StringBuilder builder = new StringBuilder();
+
+        builder.append(DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT)
+                .format(new Date(Long.parseLong(entryTime))));
+        if(detailList != null && detailList.size() > 0)
+        {
+            builder.append(" Contains details"); //TODO put something more descriptive here
+        }
+        return builder.toString();
     }
 
     public void setEntryNote(String entryNote) {

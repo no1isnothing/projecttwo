@@ -10,13 +10,21 @@ import java.util.UUID;
 
 import io.realm.RealmList;
 
+
+/**
+ * This stores data for transfer to realm entry
+ * It also handles converting data between Realm and DTO objects
+ *
+ * Unlike the Entry, the EntryDTO stores the details mapped by category and type
+ * It also maintains a list of category names.
+ * This makes interacting with the UI and updating details easier
+ */
 public class EntryDTO {
     public String id = UUID.randomUUID().toString();
     public String entryNote;
     public String entryTime;
     public String lastEditedTime;
     public int overallMood;
-    //public List<DetailDTO> detailList;
     public List<String> detailCategories;
     public Map<String, Map<String,DetailDTO>> categoriesToDetails;
 
@@ -33,6 +41,7 @@ public class EntryDTO {
         entry.setOverallMood(entryDTO.overallMood);
         entry.setLastEditTime(entryDTO.lastEditedTime);
         RealmList<Detail> details = new RealmList<>();
+        //Go through the maps to get all the details into a single list
         if(entryDTO.categoriesToDetails != null && entryDTO.detailCategories != null) {
             for(String category : entryDTO.detailCategories) {
                 Map<String, DetailDTO> detailMap = entryDTO.categoriesToDetails.get(category);
@@ -43,6 +52,7 @@ public class EntryDTO {
                     data.setDetailType(detailDTO.detailType);
                     data.setCategory(detailDTO.category);
                     data.setDetailData(detailDTO.detailData);
+                    data.setDetailDataUnit(detailDTO.detailDataUnit);
                     details.add(data);
                 }
             }
@@ -67,12 +77,13 @@ public class EntryDTO {
             entryDTO.categoriesToDetails = new HashMap<>();
         }
 
+        //iterate over the list and store details in maps
         for (Detail detail : entry.getDetailList()) {
             DetailDTO detailDTO = new DetailDTO();
             detailDTO.detailType = detail.getDetailType();
             detailDTO.category = detail.getCategory();
             detailDTO.detailData = detail.getDetailData();
-
+            detailDTO.detailDataUnit = detail.getDetailDataUnit();
 
             Map<String, DetailDTO> detailMap = entryDTO.categoriesToDetails.get(detail.getCategory());
             if(detailMap == null)

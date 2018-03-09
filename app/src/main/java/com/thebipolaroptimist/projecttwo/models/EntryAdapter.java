@@ -16,8 +16,8 @@ import io.realm.OrderedRealmCollection;
 import io.realm.RealmRecyclerViewAdapter;
 
 public class EntryAdapter extends RealmRecyclerViewAdapter<Entry,EntryAdapter.ViewHolder> {
+    Context mContext;
 
-    Context mContext; //weak reference?
     public EntryAdapter(@Nullable OrderedRealmCollection<Entry> data, boolean autoUpdate, Context context) {
         super(data, autoUpdate);
         mContext = context;
@@ -33,7 +33,7 @@ public class EntryAdapter extends RealmRecyclerViewAdapter<Entry,EntryAdapter.Vi
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.entryNote.setText(getData().get(position).getEntryNote());
-        holder.entryTimestamp.setText(getData().get(position).getEntryTime());
+        holder.entryTimestamp.setText(getData().get(position).getEntrySummary());
     }
 
     public String getEntryId(int position)

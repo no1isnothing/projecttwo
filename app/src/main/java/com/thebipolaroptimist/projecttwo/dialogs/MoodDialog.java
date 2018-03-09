@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,6 +20,7 @@ import java.util.List;
 
 public class MoodDialog extends DialogFragment {
     public static final String TAG = "MoodDialog";
+    public static final String CATEGORY = "Mood";
     MoodDialogListener mListener;
 
     public interface MoodDialogListener
@@ -37,6 +39,7 @@ public class MoodDialog extends DialogFragment {
         }
     }
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -59,7 +62,6 @@ public class MoodDialog extends DialogFragment {
         }
 
         //Send data back to Activity
-        //TODO see why this is adding all options instead of only selected ones
         builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -68,7 +70,8 @@ public class MoodDialog extends DialogFragment {
                     SelectableSeekBar bar = (SelectableSeekBar) layout.getChildAt(i);
                     if(bar.isEnabled()) {
                         DetailDTO moodDetailDTO = new DetailDTO();
-                        moodDetailDTO.category = "Mood"; //TODO match to string in activity
+                        moodDetailDTO.category = CATEGORY;
+                        moodDetailDTO.detailDataUnit = DetailDTO.getUnits(CATEGORY);
                         moodDetailDTO.detailData = Integer.toString(bar.getValue());
                         moodDetailDTO.detailType = bar.getTitle();
                         moodDetailDTOList.add(moodDetailDTO);

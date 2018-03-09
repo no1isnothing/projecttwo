@@ -21,9 +21,11 @@
         <activity
             android:name=".SettingsActivity"
             android:theme="@style/AppTheme.ActionBar" />
+
         <activity android:name=".EntryCreateActivity"
             android:parentActivityName=".EntryListActivity"
-            android:theme="@style/AppTheme.ActionBar"></activity>
+            android:theme="@style/AppTheme.ActionBar"
+            android:windowSoftInputMode="stateUnchanged"></activity>
     </application>
 
 </manifest>

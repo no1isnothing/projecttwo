@@ -27,6 +27,7 @@ public class DetailsAdapter extends BaseExpandableListAdapter{
         mDetailCategories = detailCategories;
         mDetails = details;
     }
+
     @Override
     public int getGroupCount() {
         return mDetails.size();
@@ -79,7 +80,6 @@ public class DetailsAdapter extends BaseExpandableListAdapter{
         return convertView;
     }
 
-    //TODO add more data to view
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         DetailDTO detail = (DetailDTO) getChild(groupPosition, childPosition);
@@ -89,11 +89,13 @@ public class DetailsAdapter extends BaseExpandableListAdapter{
             convertView = inflater.inflate(R.layout.detail_list_item, null);
         }
 
-        TextView item = (TextView) convertView.findViewById(R.id.expanded_detail_list_item);
+        TextView type = convertView.findViewById(R.id.detail_item_type);
+        TextView data = convertView.findViewById(R.id.detial_item_data);
 
-        item.setText(detail.detailType);
+        type.setText(detail.detailType);
+        data.setText(detail.getDataString());
+
         return convertView;
-
     }
 
     @Override

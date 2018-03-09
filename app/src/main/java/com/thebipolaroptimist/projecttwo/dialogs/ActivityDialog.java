@@ -22,6 +22,8 @@ import com.thebipolaroptimist.projecttwo.models.DetailDTO;
 
 public class ActivityDialog extends DialogFragment {
     public static final String TAG = "ActivityDialog";
+
+    public static final String CATEGORY = "Activity";
     Spinner mSpinnerActivityType;
     ActivityDialogListener mListener;
     EditText mEditDuration;
@@ -54,7 +56,7 @@ public class ActivityDialog extends DialogFragment {
         builder.setView(view);
         mEditDuration = view.findViewById(R.id.mEditDuration);
         mSpinnerActivityType = view.findViewById(R.id.mSpinnerActivity);
-        final String[] activities = {"","Boxing", "Yoga"};
+        final String[] activities = {"","Boxing", "Yoga"}; //TODO move it settings
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, activities);
         mSpinnerActivityType.setAdapter(adapter);
@@ -79,7 +81,8 @@ public class ActivityDialog extends DialogFragment {
                 //get data
                 if(!mActivityType.isEmpty()) {
                     DetailDTO activityDetailDTO = new DetailDTO();
-                    activityDetailDTO.category = getString(R.string.category_activity);
+                    activityDetailDTO.category = CATEGORY;
+                    activityDetailDTO.detailDataUnit = DetailDTO.getUnits(CATEGORY);
                     activityDetailDTO.detailType = mActivityType;
                     activityDetailDTO.detailData = mEditDuration.getText().toString();
                     mListener.onActivityDialogPositiveClick(activityDetailDTO);

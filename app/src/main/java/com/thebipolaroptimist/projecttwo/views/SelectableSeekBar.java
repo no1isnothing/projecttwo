@@ -66,9 +66,8 @@ public class SelectableSeekBar extends LinearLayout {
         view.setText(title);
     }
 
-    /*
-    public SelectableSeekBar(Context context, AttributeSet set)
-    {
-        SelectableSeekBar(context);
-    }*/
+    @Override
+    public boolean isEnabled() {
+        return bar.isEnabled();
+    }
 }
