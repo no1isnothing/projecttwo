@@ -36,10 +36,19 @@ public class EntryListActivity extends BaseActivity {
 
         mDataSource = new ProjectTwoDataSource();
         mDataSource.open();
+       /* mCalendarView = findViewById(R.id.entry_calendar);
+        mCalendarView.setOnDayClickListener(new OnDayClickListener() {
+            @Override
+            public void onDayClick(EventDay eventDay) {
+
+            }
+        });*/
+
+
         mRecyclerView = findViewById(R.id.entries_view);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter = new EntryAdapter((OrderedRealmCollection<Entry>)mDataSource.getAllEntries(), true, this);
+        mAdapter = new EntryAdapter((OrderedRealmCollection<Entry>) mDataSource.getAllEntries(), true, this);
         mRecyclerView.setAdapter(mAdapter);
     }
 
