@@ -74,7 +74,7 @@ public class BaseActivity extends AppCompatActivity {
         // Handle your other action bar items...
         if(item.getItemId() == R.id.action_settings)
         {
-            Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+            Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
         }
 

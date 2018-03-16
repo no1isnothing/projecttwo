@@ -124,10 +124,6 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
         } else if(item.getItemId() == android.R.id.home)
         {
             onBackPressed();
-        } else if(item.getItemId() == R.id.nav_item_ec_settings)
-        {
-            Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
-            startActivity(intent);
         }
         return true;
     }

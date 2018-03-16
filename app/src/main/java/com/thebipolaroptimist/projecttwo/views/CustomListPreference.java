@@ -1,6 +1,5 @@
 package com.thebipolaroptimist.projecttwo.views;
 
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
@@ -16,78 +15,67 @@ import android.widget.LinearLayout;
 
 import com.thebipolaroptimist.projecttwo.R;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
+
+/**
+ * Custom Preference Class
+ * Contains a list of string values
+ * The user can add items to the list with an edit text and a button
+ * The user can remove items from the list with a button
+ */
 public class CustomListPreference extends DialogPreference {
     public static final String TAG ="CustomListPreference";
     Set<String> mValues;
+    LinearLayout mLayout;
 
     public CustomListPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
-        Log.i(TAG, "constructor");
         setDialogLayoutResource(R.layout.custom_list_preference_dialog);
         setPositiveButtonText(android.R.string.ok);
         setNegativeButtonText(android.R.string.cancel);
         mValues = new HashSet<>();
-
     }
 
     @Override
     protected void onBindDialogView(final View view) {
         super.onBindDialogView(view);
-        Log.i(TAG, "OnBindViewDialog");
-        Button button = view.findViewById(R.id.pref_list_add_button);
+        Button addItemButton = view.findViewById(R.id.pref_list_add_button);
         final EditText editText = view.findViewById(R.id.pref_list_edit_text);
-        button.setOnClickListener(new View.OnClickListener() {
+        mLayout = view.findViewById(R.id.pref_list);
+
+        addItemButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //show text view?
-                final String newType = editText.getText().toString();
-                if(!newType.isEmpty())
+                final String item = editText.getText().toString();
+                if(!item.isEmpty())
                 {
-                    mValues.add(newType);
-                    final LinearLayout layout = view.findViewById(R.id.pref_list);
-                    layout.addView(new RemoveableRow(getContext(), newType, new RemoveableRow.OnClickListener() {
+                    mValues.add(item);
+                    mLayout.addView(new ActionRow(getContext(), item, new ActionRow.OnClickListener() {
                         @Override
                         public void onClick() {
-                            mValues.remove(newType);
-                            reloadList(layout);
+                            mValues.remove(item);
+                            reloadList();
                         }
                     }));
                 }
             }
         });
-
-        final LinearLayout layout = view.findViewById(R.id.pref_list);
-
-        final List<String> array = new ArrayList<>(mValues);
-
-        for (final String s : array) {
-            layout.addView(new RemoveableRow(getContext(), s, new RemoveableRow.OnClickListener() {
-                @Override
-                public void onClick() {
-                    mValues.remove(s);
-                    reloadList(layout);
-                }
-            }));
-        }
+        reloadList();
     }
 
-    protected void reloadList(View view)
+    protected void reloadList()
     {
-        LinearLayout layout = view.findViewById(R.id.pref_list);
-
-        layout.removeAllViews();
+        mLayout.removeAllViews();
 
         for (final String s : mValues) {
-            layout.addView(new RemoveableRow(getContext(), s, new RemoveableRow.OnClickListener() {
+            mLayout.addView(new ActionRow(getContext(), s, new ActionRow.OnClickListener() {
                 @Override
                 public void onClick() {
                     mValues.remove(s);
+                    reloadList();
                 }
             }));
         }
@@ -95,50 +83,47 @@ public class CustomListPreference extends DialogPreference {
 
     @Override
     protected void onDialogClosed(boolean positiveResult) {
-        Log.i(TAG, "OnDialogClosed");
         // When the user selects "OK", persist the new value
         if (positiveResult) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 persistStringSet(mValues);
             } else
             {
-                persistString(""); //TODO fill this out
+                //TODO add java 8 replace with join
+                StringBuilder builder = new StringBuilder();
+                for (String mValue : mValues) {
+                    builder.append(mValue).append(",");
+                }
+                boolean result = persistString(builder.toString());
+                Log.i(TAG, "REsult " + result);
             }
         }
     }
 
     @Override
     protected void onSetInitialValue(boolean restorePersistedValue, Object defaultValue) {
-        Log.i(TAG, "Set initial value");
         if (restorePersistedValue) {
             // Restore existing state
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 mValues = this.getPersistedStringSet(new HashSet<String>());
             } else
             {
-                mValues = new HashSet<>(); //TODO fill this out
+                String values = this.getPersistedString("");
+                mValues = new HashSet<String>(Arrays.asList(values.split(",")));
             }
         } else {
-            // Set default state from the XML attribute
-            mValues = (Set<String>) defaultValue;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                persistStringSet(mValues);
-            } else
-            {
-                persistString(""); //TODO fill this out
-            }
+            Log.i(TAG, "Not persisting values");
         }
     }
 
     @Override
     protected Object onGetDefaultValue(TypedArray a, int index) {
-        Log.i(TAG, "ONGetDefaultVAlue");
         return super.onGetDefaultValue(a, index);
     }
 
+    //TODO test this code. Wrote it based on the android docs
     @Override
     protected Parcelable onSaveInstanceState() {
-        Log.i(TAG, "OnSaveInstanceState");
         final Parcelable superState = super.onSaveInstanceState();
         // Check whether this Preference is persistent (continually saved)
         if (isPersistent()) {
@@ -151,13 +136,12 @@ public class CustomListPreference extends DialogPreference {
         final SavedState myState = new SavedState(superState);
         // Set the state's value with the class member that holds current
         // setting value
-        myState.value = (String []) mValues.toArray();
+        myState.value = mValues.toArray(new String[mValues.size()]);
         return myState;
     }
 
     @Override
     protected void onRestoreInstanceState(Parcelable state) {
-        Log.i(TAG, "OnRestoreInstanceState");
         // Check whether we saved the state in onSaveInstanceState
         if (state == null || !state.getClass().equals(SavedState.class)) {
             // Didn't save the state, so call superclass
@@ -170,7 +154,7 @@ public class CustomListPreference extends DialogPreference {
         super.onRestoreInstanceState(myState.getSuperState());
 
         // Set this Preference's widget to reflect the restored state
-        mValues = new HashSet<String>(Arrays.asList(myState.value));
+        mValues = new HashSet<>(Arrays.asList(myState.value));
     }
 
     private static class SavedState extends BaseSavedState {

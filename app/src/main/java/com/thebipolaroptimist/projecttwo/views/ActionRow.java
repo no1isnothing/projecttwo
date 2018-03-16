@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.thebipolaroptimist.projecttwo.R;
 
-public class RemoveableRow extends LinearLayout {
+public class ActionRow extends LinearLayout {
 
     public interface OnClickListener
     {
@@ -17,14 +17,14 @@ public class RemoveableRow extends LinearLayout {
     }
 
     OnClickListener mListener;
-    public RemoveableRow(Context context, String title, OnClickListener listener) {
+    public ActionRow(Context context, String title, OnClickListener listener) {
         super(context);
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (inflater != null) {
-            inflater.inflate(R.layout.view_removeable_row, this, true);
+            inflater.inflate(R.layout.view_action_row, this, true);
         }
         mListener = listener;
-        Button button = findViewById(R.id.remove_row_button);
+        Button button = findViewById(R.id.action_row_button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -32,7 +32,7 @@ public class RemoveableRow extends LinearLayout {
             }
         });
 
-        TextView view = findViewById(R.id.removeable_row_text);
+        TextView view = findViewById(R.id.action_row_text);
         view.setText(title);
     }
 }
