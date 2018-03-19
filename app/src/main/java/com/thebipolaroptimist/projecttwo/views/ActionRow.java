@@ -9,6 +9,11 @@ import android.widget.TextView;
 
 import com.thebipolaroptimist.projecttwo.R;
 
+/**
+ * A single row in a UI with text and a button
+ * The constructor receives text to display
+ * and a listener to be called when the button is clicked
+ */
 public class ActionRow extends LinearLayout {
 
     public interface OnClickListener

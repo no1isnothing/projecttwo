@@ -61,6 +61,7 @@ public class CustomListPreference extends DialogPreference {
                         }
                     }));
                 }
+                editText.setText("");
             }
         });
         reloadList();
@@ -89,13 +90,12 @@ public class CustomListPreference extends DialogPreference {
                 persistStringSet(mValues);
             } else
             {
-                //TODO add java 8 replace with join
                 StringBuilder builder = new StringBuilder();
                 for (String mValue : mValues) {
                     builder.append(mValue).append(",");
                 }
                 boolean result = persistString(builder.toString());
-                Log.i(TAG, "REsult " + result);
+                Log.i(TAG, "Result " + result);
             }
         }
     }
@@ -105,11 +105,14 @@ public class CustomListPreference extends DialogPreference {
         if (restorePersistedValue) {
             // Restore existing state
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                mValues = this.getPersistedStringSet(new HashSet<String>());
+                //String set does not get persisted if it is the same instance that
+                //comes from the get method, even if it's been modified
+                //creating a copy of the set insures that it gets persisted
+                mValues = new HashSet<>(this.getPersistedStringSet(new HashSet<String>()));
             } else
             {
                 String values = this.getPersistedString("");
-                mValues = new HashSet<String>(Arrays.asList(values.split(",")));
+                mValues = new HashSet<>(Arrays.asList(values.split(",")));
             }
         } else {
             Log.i(TAG, "Not persisting values");
