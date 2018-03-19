@@ -39,7 +39,7 @@ public class EntryListActivity extends BaseActivity {
         mRecyclerView = findViewById(R.id.entries_view);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter = new EntryAdapter((OrderedRealmCollection<Entry>)mDataSource.getAllEntries(), true, this);
+        mAdapter = new EntryAdapter((OrderedRealmCollection<Entry>) mDataSource.getAllEntries(), true, this);
         mRecyclerView.setAdapter(mAdapter);
     }
 

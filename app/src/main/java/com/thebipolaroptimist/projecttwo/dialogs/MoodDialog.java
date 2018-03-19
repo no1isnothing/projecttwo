@@ -4,7 +4,10 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
@@ -12,11 +15,15 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.thebipolaroptimist.projecttwo.R;
+import com.thebipolaroptimist.projecttwo.SettingsFragment;
 import com.thebipolaroptimist.projecttwo.models.DetailDTO;
 import com.thebipolaroptimist.projecttwo.views.SelectableSeekBar;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class MoodDialog extends DialogFragment {
     public static final String TAG = "MoodDialog";
@@ -49,7 +56,15 @@ public class MoodDialog extends DialogFragment {
 
         //Dynamically add seek bars and fill in with data
         //if it's available
-        String[] moods = {"Manic", "Depressed"}; //TODO Move to settings
+        Set<String> moods;
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+             moods = prefs.getStringSet(SettingsFragment.PREFERENCE_PREFIX + CATEGORY, new HashSet<String>());
+        } else
+        {
+            String moodString = prefs.getString(SettingsFragment.PREFERENCE_PREFIX + CATEGORY,"");
+            moods = new HashSet<String>(Arrays.asList(moodString.split(",")));
+        }
         Bundle args = getArguments();
         for (String mood : moods) {
             SelectableSeekBar bar = new SelectableSeekBar(getActivity(), null);

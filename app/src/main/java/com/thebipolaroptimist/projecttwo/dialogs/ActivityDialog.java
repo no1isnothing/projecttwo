@@ -4,7 +4,10 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
@@ -17,7 +20,14 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.thebipolaroptimist.projecttwo.R;
+import com.thebipolaroptimist.projecttwo.SettingsFragment;
 import com.thebipolaroptimist.projecttwo.models.DetailDTO;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 
 public class ActivityDialog extends DialogFragment {
@@ -56,7 +66,17 @@ public class ActivityDialog extends DialogFragment {
         builder.setView(view);
         mEditDuration = view.findViewById(R.id.mEditDuration);
         mSpinnerActivityType = view.findViewById(R.id.mSpinnerActivity);
-        final String[] activities = {"","Boxing", "Yoga"}; //TODO move it settings
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+        final List<String> activities = new ArrayList<>();
+        activities.add("");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            activities.addAll(prefs.getStringSet(SettingsFragment.PREFERENCE_PREFIX + CATEGORY, new HashSet<String>()));
+        } else
+        {
+            String activityString = prefs.getString(SettingsFragment.PREFERENCE_PREFIX + CATEGORY, "");
+            activities.addAll(Arrays.asList(activityString.split(",")));
+        }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, activities);
         mSpinnerActivityType.setAdapter(adapter);
@@ -66,7 +86,7 @@ public class ActivityDialog extends DialogFragment {
 
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mActivityType = activities[position];
+                mActivityType = activities.get(position);
             }
 
             @Override
