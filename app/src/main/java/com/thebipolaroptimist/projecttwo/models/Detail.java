@@ -18,6 +18,7 @@ public class Detail extends RealmObject {
     private String detailType;
     private String detailData;
     private String detailDataUnit;
+    private int color;
 
     public String getCategory() {
         return category;
@@ -49,5 +50,13 @@ public class Detail extends RealmObject {
 
     public void setDetailDataUnit(String detailDataUnit) {
         this.detailDataUnit = detailDataUnit;
+    }
+
+    public int getColor() {
+        return color;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
     }
 }

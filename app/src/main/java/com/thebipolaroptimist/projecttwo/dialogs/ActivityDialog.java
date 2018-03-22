@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -105,6 +106,7 @@ public class ActivityDialog extends DialogFragment {
                     activityDetailDTO.detailDataUnit = DetailDTO.getUnits(CATEGORY);
                     activityDetailDTO.detailType = mActivityType;
                     activityDetailDTO.detailData = mEditDuration.getText().toString();
+                    activityDetailDTO.color = Color.RED;
                     mListener.onActivityDialogPositiveClick(activityDetailDTO);
                 }
             }

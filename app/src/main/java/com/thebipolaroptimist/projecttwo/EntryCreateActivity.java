@@ -142,7 +142,7 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
         }
         mEntryDTO.entryNote=mEditNote.getText().toString();
 
-        Long time = System.currentTimeMillis()/1000; // be last
+        Long time = System.currentTimeMillis(); // be last
         mEntryDTO.lastEditedTime=time.toString();
 
         if(mEntryDTO.entryTime == null)

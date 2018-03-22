@@ -16,6 +16,7 @@ public class DetailDTO {
     public String detailType;
     public String detailData;
     public String detailDataUnit;
+    public int color;
 
     /**
      *

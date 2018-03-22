@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -89,6 +90,7 @@ public class MoodDialog extends DialogFragment {
                         moodDetailDTO.detailDataUnit = DetailDTO.getUnits(CATEGORY);
                         moodDetailDTO.detailData = Integer.toString(bar.getValue());
                         moodDetailDTO.detailType = bar.getTitle();
+                        moodDetailDTO.color = Color.BLUE;
                         moodDetailDTOList.add(moodDetailDTO);
                     }
                 }
