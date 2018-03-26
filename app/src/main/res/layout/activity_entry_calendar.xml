@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.thebipolaroptimist.projecttwo.EntryListActivity"
+    tools:context="com.thebipolaroptimist.projecttwo.EntryCalendarActivity"
     >
 
     <android.support.design.widget.CoordinatorLayout
@@ -24,10 +24,16 @@
                 android:fitsSystemWindows="true"
                 android:elevation="4dp"
                 app:popupTheme="@style/PopupMenuStyle"
-                />
+                 />
         </android.support.design.widget.AppBarLayout>
 
-        <FrameLayout
+        <LinearLayout
+            android:id="@+id/calendar1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+        </LinearLayout>
+        <!--<FrameLayout
             android:id="@+id/content_frame"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -38,7 +44,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
             </android.support.v7.widget.RecyclerView>
-        </FrameLayout>
+        </FrameLayout>-->
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab_add"

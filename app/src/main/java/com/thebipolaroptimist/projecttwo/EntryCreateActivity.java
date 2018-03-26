@@ -54,7 +54,7 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
 
         //fill out data if entry already exists
         Intent intent = getIntent();
-        mId = intent.getStringExtra(EntryListActivity.ENTRY_FIELD_ID);
+        mId = intent.getStringExtra(EntryCalendarActivity.ENTRY_FIELD_ID);
         if(mId != null)
         {
             Entry entry = mDataSource.getEntry(mId);

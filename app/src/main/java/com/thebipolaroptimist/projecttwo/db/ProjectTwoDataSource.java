@@ -5,9 +5,15 @@ import android.util.Log;
 import com.thebipolaroptimist.projecttwo.models.Entry;
 import com.thebipolaroptimist.projecttwo.models.EntryDTO;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.realm.Realm;
+import io.realm.RealmList;
 
 public class ProjectTwoDataSource {
     private static final String TAG = "ProjectTwoDataSource";
@@ -57,6 +63,26 @@ public class ProjectTwoDataSource {
                 realm.insertOrUpdate(entry);
             }
         });
+    }
+
+    public Map<String, Object> getEntriesByDay()
+    {
+        final SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy");
+        List<Entry> entries = realm.where(Entry.class).findAll();
+        Map<String,Object>  dayToEntries = new HashMap<>();
+        for (Entry entry : entries) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(Long.parseLong(entry.getEntryTime()));
+            String key = formatter.format(calendar.getTime());
+            List<Entry> entriesForToday = (List<Entry>) dayToEntries.get(key);
+            if(entriesForToday == null)
+            {
+                entriesForToday= new ArrayList<>();
+                dayToEntries.put(key, entriesForToday);
+            }
+            entriesForToday.add(entry);
+        }
+        return dayToEntries;
     }
 
     public List<Entry > getAllEntries()
