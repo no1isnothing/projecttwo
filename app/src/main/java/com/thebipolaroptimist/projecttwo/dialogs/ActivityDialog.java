@@ -39,6 +39,7 @@ public class ActivityDialog extends DialogFragment {
     ActivityDialogListener mListener;
     EditText mEditDuration;
     String mActivityType;
+    String mColor;
 
     public interface ActivityDialogListener
     {
@@ -79,6 +80,13 @@ public class ActivityDialog extends DialogFragment {
             activities.addAll(Arrays.asList(activityString.split(",")));
         }
 
+        final List<String> colors = new ArrayList<>(activities.size());
+        for (int i = 1; i < activities.size(); i++) {
+            String[] pieces = activities.get(i).split(":");
+            activities.set(i, pieces[0]);
+            colors.add( pieces[1]);
+        }
+
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, activities);
         mSpinnerActivityType.setAdapter(adapter);
 
@@ -88,6 +96,9 @@ public class ActivityDialog extends DialogFragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 mActivityType = activities.get(position);
+                if(position != 0) {
+                    mColor = colors.get(position - 1);
+                }
             }
 
             @Override
@@ -106,7 +117,7 @@ public class ActivityDialog extends DialogFragment {
                     activityDetailDTO.detailDataUnit = DetailDTO.getUnits(CATEGORY);
                     activityDetailDTO.detailType = mActivityType;
                     activityDetailDTO.detailData = mEditDuration.getText().toString();
-                    activityDetailDTO.color = Color.RED;
+                    activityDetailDTO.color = Color.parseColor(mColor);
                     mListener.onActivityDialogPositiveClick(activityDetailDTO);
                 }
             }

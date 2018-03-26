@@ -1,6 +1,7 @@
 package com.thebipolaroptimist.projecttwo.views;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -8,6 +9,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.thebipolaroptimist.projecttwo.R;
+
+import org.w3c.dom.Text;
 
 /**
  * A single row in a UI with text and a button
@@ -18,11 +21,11 @@ public class ActionRow extends LinearLayout {
 
     public interface OnClickListener
     {
-        public void onClick();
+        void onClick();
     }
 
     OnClickListener mListener;
-    public ActionRow(Context context, String title, OnClickListener listener) {
+    public ActionRow(Context context, String title, String color, OnClickListener listener) {
         super(context);
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (inflater != null) {
@@ -39,5 +42,7 @@ public class ActionRow extends LinearLayout {
 
         TextView view = findViewById(R.id.action_row_text);
         view.setText(title);
+        TextView colorButton = findViewById(R.id.color_view);
+        colorButton.setBackgroundColor(Color.parseColor(color));
     }
 }

@@ -14,10 +14,13 @@ import android.widget.TextView;
 
 import com.roomorama.caldroid.CaldroidFragment;
 import com.roomorama.caldroid.CaldroidGridAdapter;
+import com.thebipolaroptimist.projecttwo.models.Detail;
 import com.thebipolaroptimist.projecttwo.models.Entry;
 
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
@@ -80,15 +83,20 @@ public class CaldroidCustomAdapter extends CaldroidGridAdapter{
 
         tv1.setText("" + dateTime.getDay());
         String key = dateTime.format("DD MMM YYYY", Locale.US);
-        Entry entry = (Entry) extraData.get(key);
+        List<Entry> entries = (List<Entry>) extraData.get(key);
         int[] idList = {R.id.image_view_1, R.id.image_view_2,R.id.image_view_3,
                 R.id.image_view_4, R.id.image_view_5, R.id.image_view_6};
-        if(entry!= null) {
-            for (int i = 0; i < entry.getDetailList().size() && i < 6; i++) {
+
+        if(entries!= null) {
+            List<Detail> details = new ArrayList<>();
+            for (Entry entry : entries) {
+                details.addAll(entry.getDetailList());
+            }
+            for (int i = 0; i < details.size() && i < 6; i++) {
                 ImageView detailView = cellView.findViewById(idList[i]);
                 detailView.setVisibility(View.VISIBLE);
                 GradientDrawable drawable = (GradientDrawable) context.getResources().getDrawable(R.drawable.circle);
-                drawable.setColor(entry.getDetailList().get(i).getColor());
+                drawable.setColor(details.get(i).getColor());
                 detailView.setImageDrawable(drawable);
             }
         }

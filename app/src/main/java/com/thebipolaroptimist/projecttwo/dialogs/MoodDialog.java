@@ -64,15 +64,18 @@ public class MoodDialog extends DialogFragment {
         } else
         {
             String moodString = prefs.getString(SettingsFragment.PREFERENCE_PREFIX + CATEGORY,"");
-            moods = new HashSet<String>(Arrays.asList(moodString.split(",")));
+            moods = new HashSet<>(Arrays.asList(moodString.split(",")));
         }
         Bundle args = getArguments();
         for (String mood : moods) {
+            String[] pieces = mood.split(":");
             SelectableSeekBar bar = new SelectableSeekBar(getActivity(), null);
-            bar.setTitle(mood);
-            if(args != null && args.containsKey(mood))
+            bar.setTitle(pieces[0]);
+            bar.setTitleColor(pieces[1]);
+
+            if(args != null && args.containsKey(pieces[0]))
             {
-                bar.setValue(args.getInt(mood));
+                bar.setValue(args.getInt(pieces[0]));
             }
             layout.addView(bar);
         }
@@ -90,7 +93,7 @@ public class MoodDialog extends DialogFragment {
                         moodDetailDTO.detailDataUnit = DetailDTO.getUnits(CATEGORY);
                         moodDetailDTO.detailData = Integer.toString(bar.getValue());
                         moodDetailDTO.detailType = bar.getTitle();
-                        moodDetailDTO.color = Color.BLUE;
+                        moodDetailDTO.color = Color.parseColor(bar.getTitleColor());
                         moodDetailDTOList.add(moodDetailDTO);
                     }
                 }

@@ -1,6 +1,7 @@
 package com.thebipolaroptimist.projecttwo.views;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import com.thebipolaroptimist.projecttwo.R;
 
 public class SelectableSeekBar extends LinearLayout {
     final SeekBar bar;
+    String mTextColor;
     public SelectableSeekBar(Context context, AttributeSet set) {
         super(context);
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -36,6 +38,17 @@ public class SelectableSeekBar extends LinearLayout {
                 }
             }
         });
+    }
+    public String getTitleColor()
+    {
+        return mTextColor;
+    }
+
+    public void setTitleColor(String s)
+    {
+        TextView view = findViewById(R.id.title_seekbar);
+        view.setTextColor(Color.parseColor(s));
+        mTextColor = s;
     }
 
     public int getValue()

@@ -28,7 +28,7 @@ public class Entry extends RealmObject
 
     public Entry()
     {
-
+        this.detailList = new RealmList<>();
     }
 
     public String getId() {

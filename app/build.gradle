@@ -37,4 +37,5 @@ dependencies {
     annotationProcessor 'dk.ilios:realmfieldnameshelper:1.1.1'
     implementation 'io.realm:android-adapters:2.0.0'
     implementation 'io.github.yavski:fab-speed-dial:1.0.6'
+    implementation 'com.pes.materialcolorpicker:library:1.2.0'
 }
