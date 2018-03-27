@@ -53,6 +53,7 @@ public class EntryDTO {
                     data.setCategory(detailDTO.category);
                     data.setDetailData(detailDTO.detailData);
                     data.setDetailDataUnit(detailDTO.detailDataUnit);
+                    data.setColor(detailDTO.color);
                     details.add(data);
                 }
             }
@@ -84,7 +85,7 @@ public class EntryDTO {
             detailDTO.category = detail.getCategory();
             detailDTO.detailData = detail.getDetailData();
             detailDTO.detailDataUnit = detail.getDetailDataUnit();
-
+            detailDTO.color = detail.getColor();
             Map<String, DetailDTO> detailMap = entryDTO.categoriesToDetails.get(detail.getCategory());
             if(detailMap == null)
             {

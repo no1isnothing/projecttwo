@@ -10,20 +10,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".EntryListActivity">
+        <activity android:name=".EntryCalendarActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".EntryListActivity"/>
         <activity android:name=".SummaryActivity" />
         <activity
             android:name=".SettingsActivity"
             android:theme="@style/AppTheme.ActionBar" />
 
         <activity android:name=".EntryCreateActivity"
-            android:parentActivityName=".EntryListActivity"
+            android:parentActivityName=".EntryCalendarActivity"
             android:theme="@style/AppTheme.ActionBar"
             android:windowSoftInputMode="stateUnchanged"></activity>
     </application>

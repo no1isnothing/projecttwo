@@ -12,6 +12,13 @@
         android:layout_weight="4"
         />
 
+    <TextView
+        android:id="@+id/color_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="4"
+        />
+
     <Button
         android:id="@+id/action_row_button"
         android:text="-"
@@ -21,4 +28,5 @@
         android:minHeight="0dp"
         android:minWidth="48dp"
         />
+
 </LinearLayout>

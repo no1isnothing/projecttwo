@@ -24,7 +24,7 @@
                 android:fitsSystemWindows="true"
                 android:elevation="4dp"
                 app:popupTheme="@style/PopupMenuStyle"
-                 />
+                />
         </android.support.design.widget.AppBarLayout>
 
         <FrameLayout

@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -54,8 +55,7 @@ public class MoodDialog extends DialogFragment {
         final ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.dialog_mood, null);
         builder.setView(layout);
 
-        //Dynamically add seek bars and fill in with data
-        //if it's available
+        //Dynamically add seek bars and fill in with data if it's available
         Set<String> moods;
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -63,15 +63,18 @@ public class MoodDialog extends DialogFragment {
         } else
         {
             String moodString = prefs.getString(SettingsFragment.PREFERENCE_PREFIX + CATEGORY,"");
-            moods = new HashSet<String>(Arrays.asList(moodString.split(",")));
+            moods = new HashSet<>(Arrays.asList(moodString.split(",")));
         }
         Bundle args = getArguments();
         for (String mood : moods) {
+            String[] pieces = mood.split(":");
             SelectableSeekBar bar = new SelectableSeekBar(getActivity(), null);
-            bar.setTitle(mood);
-            if(args != null && args.containsKey(mood))
+            bar.setTitle(pieces[0]);
+            bar.setTitleColor(pieces[1]);
+
+            if(args != null && args.containsKey(pieces[0]))
             {
-                bar.setValue(args.getInt(mood));
+                bar.setValue(args.getInt(pieces[0]));
             }
             layout.addView(bar);
         }
@@ -89,6 +92,7 @@ public class MoodDialog extends DialogFragment {
                         moodDetailDTO.detailDataUnit = DetailDTO.getUnits(CATEGORY);
                         moodDetailDTO.detailData = Integer.toString(bar.getValue());
                         moodDetailDTO.detailType = bar.getTitle();
+                        moodDetailDTO.color = Color.parseColor(bar.getTitleColor());
                         moodDetailDTOList.add(moodDetailDTO);
                     }
                 }

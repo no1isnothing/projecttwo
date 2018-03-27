@@ -96,7 +96,7 @@ public class BaseActivity extends AppCompatActivity {
             switch(itemId)
             {
                 case R.id.nav_entry_list:
-                    Intent intent = new Intent(getApplicationContext(), EntryListActivity.class);
+                    Intent intent = new Intent(getApplicationContext(), EntryCalendarActivity.class);
                     startActivity(intent);
                     break;
                 case R.id.nav_summary_page:

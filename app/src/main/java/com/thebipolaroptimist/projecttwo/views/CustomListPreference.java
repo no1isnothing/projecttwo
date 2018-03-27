@@ -1,41 +1,58 @@
 package com.thebipolaroptimist.projecttwo.views;
 
+
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Color;
+
 import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.preference.DialogPreference;
+import android.support.annotation.ColorInt;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 
+import com.pes.androidmaterialcolorpickerdialog.ColorPicker;
+import com.pes.androidmaterialcolorpickerdialog.ColorPickerCallback;
 import com.thebipolaroptimist.projecttwo.R;
+import com.thebipolaroptimist.projecttwo.SettingsActivity;
+import com.thebipolaroptimist.projecttwo.SettingsFragment;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
 /**
  * Custom Preference Class
- * Contains a list of string values
- * The user can add items to the list with an edit text and a button
- * The user can remove items from the list with a button
+ * Contains a list of string values of the format "string:hex_color"
+ * The user can enter text and select a color and add them to the list with the add button
+ * The user can remove items from the list with a - button
  */
 public class CustomListPreference extends DialogPreference {
     public static final String TAG ="CustomListPreference";
     Set<String> mValues;
     LinearLayout mLayout;
+    Context mContext;
+    String mColor = "#000000";
 
     public CustomListPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
         setDialogLayoutResource(R.layout.custom_list_preference_dialog);
         setPositiveButtonText(android.R.string.ok);
         setNegativeButtonText(android.R.string.cancel);
+        mContext = context;
         mValues = new HashSet<>();
     }
 
@@ -44,6 +61,26 @@ public class CustomListPreference extends DialogPreference {
         super.onBindDialogView(view);
         Button addItemButton = view.findViewById(R.id.pref_list_add_button);
         final EditText editText = view.findViewById(R.id.pref_list_edit_text);
+        final Button colorButton = view.findViewById(R.id.color_button);
+        final ColorPicker cp = new ColorPicker((Activity)mContext, 0, 0, 0, 0);
+        colorButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    /* Show color picker dialog */
+                cp.show();
+
+                /* Set a new Listener called when user click "select" */
+                cp.setCallback(new ColorPickerCallback() {
+                    @Override
+                    public void onColorChosen(@ColorInt int color) {
+                        mColor = String.format("#%08X", (0xFFFFFFFF & color));
+                        colorButton.setBackgroundColor(Color.parseColor(mColor));
+                        cp.hide();
+                    }
+                });
+            }
+        });
+
         mLayout = view.findViewById(R.id.pref_list);
 
         addItemButton.setOnClickListener(new View.OnClickListener() {
@@ -52,8 +89,9 @@ public class CustomListPreference extends DialogPreference {
                 final String item = editText.getText().toString();
                 if(!item.isEmpty())
                 {
-                    mValues.add(item);
-                    mLayout.addView(new ActionRow(getContext(), item, new ActionRow.OnClickListener() {
+
+                    mValues.add(item+":"+mColor);
+                    mLayout.addView(new ActionRow(getContext(), item, mColor,new ActionRow.OnClickListener() {
                         @Override
                         public void onClick() {
                             mValues.remove(item);
@@ -72,7 +110,8 @@ public class CustomListPreference extends DialogPreference {
         mLayout.removeAllViews();
 
         for (final String s : mValues) {
-            mLayout.addView(new ActionRow(getContext(), s, new ActionRow.OnClickListener() {
+            String[] parts = s.split(":");
+            mLayout.addView(new ActionRow(getContext(), parts[0],parts[1], new ActionRow.OnClickListener() {
                 @Override
                 public void onClick() {
                     mValues.remove(s);

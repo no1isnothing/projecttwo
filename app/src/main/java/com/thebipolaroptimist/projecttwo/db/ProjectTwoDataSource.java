@@ -2,16 +2,21 @@ package com.thebipolaroptimist.projecttwo.db;
 
 import android.util.Log;
 
+import com.thebipolaroptimist.projecttwo.EntryCalendarActivity;
 import com.thebipolaroptimist.projecttwo.models.Entry;
 import com.thebipolaroptimist.projecttwo.models.EntryDTO;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.realm.Realm;
 
 public class ProjectTwoDataSource {
     private static final String TAG = "ProjectTwoDataSource";
-
     private Realm realm;
 
     public void open()
@@ -59,6 +64,40 @@ public class ProjectTwoDataSource {
         });
     }
 
+    public List<Entry> getEntriesForDay(String day)
+    {
+        List<Entry> entries = getAllEntries();
+        List<Entry> entriesForDay = new ArrayList<>();
+
+        for(Entry entry: entries)
+        {
+            String thisDay = getFormattedTime(entry.getEntryTime());
+
+            if(thisDay.equals(day))
+            {
+                entriesForDay.add(entry);
+            }
+        }
+        return entriesForDay;
+    }
+
+    public Map<String, Object> getEntriesByDay()
+    {
+        List<Entry> entries = getAllEntries();
+        Map<String,Object>  dayToEntries = new HashMap<>();
+        for (Entry entry : entries) {
+            String key = getFormattedTime(entry.getEntryTime());
+            List<Entry> entriesForToday = (List<Entry>) dayToEntries.get(key);
+            if(entriesForToday == null)
+            {
+                entriesForToday= new ArrayList<>();
+                dayToEntries.put(key, entriesForToday);
+            }
+            entriesForToday.add(entry);
+        }
+        return dayToEntries;
+    }
+
     public List<Entry > getAllEntries()
     {
         return realm.where(Entry.class).findAll();
@@ -67,5 +106,18 @@ public class ProjectTwoDataSource {
     public Entry getEntry(String entryId)
     {
         return realm.where(Entry.class).equalTo("id", entryId).findFirst();
+    }
+
+    /**
+     * Change time from millisecond to MM DD YYYY representation
+     * @param time string representing in milliseconds
+     * @return a string formatted MM DD YYYY
+     */
+    private String getFormattedTime(String time)
+    {
+        final SimpleDateFormat formatter = new SimpleDateFormat(EntryCalendarActivity.DATE_FORMAT_PATTERN);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(Long.parseLong(time));
+        return formatter.format(calendar.getTime());
     }
 }

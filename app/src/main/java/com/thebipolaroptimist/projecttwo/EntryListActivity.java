@@ -11,7 +11,7 @@ import com.thebipolaroptimist.projecttwo.db.ProjectTwoDataSource;
 import com.thebipolaroptimist.projecttwo.models.Entry;
 import com.thebipolaroptimist.projecttwo.models.EntryAdapter;
 
-import io.realm.OrderedRealmCollection;
+import java.util.List;
 
 public class EntryListActivity extends BaseActivity {
 
@@ -36,10 +36,15 @@ public class EntryListActivity extends BaseActivity {
 
         mDataSource = new ProjectTwoDataSource();
         mDataSource.open();
+        Intent intent = getIntent();
+        String day = intent.getStringExtra(EntryCalendarActivity.DATE_FIELD);
+        List<Entry> entries = mDataSource.getEntriesForDay(day);
         mRecyclerView = findViewById(R.id.entries_view);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter = new EntryAdapter((OrderedRealmCollection<Entry>) mDataSource.getAllEntries(), true, this);
+
+        mAdapter = new EntryAdapter(entries.toArray(new Entry[0]), this);
+
         mRecyclerView.setAdapter(mAdapter);
     }
 
@@ -58,4 +63,3 @@ public class EntryListActivity extends BaseActivity {
         super.onDestroy();
     }
 }
-
