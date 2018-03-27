@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -86,6 +87,7 @@ public class ActivityDialog extends DialogFragment {
             activities.set(i, pieces[0]);
             colors.add( pieces[1]);
         }
+
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, activities);
         mSpinnerActivityType.setAdapter(adapter);

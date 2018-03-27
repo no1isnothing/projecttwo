@@ -12,7 +12,6 @@ import com.thebipolaroptimist.projecttwo.R;
 
 import org.w3c.dom.Text;
 
-/**
  * A single row in a UI with text and a button
  * The constructor receives text to display
  * and a listener to be called when the button is clicked

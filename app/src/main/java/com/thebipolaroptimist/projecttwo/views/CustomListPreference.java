@@ -1,9 +1,11 @@
 package com.thebipolaroptimist.projecttwo.views;
 
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+
 import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -87,6 +89,7 @@ public class CustomListPreference extends DialogPreference {
                 final String item = editText.getText().toString();
                 if(!item.isEmpty())
                 {
+
                     mValues.add(item+":"+mColor);
                     mLayout.addView(new ActionRow(getContext(), item, mColor,new ActionRow.OnClickListener() {
                         @Override

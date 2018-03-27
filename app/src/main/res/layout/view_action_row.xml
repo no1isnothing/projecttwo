@@ -27,7 +27,6 @@
         android:layout_height="wrap_content"
         android:minHeight="0dp"
         android:minWidth="48dp"
-
         />
 
 </LinearLayout>

@@ -42,7 +42,9 @@ public class EntryListActivity extends BaseActivity {
         mRecyclerView = findViewById(R.id.entries_view);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
         mAdapter = new EntryAdapter(entries.toArray(new Entry[0]), this);
+
         mRecyclerView.setAdapter(mAdapter);
     }
 
