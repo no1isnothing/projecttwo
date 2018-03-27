@@ -10,39 +10,49 @@ import android.widget.Toast;
 import com.roomorama.caldroid.CaldroidFragment;
 import com.roomorama.caldroid.CaldroidListener;
 import com.thebipolaroptimist.projecttwo.db.ProjectTwoDataSource;
-import com.thebipolaroptimist.projecttwo.models.Entry;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 public class EntryCalendarActivity extends BaseActivity {
 
     private ProjectTwoDataSource mDataSource;
-    public static final String ENTRY_FIELD_ID = "entry_id";
+    //public static final String ENTRY_FIELD_ID = "entry_id";
     public static final String DATE_FIELD = "date_field";
-    CaldroidFragment caldroidFragment = new CaldroidCustomFragment();
+    public static final String DATE_FORMAT_PATTERN = "dd MMM yyyy";
+    public static final String CALDROID_SAVE_KEY = "CALDROID_SAVED_STATE";
+    CaldroidFragment caldroidFragment;
     Map<String, Object> mAdapterData;
-    final SimpleDateFormat mFormatter = new SimpleDateFormat("dd MMM yyyy");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_entry_calendar);
         super.onCreate(savedInstanceState);
 
-        caldroidFragment = new CaldroidCustomFragment();
-
         mDataSource = new ProjectTwoDataSource();
         mDataSource.open();
 
-        caldroidFragment.setExtraData(mAdapterData);
+        caldroidFragment = new CaldroidCustomFragment();
+        setupCaldroid(savedInstanceState);
 
+        FloatingActionButton fab = findViewById(R.id.fab_add);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), EntryCreateActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
+
+    public void setupCaldroid(Bundle savedInstanceState)
+    {
         if(savedInstanceState != null)
         {
             caldroidFragment.restoreStatesFromKey(
-                    savedInstanceState, "CALDROID_SAVED_STATE"
+                    savedInstanceState, CALDROID_SAVE_KEY
             );
         } else
         {
@@ -59,14 +69,11 @@ public class EntryCalendarActivity extends BaseActivity {
         t.replace(R.id.calendar1, caldroidFragment);
         t.commit();
 
-        // Setup listener
-        final CaldroidListener listener = new CaldroidListener() {
+        caldroidFragment.setCaldroidListener(new CaldroidListener() {
 
             @Override
             public void onSelectDate(Date date, View view) {
-                Toast.makeText(getApplicationContext(), mFormatter.format(date),
-                        Toast.LENGTH_SHORT).show();
-                openEntryForEdit(date);
+                openEntryListForDay(date);
             }
 
             @Override
@@ -76,18 +83,6 @@ public class EntryCalendarActivity extends BaseActivity {
                         Toast.LENGTH_SHORT).show();
             }
 
-        };
-
-        // Setup Caldroid
-        caldroidFragment.setCaldroidListener(listener);
-
-        FloatingActionButton fab = findViewById(R.id.fab_add);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), EntryCreateActivity.class);
-                startActivity(intent);
-            }
         });
     }
 
@@ -99,9 +94,10 @@ public class EntryCalendarActivity extends BaseActivity {
         caldroidFragment.refreshView();
     }
 
-    public void openEntryForEdit(Date date)
+    public void openEntryListForDay(Date date)
     {
         Intent intent = new Intent(getApplicationContext(), EntryListActivity.class);
+        final SimpleDateFormat mFormatter = new SimpleDateFormat(DATE_FORMAT_PATTERN);
         String key = mFormatter.format(date);
         intent.putExtra(EntryCalendarActivity.DATE_FIELD, key);
 
@@ -117,11 +113,10 @@ public class EntryCalendarActivity extends BaseActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        // TODO Auto-generated method stub
         super.onSaveInstanceState(outState);
 
         if (caldroidFragment != null) {
-            caldroidFragment.saveStatesToKey(outState, "CALDROID_SAVED_STATE");
+            caldroidFragment.saveStatesToKey(outState, CALDROID_SAVE_KEY);
         }
     }
 }

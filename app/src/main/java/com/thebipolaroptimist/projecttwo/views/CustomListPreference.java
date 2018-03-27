@@ -34,9 +34,9 @@ import java.util.Set;
 
 /**
  * Custom Preference Class
- * Contains a list of string values
- * The user can add items to the list with an edit text and a button
- * The user can remove items from the list with a button
+ * Contains a list of string values of the format "string:hex_color"
+ * The user can enter text and select a color and add them to the list with the add button
+ * The user can remove items from the list with a - button
  */
 public class CustomListPreference extends DialogPreference {
     public static final String TAG ="CustomListPreference";

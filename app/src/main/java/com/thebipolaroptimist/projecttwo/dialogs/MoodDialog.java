@@ -55,8 +55,7 @@ public class MoodDialog extends DialogFragment {
         final ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.dialog_mood, null);
         builder.setView(layout);
 
-        //Dynamically add seek bars and fill in with data
-        //if it's available
+        //Dynamically add seek bars and fill in with data if it's available
         Set<String> moods;
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {

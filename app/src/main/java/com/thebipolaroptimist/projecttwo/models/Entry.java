@@ -21,6 +21,7 @@ public class Entry extends RealmObject
     private String id = UUID.randomUUID().toString();
 
     private String entryNote;
+    //time in milliseconds
     private String entryTime;
     private int overallMood;
     private String lastEditTime;

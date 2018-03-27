@@ -110,7 +110,7 @@ public class EntryAdapter extends RealmRecyclerViewAdapter<Entry,EntryAdapter.Vi
             layout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ((EntryListActivity) context).openEntryForEdit(getAdapterPosition());
+                    ((EntryListActivity) context).openEntryListForDay(getAdapterPosition());
                 }
             });
         }

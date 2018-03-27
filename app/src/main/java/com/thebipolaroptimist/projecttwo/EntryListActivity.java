@@ -38,7 +38,7 @@ public class EntryListActivity extends BaseActivity {
         mDataSource.open();
         Intent intent = getIntent();
         String day = intent.getStringExtra(EntryCalendarActivity.DATE_FIELD);
-        List<Entry> entries = (List<Entry>)mDataSource.getEntriesByDay().get(day);
+        List<Entry> entries = mDataSource.getEntriesForDay(day);
         mRecyclerView = findViewById(R.id.entries_view);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
