@@ -21,7 +21,7 @@ public class EntryCalendarActivity extends BaseActivity {
     private ProjectTwoDataSource mDataSource;
     //public static final String ENTRY_FIELD_ID = "entry_id";
     public static final String DATE_FIELD = "date_field";
-    public static final String DATE_FORMAT_PATTERN = "dd MMM yyyy";
+    public static final String DATE_FORMAT_PATTERN = "MMM dd yyyy";
     public static final String CALDROID_SAVE_KEY = "CALDROID_SAVED_STATE";
     CaldroidFragment caldroidFragment;
     Map<String, Object> mAdapterData;

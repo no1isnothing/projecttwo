@@ -2,25 +2,30 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
+        <!-- Customize your theme here.-->
         <item name="colorPrimary">@color/primaryColor</item>
         <item name="colorPrimaryDark">@color/primaryDarkColor</item>
         <item name="colorAccent">@color/primaryLightColor</item>
-        <item name="android:textColor">@color/primaryTextColor</item>
-        <item name="android:background">@color/primaryDarkColor</item>
+        <item name="android:textColorPrimary">@color/primaryTextColor</item>
+        <!--<item name="android:textColorSecondary"></item> Uncomment for icon overflow color-->
+        <item name="android:textColorTertiary">@color/tertiaryTextColor</item>
+        <item name="android:textColorPrimaryInverse">@color/inverseTextColor</item>
+        <!--<item name="android:background">@color/primaryDarkColor</item>-->
     </style>
 
     <style name="AppTheme.ActionBar" parent="Theme.AppCompat.Light">
-        <!-- Customize your theme here. -->
+        <!-- Customize your theme here.-->
         <item name="colorPrimary">@color/primaryColor</item>
         <item name="colorPrimaryDark">@color/primaryDarkColor</item>
         <item name="colorAccent">@color/primaryLightColor</item>
-        <item name="android:textColor">@color/primaryTextColor</item>
-        <item name="android:background">@color/primaryDarkColor</item>
+        <item name="android:textColorPrimary">@color/primaryTextColor</item>
+        <item name="android:textColorTertiary">@color/tertiaryTextColor</item>
+        <item name="android:textColorPrimaryInverse">@color/inverseTextColor</item>
+        <!--<item name="android:background">@color/primaryDarkColor</item>-->
     </style>
 
     <style name="PopupMenuStyle" parent="Theme.AppCompat.Light">
-        <item name="android:background">@color/secondaryDarkColor</item>
+        <!--<item name="android:background">@color/secondaryDarkColor</item>-->
     </style>
 
 </resources>

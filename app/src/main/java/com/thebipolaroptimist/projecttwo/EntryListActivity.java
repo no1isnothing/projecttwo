@@ -25,20 +25,23 @@ public class EntryListActivity extends BaseActivity {
         setContentView(R.layout.activity_entry_list);
         super.onCreate(savedInstanceState);
 
+        mDataSource = new ProjectTwoDataSource();
+        mDataSource.open();
+        Intent intent = getIntent();
+        final String day = intent.getStringExtra(EntryCalendarActivity.DATE_FIELD);
+        List<Entry> entries = mDataSource.getEntriesForDay(day);
+        setTitle(getTitle() + " " + day);
+
         FloatingActionButton fab = findViewById(R.id.fab_add);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), EntryCreateActivity.class);
+                intent.putExtra(EntryCalendarActivity.DATE_FIELD, day);
                 startActivity(intent);
             }
         });
 
-        mDataSource = new ProjectTwoDataSource();
-        mDataSource.open();
-        Intent intent = getIntent();
-        String day = intent.getStringExtra(EntryCalendarActivity.DATE_FIELD);
-        List<Entry> entries = mDataSource.getEntriesForDay(day);
         mRecyclerView = findViewById(R.id.entries_view);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));

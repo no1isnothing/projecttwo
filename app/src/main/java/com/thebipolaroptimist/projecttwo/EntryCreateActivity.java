@@ -22,6 +22,8 @@ import com.thebipolaroptimist.projecttwo.models.Entry;
 import com.thebipolaroptimist.projecttwo.models.EntryDTO;
 import com.thebipolaroptimist.projecttwo.models.DetailDTO;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,10 +53,12 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
 
         mDataSource = new ProjectTwoDataSource();
         mDataSource.open();
+        SimpleDateFormat format = new SimpleDateFormat(EntryCalendarActivity.DATE_FORMAT_PATTERN);
 
         //fill out data if entry already exists
         Intent intent = getIntent();
         mId = intent.getStringExtra(EntryListActivity.ENTRY_FIELD_ID);
+        String date = intent.getStringExtra(EntryCalendarActivity.DATE_FIELD);
         if(mId != null)
         {
             Entry entry = mDataSource.getEntry(mId);
@@ -65,8 +69,19 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
             EntryDTO.EntryToEntryDTO(entry, mEntryDTO);
             mEditNote.setText(mEntryDTO.entryNote);
             mSeekBarMood.setProgress(mEntryDTO.overallMood);
-
+            //fill in date with entry info
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(Long.parseLong(mEntryDTO.entryTime));
+            setTitle(getTitle() + " " + format.format(calendar.getTime()));
             createOrUpdateDetailsView();
+        } else if(date != null)
+        {
+            //fill in date with passed in date
+            setTitle(getTitle() + " " + date);
+        } else
+        {
+            //fill in date with current date
+            setTitle(getTitle() + " " + format.format(System.currentTimeMillis()));
         }
 
         //set up speed dial to add different kinds of detail
