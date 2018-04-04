@@ -50,10 +50,6 @@ public class Entry extends RealmObject
 
         builder.append(DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT)
                 .format(new Date(Long.parseLong(entryTime))));
-        if(detailList != null && detailList.size() > 0)
-        {
-            builder.append(" Contains details"); //TODO put something more descriptive here
-        }
         return builder.toString();
     }
 
@@ -94,6 +90,7 @@ public class Entry extends RealmObject
         {
             this.detailList = new RealmList<>();
         }
+        this.detailList.clear();
         this.detailList.addAll(detailList);
     }
 }

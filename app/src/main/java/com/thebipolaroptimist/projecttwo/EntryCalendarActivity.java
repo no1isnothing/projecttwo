@@ -19,7 +19,6 @@ import java.util.Map;
 public class EntryCalendarActivity extends BaseActivity {
 
     private ProjectTwoDataSource mDataSource;
-    //public static final String ENTRY_FIELD_ID = "entry_id";
     public static final String DATE_FIELD = "date_field";
     public static final String DATE_FORMAT_PATTERN = "MMM dd yyyy";
     public static final String CALDROID_SAVE_KEY = "CALDROID_SAVED_STATE";
@@ -78,9 +77,7 @@ public class EntryCalendarActivity extends BaseActivity {
 
             @Override
             public void onChangeMonth(int month, int year) {
-                String text = "month: " + month + " year: " + year;
-                Toast.makeText(getApplicationContext(), text,
-                        Toast.LENGTH_SHORT).show();
+
             }
 
         });

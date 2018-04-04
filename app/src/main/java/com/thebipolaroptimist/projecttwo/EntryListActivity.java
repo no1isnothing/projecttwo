@@ -19,6 +19,8 @@ public class EntryListActivity extends BaseActivity {
     private ProjectTwoDataSource mDataSource;
     private EntryAdapter mAdapter;
     public static final String ENTRY_FIELD_ID = "entry_id";
+    private String mDay;
+    List<Entry> mEntries;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,16 +30,15 @@ public class EntryListActivity extends BaseActivity {
         mDataSource = new ProjectTwoDataSource();
         mDataSource.open();
         Intent intent = getIntent();
-        final String day = intent.getStringExtra(EntryCalendarActivity.DATE_FIELD);
-        List<Entry> entries = mDataSource.getEntriesForDay(day);
-        setTitle(getTitle() + " " + day);
+        mDay = intent.getStringExtra(EntryCalendarActivity.DATE_FIELD);
+        setTitle(getTitle() + " " + mDay);
 
         FloatingActionButton fab = findViewById(R.id.fab_add);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), EntryCreateActivity.class);
-                intent.putExtra(EntryCalendarActivity.DATE_FIELD, day);
+                intent.putExtra(EntryCalendarActivity.DATE_FIELD, mDay);
                 startActivity(intent);
             }
         });
@@ -45,9 +46,13 @@ public class EntryListActivity extends BaseActivity {
         mRecyclerView = findViewById(R.id.entries_view);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
 
-        mAdapter = new EntryAdapter(entries.toArray(new Entry[0]), this);
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mEntries = mDataSource.getEntriesForDay(mDay);
+        mAdapter = new EntryAdapter(mEntries.toArray(new Entry[0]), this);
         mRecyclerView.setAdapter(mAdapter);
     }
 

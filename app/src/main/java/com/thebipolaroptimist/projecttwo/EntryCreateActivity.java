@@ -22,8 +22,10 @@ import com.thebipolaroptimist.projecttwo.models.Entry;
 import com.thebipolaroptimist.projecttwo.models.EntryDTO;
 import com.thebipolaroptimist.projecttwo.models.DetailDTO;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +44,7 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
     private SeekBar mSeekBarMood;
     private EntryDTO mEntryDTO;
     private DetailsAdapter mDetailsAdapter;
+    String mDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +61,7 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
         //fill out data if entry already exists
         Intent intent = getIntent();
         mId = intent.getStringExtra(EntryListActivity.ENTRY_FIELD_ID);
-        String date = intent.getStringExtra(EntryCalendarActivity.DATE_FIELD);
+        mDate = intent.getStringExtra(EntryCalendarActivity.DATE_FIELD);
         if(mId != null)
         {
             Entry entry = mDataSource.getEntry(mId);
@@ -74,10 +77,10 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
             calendar.setTimeInMillis(Long.parseLong(mEntryDTO.entryTime));
             setTitle(getTitle() + " " + format.format(calendar.getTime()));
             createOrUpdateDetailsView();
-        } else if(date != null)
+        } else if(mDate != null)
         {
             //fill in date with passed in date
-            setTitle(getTitle() + " " + date);
+            setTitle(getTitle() + " " + mDate);
         } else
         {
             //fill in date with current date
@@ -157,7 +160,25 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
         }
         mEntryDTO.entryNote=mEditNote.getText().toString();
 
+
         Long time = System.currentTimeMillis();
+        if(mDate != null)
+        {
+            SimpleDateFormat format = new SimpleDateFormat(EntryCalendarActivity.DATE_FORMAT_PATTERN);
+            try {
+                Date date =  format.parse(mDate);
+                Calendar calendar = Calendar.getInstance();
+                int hour = calendar.get(Calendar.HOUR);
+                int minute = calendar.get(Calendar.MINUTE);
+                calendar.setTimeInMillis(date.getTime());
+                calendar.set(Calendar.HOUR, hour);
+                calendar.set(Calendar.MINUTE,minute);
+                time = calendar.getTimeInMillis();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+
         mEntryDTO.lastEditedTime=time.toString();
 
         if(mEntryDTO.entryTime == null)

@@ -20,7 +20,7 @@ public class ProjectTwo extends Application {
                 //.migration(new Migration())
                 .build();
 
-        Realm.deleteRealm(configuration);
+        //Realm.deleteRealm(configuration);
 
         Realm.setDefaultConfiguration(configuration);
     }

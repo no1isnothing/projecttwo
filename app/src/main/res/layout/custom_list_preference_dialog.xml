@@ -31,7 +31,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:ems="10"
         android:inputType="textPersonName"
         android:hint="Enter New Type"
         app:layout_constraintStart_toEndOf="@id/pref_list_add_button"
