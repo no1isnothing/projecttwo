@@ -44,9 +44,12 @@ public class DetailDTO {
                 scaleValue = "Very High";
             }
             return scaleValue;
-        } else
+        } else if(detailDataUnit.equals(UNITS_MINUTES))
         {
             return detailData + " " + detailDataUnit;
+        } else
+        {
+            return detailData;
         }
 
     }

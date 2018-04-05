@@ -81,7 +81,7 @@ public class CaldroidCustomAdapter extends CaldroidGridAdapter{
                     drawable.setColor(detail.getColor());
                     detailView.setImageDrawable(drawable);
                     i++;
-                    if(i > idList.length)
+                    if(i >= idList.length)
                     {
                         return  cellView;
                     }

@@ -35,7 +35,7 @@ import io.github.yavski.fabspeeddial.FabSpeedDial;
 import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
 
 
-public class EntryCreateActivity extends AppCompatActivity implements ConfirmDiscardDialog.ConfirmDiscardDialogListener, MoodDialog.MoodDialogListener, ActivityDialog.ActivityDialogListener
+public class EntryCreateActivity extends AppCompatActivity implements ConfirmDiscardDialog.ConfirmDiscardDialogListener, MoodDialog.MoodDialogListener, ActivityDialog.ActivityDialogListener, IncidentDialog.IncidentDialogListener
 {
     public static final String TAG = "EntryCreate";
     private ProjectTwoDataSource mDataSource;
@@ -254,6 +254,25 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
         createOrUpdateDetailsView();
     }
 
+    @Override
+    public void onIncidentDialogPositiveClick(DetailDTO incidentDetailDTO) {
+        if(mEntryDTO == null)
+        {
+            mEntryDTO = new EntryDTO();
+        }
+
+        Map<String, DetailDTO> detailDTOMap = mEntryDTO.categoriesToDetails.get(IncidentDialog.CATEGORY);
+        if(detailDTOMap == null)
+        {
+            detailDTOMap = new HashMap<>();
+            mEntryDTO.categoriesToDetails.put(IncidentDialog.CATEGORY, detailDTOMap);
+            mEntryDTO.detailCategories.add(IncidentDialog.CATEGORY);
+        }
+
+        detailDTOMap.put(incidentDetailDTO.detailType, incidentDetailDTO);
+        createOrUpdateDetailsView();
+    }
+
     private void createOrUpdateDetailsView()
     {
         if(mDetailsAdapter == null)
@@ -265,6 +284,8 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
             mDetailsAdapter.notifyDataSetChanged();
         }
     }
+
+
 }
 
 

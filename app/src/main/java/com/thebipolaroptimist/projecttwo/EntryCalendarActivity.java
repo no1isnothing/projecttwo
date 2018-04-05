@@ -1,15 +1,20 @@
 package com.thebipolaroptimist.projecttwo;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentTransaction;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Toast;
 
 import com.roomorama.caldroid.CaldroidFragment;
 import com.roomorama.caldroid.CaldroidListener;
 import com.thebipolaroptimist.projecttwo.db.ProjectTwoDataSource;
+import com.tooltip.Tooltip;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -44,6 +49,28 @@ public class EntryCalendarActivity extends BaseActivity {
                 startActivity(intent);
             }
         });
+        /*
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+        if(prefs.getBoolean("tooltips", true)) {
+            new Tooltip.Builder(fab)
+                    .setText("Click here to add entries")
+                    .setGravity(Gravity.TOP)
+                    .show();
+
+            View calendar = findViewById(R.id.calendar1);
+            new Tooltip.Builder(calendar)
+                    .setText("This shows a summary of enrties\n"
+                    + "Click a day for details on that day")
+                    .show();
+            View toolbar = findViewById(R.id.my_toolbar);
+            new Tooltip.Builder(toolbar)
+                    .setGravity(Gravity.BOTTOM)
+                    .setText("Click here to get to Settings\n" +
+                            "There you can turn off these tooltips\n" +
+                            "And add types for the different categories")
+                    .show();
+        }*/
     }
 
     public void setupCaldroid(Bundle savedInstanceState)
