@@ -25,26 +25,14 @@
                 android:elevation="4dp"
                 app:popupTheme="@style/PopupMenuStyle"
                  />
+            <LinearLayout
+                android:id="@+id/calendar1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+            </LinearLayout>
         </android.support.design.widget.AppBarLayout>
 
-        <LinearLayout
-            android:id="@+id/calendar1"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-        </LinearLayout>
-        <!--<FrameLayout
-            android:id="@+id/content_frame"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/entries_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-            </android.support.v7.widget.RecyclerView>
-        </FrameLayout>-->
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab_add"
@@ -52,8 +40,11 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_margin="16dp"
-            app:srcCompat="@android:drawable/ic_input_add" />
+            app:srcCompat="@android:drawable/ic_input_add"
+            android:tint="@color/white"
+            android:tooltipText="Add Entry"/>
     </android.support.design.widget.CoordinatorLayout>
+
 
     <!-- The navigation drawer -->
     <android.support.design.widget.NavigationView
@@ -62,6 +53,5 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         app:menu="@menu/navigation_items" />
-
 
 </android.support.v4.widget.DrawerLayout>

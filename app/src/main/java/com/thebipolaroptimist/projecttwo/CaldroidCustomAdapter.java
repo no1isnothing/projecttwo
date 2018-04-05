@@ -21,7 +21,7 @@ import java.util.Map;
 import hirondelle.date4j.DateTime;
 
 public class CaldroidCustomAdapter extends CaldroidGridAdapter{
-    public static final String DATE_FORMAT_PATTERN = "DD MMM YYYY";
+    public static final String DATE_FORMAT_PATTERN = "MMM DD YYYY";
     public CaldroidCustomAdapter(Context context, int month, int year,
                                  Map<String, Object> caldroidData, Map<String, Object> extraData)
     {
@@ -51,6 +51,14 @@ public class CaldroidCustomAdapter extends CaldroidGridAdapter{
         if (dateTime.getMonth() != month) {
             tv1.setTextColor(resources
                     .getColor(com.caldroid.R.color.caldroid_darker_gray));
+        } else
+        {
+            cellView.setBackgroundColor(resources
+                    .getColor(com.caldroid.R.color.caldroid_white));
+        }
+
+        if (dateTime.equals(getToday())) {
+            cellView.setBackgroundResource(com.caldroid.R.drawable.red_border_gray_bg);
         }
 
         //Set up colored dots matching details for this day
@@ -73,7 +81,7 @@ public class CaldroidCustomAdapter extends CaldroidGridAdapter{
                     drawable.setColor(detail.getColor());
                     detailView.setImageDrawable(drawable);
                     i++;
-                    if(i > idList.length)
+                    if(i >= idList.length)
                     {
                         return  cellView;
                     }

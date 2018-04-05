@@ -6,16 +6,16 @@
     android:layout_height="match_parent">
 
     <Spinner
-        android:id="@+id/mSpinnerActivity"
+        android:id="@+id/spinner_activity"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="28dp"
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
-        app:layout_constraintTop_toTopOf="@+id/mEditDuration" />
+        app:layout_constraintTop_toTopOf="@+id/edit_duration" />
 
     <EditText
-        android:id="@+id/mEditDuration"
+        android:id="@+id/edit_duration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"

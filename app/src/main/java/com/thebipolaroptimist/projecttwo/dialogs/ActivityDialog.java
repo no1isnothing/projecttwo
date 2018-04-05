@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 
 public class ActivityDialog extends DialogFragment {
@@ -67,8 +66,8 @@ public class ActivityDialog extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final ViewGroup view = (ViewGroup) inflater.inflate(R.layout.dialog_activity, null);
         builder.setView(view);
-        mEditDuration = view.findViewById(R.id.mEditDuration);
-        mSpinnerActivityType = view.findViewById(R.id.mSpinnerActivity);
+        mEditDuration = view.findViewById(R.id.edit_duration);
+        mSpinnerActivityType = view.findViewById(R.id.spinner_activity);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         final List<String> activities = new ArrayList<>();

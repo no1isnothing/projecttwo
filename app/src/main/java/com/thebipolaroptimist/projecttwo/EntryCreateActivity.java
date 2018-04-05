@@ -22,6 +22,10 @@ import com.thebipolaroptimist.projecttwo.models.Entry;
 import com.thebipolaroptimist.projecttwo.models.EntryDTO;
 import com.thebipolaroptimist.projecttwo.models.DetailDTO;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +35,7 @@ import io.github.yavski.fabspeeddial.FabSpeedDial;
 import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
 
 
-public class EntryCreateActivity extends AppCompatActivity implements ConfirmDiscardDialog.ConfirmDiscardDialogListener, MoodDialog.MoodDialogListener, ActivityDialog.ActivityDialogListener
+public class EntryCreateActivity extends AppCompatActivity implements ConfirmDiscardDialog.ConfirmDiscardDialogListener, MoodDialog.MoodDialogListener, ActivityDialog.ActivityDialogListener, IncidentDialog.IncidentDialogListener
 {
     public static final String TAG = "EntryCreate";
     private ProjectTwoDataSource mDataSource;
@@ -40,6 +44,7 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
     private SeekBar mSeekBarMood;
     private EntryDTO mEntryDTO;
     private DetailsAdapter mDetailsAdapter;
+    String mDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,10 +56,12 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
 
         mDataSource = new ProjectTwoDataSource();
         mDataSource.open();
+        SimpleDateFormat format = new SimpleDateFormat(EntryCalendarActivity.DATE_FORMAT_PATTERN);
 
         //fill out data if entry already exists
         Intent intent = getIntent();
         mId = intent.getStringExtra(EntryListActivity.ENTRY_FIELD_ID);
+        mDate = intent.getStringExtra(EntryCalendarActivity.DATE_FIELD);
         if(mId != null)
         {
             Entry entry = mDataSource.getEntry(mId);
@@ -65,8 +72,19 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
             EntryDTO.EntryToEntryDTO(entry, mEntryDTO);
             mEditNote.setText(mEntryDTO.entryNote);
             mSeekBarMood.setProgress(mEntryDTO.overallMood);
-
+            //fill in date with entry info
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(Long.parseLong(mEntryDTO.entryTime));
+            setTitle(getTitle() + " " + format.format(calendar.getTime()));
             createOrUpdateDetailsView();
+        } else if(mDate != null)
+        {
+            //fill in date with passed in date
+            setTitle(getTitle() + " " + mDate);
+        } else
+        {
+            //fill in date with current date
+            setTitle(getTitle() + " " + format.format(System.currentTimeMillis()));
         }
 
         //set up speed dial to add different kinds of detail
@@ -142,7 +160,25 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
         }
         mEntryDTO.entryNote=mEditNote.getText().toString();
 
+
         Long time = System.currentTimeMillis();
+        if(mDate != null)
+        {
+            SimpleDateFormat format = new SimpleDateFormat(EntryCalendarActivity.DATE_FORMAT_PATTERN);
+            try {
+                Date date =  format.parse(mDate);
+                Calendar calendar = Calendar.getInstance();
+                int hour = calendar.get(Calendar.HOUR);
+                int minute = calendar.get(Calendar.MINUTE);
+                calendar.setTimeInMillis(date.getTime());
+                calendar.set(Calendar.HOUR, hour);
+                calendar.set(Calendar.MINUTE,minute);
+                time = calendar.getTimeInMillis();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+
         mEntryDTO.lastEditedTime=time.toString();
 
         if(mEntryDTO.entryTime == null)
@@ -218,6 +254,25 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
         createOrUpdateDetailsView();
     }
 
+    @Override
+    public void onIncidentDialogPositiveClick(DetailDTO incidentDetailDTO) {
+        if(mEntryDTO == null)
+        {
+            mEntryDTO = new EntryDTO();
+        }
+
+        Map<String, DetailDTO> detailDTOMap = mEntryDTO.categoriesToDetails.get(IncidentDialog.CATEGORY);
+        if(detailDTOMap == null)
+        {
+            detailDTOMap = new HashMap<>();
+            mEntryDTO.categoriesToDetails.put(IncidentDialog.CATEGORY, detailDTOMap);
+            mEntryDTO.detailCategories.add(IncidentDialog.CATEGORY);
+        }
+
+        detailDTOMap.put(incidentDetailDTO.detailType, incidentDetailDTO);
+        createOrUpdateDetailsView();
+    }
+
     private void createOrUpdateDetailsView()
     {
         if(mDetailsAdapter == null)
@@ -229,6 +284,8 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
             mDetailsAdapter.notifyDataSetChanged();
         }
     }
+
+
 }
 
 
