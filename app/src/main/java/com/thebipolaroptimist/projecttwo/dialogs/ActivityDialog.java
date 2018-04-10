@@ -13,6 +13,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.thebipolaroptimist.projecttwo.R;
 import com.thebipolaroptimist.projecttwo.SettingsFragment;
@@ -27,8 +29,10 @@ import com.thebipolaroptimist.projecttwo.models.DetailDTO;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 
 public class ActivityDialog extends DialogFragment {
@@ -70,25 +74,30 @@ public class ActivityDialog extends DialogFragment {
         mSpinnerActivityType = view.findViewById(R.id.spinner_activity);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-        final List<String> activities = new ArrayList<>();
-        activities.add("");
+        final List<String> activitiesFromPrefs = new ArrayList<>();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            activities.addAll(prefs.getStringSet(SettingsFragment.PREFERENCE_PREFIX + CATEGORY, new HashSet<String>()));
+            activitiesFromPrefs.addAll(prefs.getStringSet(SettingsFragment.PREFERENCE_PREFIX + CATEGORY, new HashSet<String>()));
         } else
         {
             String activityString = prefs.getString(SettingsFragment.PREFERENCE_PREFIX + CATEGORY, "");
-            activities.addAll(Arrays.asList(activityString.split(",")));
+            activitiesFromPrefs.addAll(Arrays.asList(activityString.split(",")));
         }
 
-        final List<String> colors = new ArrayList<>(activities.size());
-        for (int i = 1; i < activities.size(); i++) {
-            String[] pieces = activities.get(i).split(":");
-            activities.set(i, pieces[0]);
-            colors.add( pieces[1]);
+        final List<String> activities = new ArrayList<>();
+        final Map<String,String> activityToColors = new HashMap<>();
+        activities.add(getString(R.string.dialog_activity_spinner_label));
+        for (String preference : activitiesFromPrefs) {
+            String[] pieces = preference.split(":");
+            if(pieces.length >1) {
+                activities.add(pieces[0]);
+                activityToColors.put(pieces[0], pieces[1]);
+            } else
+            {
+                Log.w(TAG, "Invalid activity type stored");
+            }
         }
 
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, activities);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), R.layout.custom_spinner_style, activities);
         mSpinnerActivityType.setAdapter(adapter);
 
         mSpinnerActivityType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
@@ -97,9 +106,7 @@ public class ActivityDialog extends DialogFragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 mActivityType = activities.get(position);
-                if(position != 0) {
-                    mColor = colors.get(position - 1);
-                }
+                mColor = activityToColors.get(mActivityType);
             }
 
             @Override
@@ -112,7 +119,7 @@ public class ActivityDialog extends DialogFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //get data
-                if(!mActivityType.isEmpty()) {
+                if(!mActivityType.equals(getString(R.string.dialog_activity_spinner_label))) {
                     DetailDTO activityDetailDTO = new DetailDTO();
                     activityDetailDTO.category = CATEGORY;
                     activityDetailDTO.detailDataUnit = DetailDTO.getUnits(CATEGORY);

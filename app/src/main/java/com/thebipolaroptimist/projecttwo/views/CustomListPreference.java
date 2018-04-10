@@ -46,6 +46,7 @@ public class CustomListPreference extends DialogPreference {
     LinearLayout mLayout;
     Context mContext;
     String mColor = "#000000";
+    EditText mTextPrefName;
 
     public CustomListPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -60,7 +61,7 @@ public class CustomListPreference extends DialogPreference {
     protected void onBindDialogView(final View view) {
         super.onBindDialogView(view);
         Button addItemButton = view.findViewById(R.id.pref_list_add_button);
-        final EditText editText = view.findViewById(R.id.pref_list_edit_text);
+        mTextPrefName = view.findViewById(R.id.pref_list_edit_text);
         final Button colorButton = view.findViewById(R.id.color_button);
         final ColorPicker cp = new ColorPicker((Activity)mContext, 0, 0, 0, 0);
         colorButton.setOnClickListener(new View.OnClickListener() {
@@ -75,7 +76,7 @@ public class CustomListPreference extends DialogPreference {
                     public void onColorChosen(@ColorInt int color) {
                         mColor = String.format("#%08X", (0xFFFFFFFF & color));
                         colorButton.setBackgroundColor(Color.parseColor(mColor));
-                        cp.hide();
+                        cp.dismiss();
                     }
                 });
             }
@@ -86,23 +87,28 @@ public class CustomListPreference extends DialogPreference {
         addItemButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String item = editText.getText().toString();
-                if(!item.isEmpty())
-                {
-
-                    mValues.add(item+":"+mColor);
-                    mLayout.addView(new ActionRow(getContext(), item, mColor,new ActionRow.OnClickListener() {
-                        @Override
-                        public void onClick() {
-                            mValues.remove(item);
-                            reloadList();
-                        }
-                    }));
-                }
-                editText.setText("");
+                addDataToValues();
             }
         });
         reloadList();
+    }
+
+    private void addDataToValues()
+    {
+        final String item = mTextPrefName.getText().toString();
+        if(!item.isEmpty())
+        {
+
+            mValues.add(item+":"+mColor);
+            mLayout.addView(new ActionRow(getContext(), item, mColor,new ActionRow.OnClickListener() {
+                @Override
+                public void onClick() {
+                    mValues.remove(item);
+                    reloadList();
+                }
+            }));
+        }
+        mTextPrefName.setText("");
     }
 
     protected void reloadList()
@@ -111,13 +117,15 @@ public class CustomListPreference extends DialogPreference {
 
         for (final String s : mValues) {
             String[] parts = s.split(":");
-            mLayout.addView(new ActionRow(getContext(), parts[0],parts[1], new ActionRow.OnClickListener() {
-                @Override
-                public void onClick() {
-                    mValues.remove(s);
-                    reloadList();
-                }
-            }));
+            if(parts.length > 1) {
+                mLayout.addView(new ActionRow(getContext(), parts[0], parts[1], new ActionRow.OnClickListener() {
+                    @Override
+                    public void onClick() {
+                        mValues.remove(s);
+                        reloadList();
+                    }
+                }));
+            }
         }
     }
 
@@ -125,6 +133,7 @@ public class CustomListPreference extends DialogPreference {
     protected void onDialogClosed(boolean positiveResult) {
         // When the user selects "OK", persist the new value
         if (positiveResult) {
+            addDataToValues();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 persistStringSet(mValues);
             } else

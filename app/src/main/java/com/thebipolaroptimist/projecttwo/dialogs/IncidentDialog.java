@@ -12,12 +12,14 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.thebipolaroptimist.projecttwo.R;
 import com.thebipolaroptimist.projecttwo.SettingsFragment;
@@ -25,8 +27,10 @@ import com.thebipolaroptimist.projecttwo.models.DetailDTO;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 public class IncidentDialog extends DialogFragment {
     public static final String TAG = "IncidentDialog";
@@ -64,25 +68,28 @@ public class IncidentDialog extends DialogFragment {
         mSpinnerIncidentType = view.findViewById(R.id.spinner_incident);
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        final List<String> incidents = new ArrayList<>();
-        incidents.add("");
+        final List<String> incidentsFromPrefs = new ArrayList<>();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            incidents.addAll(prefs.getStringSet(SettingsFragment.PREFERENCE_PREFIX + CATEGORY, new HashSet<String>()));
+            incidentsFromPrefs.addAll(prefs.getStringSet(SettingsFragment.PREFERENCE_PREFIX + CATEGORY, new HashSet<String>()));
         } else
         {
             String activityString = prefs.getString(SettingsFragment.PREFERENCE_PREFIX + CATEGORY, "");
-            incidents.addAll(Arrays.asList(activityString.split(",")));
+            incidentsFromPrefs.addAll(Arrays.asList(activityString.split(",")));
         }
 
-        final List<String> colors = new ArrayList<>(incidents.size());
-        for (int i = 1; i < incidents.size(); i++) {
-            String[] pieces = incidents.get(i).split(":");
-            incidents.set(i, pieces[0]);
-            colors.add( pieces[1]);
+        final Map<String, String> incidentToColors = new HashMap<>();
+        final List<String> incidents = new ArrayList<>();
+        incidents.add(getString(R.string.dialog_incident_spinner_label));
+        for (String incident : incidentsFromPrefs) {
+            String[] pieces = incident.split(":");
+            if(pieces.length > 1) {
+                incidents.add(pieces[0]);
+                incidentToColors.put(pieces[0], pieces[1]);
+            }
         }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, incidents);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), R.layout.custom_spinner_style, incidents);
         mSpinnerIncidentType.setAdapter(adapter);
 
         mSpinnerIncidentType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
@@ -91,9 +98,7 @@ public class IncidentDialog extends DialogFragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 mIncidentType = incidents.get(position);
-                if(position != 0) {
-                    mColor = colors.get(position - 1);
-                }
+                mColor = incidentToColors.get(mIncidentType);
             }
 
             @Override
@@ -106,7 +111,7 @@ public class IncidentDialog extends DialogFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //get data
-                if(!mIncidentType.isEmpty()) {
+                if(!mIncidentType.equals(getString(R.string.dialog_incident_spinner_label))) {
                     DetailDTO activityDetailDTO = new DetailDTO();
                     activityDetailDTO.category = CATEGORY;
                     activityDetailDTO.detailDataUnit = DetailDTO.getUnits(CATEGORY);

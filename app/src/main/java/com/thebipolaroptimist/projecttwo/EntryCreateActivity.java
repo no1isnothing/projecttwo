@@ -38,6 +38,7 @@ import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
 public class EntryCreateActivity extends AppCompatActivity implements ConfirmDiscardDialog.ConfirmDiscardDialogListener, MoodDialog.MoodDialogListener, ActivityDialog.ActivityDialogListener, IncidentDialog.IncidentDialogListener
 {
     public static final String TAG = "EntryCreate";
+    public static final int SEEKBAR_MIDDLE_VALUE = 50;
     private ProjectTwoDataSource mDataSource;
     private EditText mEditNote;
     private String mId;
@@ -45,6 +46,7 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
     private EntryDTO mEntryDTO;
     private DetailsAdapter mDetailsAdapter;
     String mDate;
+    DialogFragment mDialogFragment = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +64,7 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
         Intent intent = getIntent();
         mId = intent.getStringExtra(EntryListActivity.ENTRY_FIELD_ID);
         mDate = intent.getStringExtra(EntryCalendarActivity.DATE_FIELD);
+        mSeekBarMood.setProgress(SEEKBAR_MIDDLE_VALUE);
         if(mId != null)
         {
             Entry entry = mDataSource.getEntry(mId);
@@ -97,27 +100,29 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
                 switch (menuItem.getItemId())
                 {
                     case R.id.action_activity:
-                        DialogFragment aDialog = new ActivityDialog();
-                        aDialog.show(getSupportFragmentManager(), "ActivityDialog");
+                        mDialogFragment = new ActivityDialog();
+                        mDialogFragment.show(getSupportFragmentManager(), "ActivityDialog");
                         break;
                     case R.id.action_incident:
-                        DialogFragment dialogFragment = new IncidentDialog();
-                        dialogFragment.show(getSupportFragmentManager(), "IncidentDialog");
+                        mDialogFragment = new IncidentDialog();
+                        mDialogFragment.show(getSupportFragmentManager(), "IncidentDialog");
                         break;
                     case R.id.action_mood:
-                        DialogFragment dialog = new MoodDialog();
+                        mDialogFragment = new MoodDialog();
                         //Send mood data if it exists
                         if(mEntryDTO != null && mEntryDTO.categoriesToDetails != null) {
                             Bundle bundle = new Bundle();
                             Map<String, DetailDTO> detailDTOMap = mEntryDTO.categoriesToDetails.get(MoodDialog.CATEGORY);
-                            Set<String> keys = detailDTOMap.keySet();
-                            for (String key : keys) {
-                                DetailDTO detailDTO = detailDTOMap.get(key);
-                                bundle.putInt(detailDTO.detailType, Integer.parseInt(detailDTO.detailData));
+                            if(detailDTOMap != null) {
+                                Set<String> keys = detailDTOMap.keySet();
+                                for (String key : keys) {
+                                    DetailDTO detailDTO = detailDTOMap.get(key);
+                                    bundle.putInt(detailDTO.detailType, Integer.parseInt(detailDTO.detailData));
+                                }
+                                mDialogFragment.setArguments(bundle);
                             }
-                            dialog.setArguments(bundle);
                         }
-                        dialog.show(getSupportFragmentManager(), "MoodDialog");
+                        mDialogFragment.show(getSupportFragmentManager(), "MoodDialog");
                         break;
                 }
                 return true;
@@ -125,6 +130,17 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
         });
 
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_black);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i(TAG, "On resume");
+        if(mDialogFragment != null && mDialogFragment.isVisible() /*!= null && mDialogFragment.getDialog().isShowing()*/)
+        {
+            mDialogFragment.onResume();
+        }
+
     }
 
     @Override

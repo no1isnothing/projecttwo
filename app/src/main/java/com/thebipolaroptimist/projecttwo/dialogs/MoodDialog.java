@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
@@ -13,9 +14,13 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.thebipolaroptimist.projecttwo.R;
+import com.thebipolaroptimist.projecttwo.SettingsActivity;
 import com.thebipolaroptimist.projecttwo.SettingsFragment;
 import com.thebipolaroptimist.projecttwo.models.DetailDTO;
 import com.thebipolaroptimist.projecttwo.views.SelectableSeekBar;
@@ -30,6 +35,8 @@ public class MoodDialog extends DialogFragment {
     public static final String TAG = "MoodDialog";
     public static final String CATEGORY = "Mood";
     MoodDialogListener mListener;
+    ViewGroup mMoodLayout;
+    Bundle mArgs;
 
     public interface MoodDialogListener
     {
@@ -47,45 +54,84 @@ public class MoodDialog extends DialogFragment {
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        mMoodLayout.removeAllViews();
+        loadDataFromPrefs();
+    }
+
+    private void loadDataFromPrefs()
+    {
+        //Dynamically add seek bars and fill in with data if it's available
+        Set<String> moods;
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            moods = prefs.getStringSet(SettingsFragment.PREFERENCE_PREFIX + CATEGORY, new HashSet<String>());
+        } else
+        {
+            String moodString = prefs.getString(SettingsFragment.PREFERENCE_PREFIX+CATEGORY,"");
+            if(!moodString.isEmpty()){
+                moods=new HashSet<>(Arrays.asList(moodString.split(",")));
+            }else
+            {
+                moods=new HashSet<>();
+            }
+        }
+
+        for (String mood : moods) {
+            String[] pieces = mood.split(":");
+            if(pieces.length >1)
+            {
+                SelectableSeekBar bar = new SelectableSeekBar(getActivity(), null);
+                bar.setTitle(pieces[0]);
+                bar.setTitleColor(pieces[1]);
+
+                if (mArgs != null && mArgs.containsKey(pieces[0])) {
+                    bar.setValue(mArgs.getInt(pieces[0]));
+                }
+
+                if(mMoodLayout != null) {
+                    mMoodLayout.addView(bar);
+                }
+            }
+        }
+
+        if(mMoodLayout.getChildCount() == 0)
+        {
+            TextView textView = new TextView(getActivity());
+            textView.setText("No moods available. Please Enter moods in settings.");
+            Button button = new Button(getActivity());
+            button.setText(getString(R.string.action_settings));
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getContext(), SettingsActivity.class);
+                    startActivity(intent);
+                }
+            });
+            mMoodLayout.addView(textView);
+            mMoodLayout.addView(button);
+        }
+    }
+
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        final ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.dialog_mood, null);
-        builder.setView(layout);
+        mMoodLayout = (ViewGroup) inflater.inflate(R.layout.dialog_mood, null);
+        builder.setView(mMoodLayout);
 
-        //Dynamically add seek bars and fill in with data if it's available
-        Set<String> moods;
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-             moods = prefs.getStringSet(SettingsFragment.PREFERENCE_PREFIX + CATEGORY, new HashSet<String>());
-        } else
-        {
-            String moodString = prefs.getString(SettingsFragment.PREFERENCE_PREFIX + CATEGORY,"");
-            moods = new HashSet<>(Arrays.asList(moodString.split(",")));
-        }
-        Bundle args = getArguments();
-        for (String mood : moods) {
-            String[] pieces = mood.split(":");
-            SelectableSeekBar bar = new SelectableSeekBar(getActivity(), null);
-            bar.setTitle(pieces[0]);
-            bar.setTitleColor(pieces[1]);
-
-            if(args != null && args.containsKey(pieces[0]))
-            {
-                bar.setValue(args.getInt(pieces[0]));
-            }
-            layout.addView(bar);
-        }
+        mArgs = getArguments();
 
         //Send data back to Activity
         builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 List<DetailDTO> moodDetailDTOList = new ArrayList<>();
-                for(int i = 0; i < layout.getChildCount(); i++) {
-                    SelectableSeekBar bar = (SelectableSeekBar) layout.getChildAt(i);
+                for(int i = 0; i < mMoodLayout.getChildCount(); i++) {
+                    SelectableSeekBar bar = (SelectableSeekBar) mMoodLayout.getChildAt(i);
                     if(bar.isEnabled()) {
                         DetailDTO moodDetailDTO = new DetailDTO();
                         moodDetailDTO.category = CATEGORY;

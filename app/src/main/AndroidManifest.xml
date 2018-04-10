@@ -18,7 +18,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".EntryListActivity"
-            android:label="Entry List:"/>
+            android:label="Entries:"/>
         <activity android:name=".SummaryActivity" />
         <activity
             android:name=".SettingsActivity"
@@ -28,7 +28,7 @@
             android:parentActivityName=".EntryCalendarActivity"
             android:theme="@style/AppTheme.ActionBar"
             android:windowSoftInputMode="stateUnchanged"
-            android:label="Create Entry:"></activity>
+            android:label="Entry:"></activity>
     </application>
 
 </manifest>
