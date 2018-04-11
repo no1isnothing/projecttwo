@@ -4,7 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -30,7 +30,7 @@ public class ActionRow extends LinearLayout {
             inflater.inflate(R.layout.view_action_row, this, true);
         }
         mListener = listener;
-        Button button = findViewById(R.id.action_row_button);
+        ImageButton button = findViewById(R.id.action_row_button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

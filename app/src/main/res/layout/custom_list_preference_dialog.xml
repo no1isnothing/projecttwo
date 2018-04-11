@@ -33,6 +33,7 @@
         android:layout_marginTop="8dp"
         android:inputType="textPersonName"
         android:hint="Enter New Type"
+        android:digits="abcdefghijklmnopqrstuvwxyz1234567890 "
         app:layout_constraintStart_toEndOf="@id/pref_list_add_button"
         app:layout_constraintTop_toTopOf="@id/pref_list_add_button" />
 
