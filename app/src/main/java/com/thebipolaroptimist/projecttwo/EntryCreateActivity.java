@@ -136,7 +136,7 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
     protected void onResume() {
         super.onResume();
         Log.i(TAG, "On resume");
-        if(mDialogFragment != null && mDialogFragment.isVisible() /*!= null && mDialogFragment.getDialog().isShowing()*/)
+        if(mDialogFragment != null && mDialogFragment.isVisible())
         {
             mDialogFragment.onResume();
         }
