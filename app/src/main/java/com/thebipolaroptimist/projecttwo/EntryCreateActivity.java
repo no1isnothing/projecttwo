@@ -13,10 +13,11 @@ import android.widget.ExpandableListView;
 import android.widget.SeekBar;
 
 import com.thebipolaroptimist.projecttwo.db.ProjectTwoDataSource;
-import com.thebipolaroptimist.projecttwo.dialogs.ActivityDialog;
+import com.thebipolaroptimist.projecttwo.dialogs.ActivityDetailDialog;
+import com.thebipolaroptimist.projecttwo.dialogs.BaseDetailDialog;
 import com.thebipolaroptimist.projecttwo.dialogs.ConfirmDiscardDialog;
-import com.thebipolaroptimist.projecttwo.dialogs.IncidentDialog;
-import com.thebipolaroptimist.projecttwo.dialogs.MoodDialog;
+import com.thebipolaroptimist.projecttwo.dialogs.IncidentDetailDialog;
+import com.thebipolaroptimist.projecttwo.dialogs.MoodDetailDialog;
 import com.thebipolaroptimist.projecttwo.models.DetailsAdapter;
 import com.thebipolaroptimist.projecttwo.models.Entry;
 import com.thebipolaroptimist.projecttwo.models.EntryDTO;
@@ -35,7 +36,7 @@ import io.github.yavski.fabspeeddial.FabSpeedDial;
 import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
 
 
-public class EntryCreateActivity extends AppCompatActivity implements ConfirmDiscardDialog.ConfirmDiscardDialogListener, MoodDialog.MoodDialogListener, ActivityDialog.ActivityDialogListener, IncidentDialog.IncidentDialogListener
+public class EntryCreateActivity extends AppCompatActivity implements ConfirmDiscardDialog.ConfirmDiscardDialogListener, BaseDetailDialog.DetailDialogListener
 {
     public static final String TAG = "EntryCreate";
     public static final int SEEKBAR_MIDDLE_VALUE = 50;
@@ -100,19 +101,19 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
                 switch (menuItem.getItemId())
                 {
                     case R.id.action_activity:
-                        mDialogFragment = new ActivityDialog();
-                        mDialogFragment.show(getSupportFragmentManager(), "ActivityDialog");
+                        mDialogFragment = new ActivityDetailDialog();
+                        mDialogFragment.show(getSupportFragmentManager(), "ActivityDetailDialog");
                         break;
                     case R.id.action_incident:
-                        mDialogFragment = new IncidentDialog();
-                        mDialogFragment.show(getSupportFragmentManager(), "IncidentDialog");
+                        mDialogFragment = new IncidentDetailDialog();
+                        mDialogFragment.show(getSupportFragmentManager(), "IncidentDetailDialog");
                         break;
                     case R.id.action_mood:
-                        mDialogFragment = new MoodDialog();
+                        mDialogFragment = new MoodDetailDialog();
                         //Send mood data if it exists
                         if(mEntryDTO != null && mEntryDTO.categoriesToDetails != null) {
                             Bundle bundle = new Bundle();
-                            Map<String, DetailDTO> detailDTOMap = mEntryDTO.categoriesToDetails.get(MoodDialog.CATEGORY);
+                            Map<String, DetailDTO> detailDTOMap = mEntryDTO.categoriesToDetails.get(MoodDetailDialog.CATEGORY);
                             if(detailDTOMap != null) {
                                 Set<String> keys = detailDTOMap.keySet();
                                 for (String key : keys) {
@@ -122,7 +123,7 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
                                 mDialogFragment.setArguments(bundle);
                             }
                         }
-                        mDialogFragment.show(getSupportFragmentManager(), "MoodDialog");
+                        mDialogFragment.show(getSupportFragmentManager(), "MoodDetailDialog");
                         break;
                 }
                 return true;
@@ -225,70 +226,6 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
         onSave();
     }
 
-    @Override
-    public void onMoodDialogPositiveClick(List<DetailDTO> moodList) {
-        if(mEntryDTO == null)
-        {
-            mEntryDTO = new EntryDTO();
-        }
-
-        Map<String, DetailDTO> detailDTOMap = mEntryDTO.categoriesToDetails.get(MoodDialog.CATEGORY);
-
-        if(detailDTOMap ==null)
-        {
-            detailDTOMap = new HashMap<>();
-            mEntryDTO.categoriesToDetails.put(MoodDialog.CATEGORY, detailDTOMap);
-            mEntryDTO.detailCategories.add(MoodDialog.CATEGORY);
-        }
-
-        for (DetailDTO detailDTO : moodList) {
-            detailDTOMap.put(detailDTO.detailType, detailDTO);
-        }
-
-        for (DetailDTO moodDetailDTO : moodList) {
-            Log.i(TAG, "Mood " + moodDetailDTO.detailType + " Intensity " + moodDetailDTO.detailData);
-        }
-        createOrUpdateDetailsView();
-    }
-
-    @Override
-    public void onActivityDialogPositiveClick(DetailDTO activityDetailDTO) {
-        if(mEntryDTO == null)
-        {
-            mEntryDTO = new EntryDTO();
-        }
-
-        Map<String, DetailDTO> detailDTOMap = mEntryDTO.categoriesToDetails.get(ActivityDialog.CATEGORY);
-        if(detailDTOMap == null)
-        {
-            detailDTOMap = new HashMap<>();
-            mEntryDTO.categoriesToDetails.put(ActivityDialog.CATEGORY, detailDTOMap);
-            mEntryDTO.detailCategories.add(ActivityDialog.CATEGORY);
-        }
-
-        detailDTOMap.put(activityDetailDTO.detailType, activityDetailDTO);
-        createOrUpdateDetailsView();
-    }
-
-    @Override
-    public void onIncidentDialogPositiveClick(DetailDTO incidentDetailDTO) {
-        if(mEntryDTO == null)
-        {
-            mEntryDTO = new EntryDTO();
-        }
-
-        Map<String, DetailDTO> detailDTOMap = mEntryDTO.categoriesToDetails.get(IncidentDialog.CATEGORY);
-        if(detailDTOMap == null)
-        {
-            detailDTOMap = new HashMap<>();
-            mEntryDTO.categoriesToDetails.put(IncidentDialog.CATEGORY, detailDTOMap);
-            mEntryDTO.detailCategories.add(IncidentDialog.CATEGORY);
-        }
-
-        detailDTOMap.put(incidentDetailDTO.detailType, incidentDetailDTO);
-        createOrUpdateDetailsView();
-    }
-
     private void createOrUpdateDetailsView()
     {
         if(mDetailsAdapter == null)
@@ -301,7 +238,47 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
         }
     }
 
+    @Override
+    public void onDetailDialogPositiveClick(DetailDTO detailDTO, String category) {
+        if(mEntryDTO == null)
+        {
+            mEntryDTO = new EntryDTO();
+        }
 
+        Map<String, DetailDTO> detailDTOMap = mEntryDTO.categoriesToDetails.get(category);
+        if(detailDTOMap == null)
+        {
+            detailDTOMap = new HashMap<>();
+            mEntryDTO.categoriesToDetails.put(category, detailDTOMap);
+            mEntryDTO.detailCategories.add(category);
+        }
+
+        detailDTOMap.put(detailDTO.detailType, detailDTO);
+        createOrUpdateDetailsView();
+    }
+
+    @Override
+    public void onDetailDialogPositiveClick(List<DetailDTO> detailDTOList, String category) {
+        if(mEntryDTO == null)
+        {
+            mEntryDTO = new EntryDTO();
+        }
+
+        Map<String, DetailDTO> detailDTOMap = mEntryDTO.categoriesToDetails.get(category);
+
+        if(detailDTOMap ==null)
+        {
+            detailDTOMap = new HashMap<>();
+            mEntryDTO.categoriesToDetails.put(category, detailDTOMap);
+            mEntryDTO.detailCategories.add(category);
+        }
+
+        for (DetailDTO detailDTO : detailDTOList) {
+            detailDTOMap.put(detailDTO.detailType, detailDTO);
+        }
+
+        createOrUpdateDetailsView();
+    }
 }
 
 
