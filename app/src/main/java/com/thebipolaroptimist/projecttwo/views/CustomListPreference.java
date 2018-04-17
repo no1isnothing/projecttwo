@@ -1,36 +1,23 @@
 package com.thebipolaroptimist.projecttwo.views;
 
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Color;
 
 import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.preference.DialogPreference;
-import android.support.annotation.ColorInt;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
 
-import com.pes.androidmaterialcolorpickerdialog.ColorPicker;
-import com.pes.androidmaterialcolorpickerdialog.ColorPickerCallback;
 import com.thebipolaroptimist.projecttwo.R;
-import com.thebipolaroptimist.projecttwo.SettingsActivity;
-import com.thebipolaroptimist.projecttwo.SettingsFragment;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 
@@ -45,8 +32,6 @@ public class CustomListPreference extends DialogPreference {
     Set<String> mValues;
     LinearLayout mLayout;
     Context mContext;
-    String mColor = "#000000";
-    EditText mTextPrefName;
 
     public CustomListPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -60,72 +45,43 @@ public class CustomListPreference extends DialogPreference {
     @Override
     protected void onBindDialogView(final View view) {
         super.onBindDialogView(view);
-        Button addItemButton = view.findViewById(R.id.pref_list_add_button);
-        mTextPrefName = view.findViewById(R.id.pref_list_edit_text);
-        final Button colorButton = view.findViewById(R.id.color_button);
-        final ColorPicker cp = new ColorPicker((Activity)mContext, 0, 0, 0, 0);
-        colorButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                    /* Show color picker dialog */
-                cp.show();
-
-                /* Set a new Listener called when user click "select" */
-                cp.setCallback(new ColorPickerCallback() {
-                    @Override
-                    public void onColorChosen(@ColorInt int color) {
-                        mColor = String.format("#%08X", (0xFFFFFFFF & color));
-                        colorButton.setBackgroundColor(Color.parseColor(mColor));
-                        cp.dismiss();
-                    }
-                });
-            }
-        });
-
         mLayout = view.findViewById(R.id.pref_list);
-
+        Button addItemButton = view.findViewById(R.id.pref_list_add_button);
         addItemButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addDataToValues();
+                addRow(null, null);
             }
         });
-        reloadList();
-    }
-
-    private void addDataToValues()
-    {
-        final String item = mTextPrefName.getText().toString();
-        if(!item.isEmpty())
-        {
-
-            mValues.add(item+":"+mColor);
-            mLayout.addView(new ActionRow(getContext(), item, mColor,new ActionRow.OnClickListener() {
-                @Override
-                public void onClick() {
-                    mValues.remove(item);
-                    reloadList();
-                }
-            }));
-        }
-        mTextPrefName.setText("");
-    }
-
-    protected void reloadList()
-    {
-        mLayout.removeAllViews();
 
         for (final String s : mValues) {
             String[] parts = s.split(":");
             if(parts.length > 1) {
-                mLayout.addView(new ActionRow(getContext(), parts[0], parts[1], new ActionRow.OnClickListener() {
-                    @Override
-                    public void onClick() {
-                        mValues.remove(s);
-                        reloadList();
-                    }
-                }));
+                addRow(parts[0], parts[1]);
             }
+        }
+    }
+
+    private void addRow(String title, String color)
+    {
+        mLayout.addView(new ActionRow(getContext(),title, color, new ActionRow.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mLayout.removeView(view);
+            }
+        }));
+    }
+
+    private void getValuesFromUI()
+    {
+        int count = mLayout.getChildCount();
+        mValues.clear();
+        for(int i = 0; i < count; i++)
+        {
+            ActionRow row = (ActionRow) mLayout.getChildAt(i);
+            String name = row.getName();
+            String color = row.getColor();
+            mValues.add(name + ":" + color);
         }
     }
 
@@ -133,7 +89,7 @@ public class CustomListPreference extends DialogPreference {
     protected void onDialogClosed(boolean positiveResult) {
         // When the user selects "OK", persist the new value
         if (positiveResult) {
-            addDataToValues();
+            getValuesFromUI();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 persistStringSet(mValues);
             } else
@@ -229,8 +185,8 @@ public class CustomListPreference extends DialogPreference {
         }
 
         // Standard creator object using an instance of this class
-        public static final Parcelable.Creator<SavedState> CREATOR =
-                new Parcelable.Creator<SavedState>() {
+        public static final Creator<SavedState> CREATOR =
+                new Creator<SavedState>() {
 
                     public SavedState createFromParcel(Parcel in) {
                         return new SavedState(in);
