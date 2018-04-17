@@ -25,22 +25,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <EditText
-        android:id="@+id/pref_list_edit_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:inputType="textPersonName"
-        android:hint="Enter New Type"
-        android:digits="abcdefghijklmnopqrstuvwxyz1234567890 "
-        app:layout_constraintStart_toEndOf="@id/pref_list_add_button"
-        app:layout_constraintTop_toTopOf="@id/pref_list_add_button" />
 
-    <Button
-        android:id="@+id/color_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@id/pref_list_edit_text"
-        app:layout_constraintTop_toTopOf="@id/pref_list_add_button"/>
 </android.support.constraint.ConstraintLayout>
