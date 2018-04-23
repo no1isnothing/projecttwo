@@ -34,6 +34,20 @@ public class EntryDTO {
         categoriesToDetails = new HashMap<>();
     }
 
+    public List<DetailDTO> getDetailList(String category)
+    {
+        List<DetailDTO> details = new ArrayList<>();
+        if(categoriesToDetails != null) {
+            Map<String, DetailDTO> detailDTOMap = categoriesToDetails.get(category);
+            if(detailDTOMap != null) {
+                Set<String> keys = detailDTOMap.keySet();
+                for (String key : keys) {
+                    details.add(detailDTOMap.get(key));
+                }
+            }
+        }
+        return details;
+    }
     static public void EntryDTOToEntry(EntryDTO entryDTO, Entry entry)
     {
         entry.setEntryNote(entryDTO.entryNote);

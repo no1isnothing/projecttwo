@@ -1,8 +1,7 @@
 package com.thebipolaroptimist.projecttwo.models;
 
 
-import com.thebipolaroptimist.projecttwo.dialogs.ActivityDetailDialog;
-import com.thebipolaroptimist.projecttwo.dialogs.MoodDetailDialog;
+import com.thebipolaroptimist.projecttwo.views.ActivityDetailRow;
 import com.thebipolaroptimist.projecttwo.views.MoodDetailRow;
 
 /**
@@ -61,7 +60,7 @@ public class DetailDTO {
         if(category.equals(MoodDetailRow.CATEGORY))
         {
             return UNITS_SCALE;
-        } else if(category.equals(ActivityDetailDialog.CATEGORY))
+        } else if(category.equals(ActivityDetailRow.CATEGORY))
         {
             return UNITS_MINUTES;
         }

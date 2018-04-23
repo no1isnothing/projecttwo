@@ -11,7 +11,6 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.thebipolaroptimist.projecttwo.R;
-import com.thebipolaroptimist.projecttwo.dialogs.MoodDetailDialog;
 import com.thebipolaroptimist.projecttwo.views.MoodDetailRow;
 
 import java.util.ArrayList;
