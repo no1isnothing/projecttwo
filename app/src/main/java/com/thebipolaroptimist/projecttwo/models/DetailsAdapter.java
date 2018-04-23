@@ -7,9 +7,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.thebipolaroptimist.projecttwo.R;
+import com.thebipolaroptimist.projecttwo.dialogs.MoodDetailDialog;
+import com.thebipolaroptimist.projecttwo.views.MoodDetailRow;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,16 +88,26 @@ public class DetailsAdapter extends BaseExpandableListAdapter{
         DetailDTO detail = (DetailDTO) getChild(groupPosition, childPosition);
         LayoutInflater inflater = mContext.getLayoutInflater();
 
+
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.detail_list_item, null);
+            if(detail.category.equals(MoodDetailRow.CATEGORY))
+            {
+                convertView = inflater.inflate(R.layout.detail_list_item_mood, null);
+                TextView label = convertView.findViewById(R.id.detail_list_item_label);
+                SeekBar bar = convertView.findViewById(R.id.detail_list_item_seekbar);
+                label.setText(detail.detailType);
+                bar.setProgress(Integer.parseInt(detail.detailData));
+            } else {
+                convertView = inflater.inflate(R.layout.detail_list_item, null);
+
+
+                TextView type = convertView.findViewById(R.id.detail_item_type);
+                TextView data = convertView.findViewById(R.id.detial_item_data);
+
+                type.setText(detail.detailType);
+                data.setText(detail.getDataString());
+            }
         }
-
-        TextView type = convertView.findViewById(R.id.detail_item_type);
-        TextView data = convertView.findViewById(R.id.detial_item_data);
-
-        type.setText(detail.detailType);
-        data.setText(detail.getDataString());
-
         return convertView;
     }
 

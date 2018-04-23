@@ -3,6 +3,7 @@ package com.thebipolaroptimist.projecttwo.models;
 
 import com.thebipolaroptimist.projecttwo.dialogs.ActivityDetailDialog;
 import com.thebipolaroptimist.projecttwo.dialogs.MoodDetailDialog;
+import com.thebipolaroptimist.projecttwo.views.MoodDetailRow;
 
 /**
  * This class stores detail data and passes it
@@ -12,7 +13,7 @@ public class DetailDTO {
     public static final String UNITS_SCALE = "scale";
     public static final String UNITS_MINUTES = "minutes";
 
-    public String category;
+    public String category; //
     public String detailType;
     public String detailData;
     public String detailDataUnit;
@@ -57,7 +58,7 @@ public class DetailDTO {
     //TODO consider using map or settings
     public static String getUnits(String category)
     {
-        if(category.equals(MoodDetailDialog.CATEGORY))
+        if(category.equals(MoodDetailRow.CATEGORY))
         {
             return UNITS_SCALE;
         } else if(category.equals(ActivityDetailDialog.CATEGORY))

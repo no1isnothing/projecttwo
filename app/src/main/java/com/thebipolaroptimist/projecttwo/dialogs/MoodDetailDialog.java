@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 
 import com.thebipolaroptimist.projecttwo.R;
 import com.thebipolaroptimist.projecttwo.models.DetailDTO;
-import com.thebipolaroptimist.projecttwo.views.SelectableSeekBar;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,9 +34,9 @@ public class MoodDetailDialog extends BaseDetailDialog {
 
         mArgs = getArguments();
 
-        for (String detailsType : detailsTypes) {
+/*        for (String detailsType : detailsTypes) {
             if(detailTypesToColors.containsKey(detailsType)) {
-                SelectableSeekBar bar = new SelectableSeekBar(getActivity(), null);
+                SelectableText bar = new SelectableText(getActivity(), null);
                 bar.setTitle(detailsType);
                 bar.setTitleColor(detailTypesToColors.get(detailsType));
 
@@ -56,7 +56,7 @@ public class MoodDetailDialog extends BaseDetailDialog {
             public void onClick(DialogInterface dialog, int which) {
                 List<DetailDTO> moodDetailDTOList = new ArrayList<>();
                 for(int i = 0; i < mMoodLayout.getChildCount(); i++) {
-                    SelectableSeekBar bar = (SelectableSeekBar) mMoodLayout.getChildAt(i);
+                    SelectableText bar = (SelectableText) mMoodLayout.getChildAt(i);
                     if(bar.isEnabled()) {
                         DetailDTO moodDetailDTO = new DetailDTO();
                         moodDetailDTO.category = CATEGORY;
@@ -71,7 +71,7 @@ public class MoodDetailDialog extends BaseDetailDialog {
                 mListener.onDetailDialogPositiveClick(moodDetailDTOList, CATEGORY);
             }
         });
-
+*/
         return builder.create();
     }
 
