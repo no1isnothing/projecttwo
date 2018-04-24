@@ -20,6 +20,11 @@ import com.thebipolaroptimist.projecttwo.models.DetailDTO;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A layout to hold the details of a category
+ * It displays the category name and an expandable list of details
+ * The list of details are editable and new detail types can be added
+ */
 public class CategoryLayout extends ConstraintLayout implements AddDetailsDialog.Listener {
     private final ImageButton mAddButton;
     private final LinearLayout mLayout;
@@ -28,23 +33,17 @@ public class CategoryLayout extends ConstraintLayout implements AddDetailsDialog
     private final List<DetailDTO> mDetails;
     private final ToggleButton mExpandButton;
 
-    public CategoryLayout(Context context, String category, List<DetailDTO> details) {
-        super(context);
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        if (inflater != null) {
-            inflater.inflate(R.layout.category_layout, this, true);
-        }
+    public String getCategory()
+    {
+        return mCategory;
+    }
 
-        mContext = context;
-        mLayout = findViewById(R.id.detail_list);
-        mAddButton = findViewById(R.id.add_detail_button);
-        mExpandButton = findViewById(R.id.expand_details_button);
-        mCategory = category;
-        mDetails = details;
+    private void setUpButtons()
+    {
         mExpandButton.setButtonDrawable(R.drawable.ic_expand_more_black);
-        mExpandButton.setTextOff(category);
-        mExpandButton.setTextOn(category);
-        mExpandButton.setText(category);
+        mExpandButton.setTextOff(mCategory);
+        mExpandButton.setTextOn(mCategory);
+        mExpandButton.setText(mCategory);
         mAddButton.setVisibility(INVISIBLE);
         mAddButton.setEnabled(false);
 
@@ -72,9 +71,27 @@ public class CategoryLayout extends ConstraintLayout implements AddDetailsDialog
                 add();
             }
         });
+    }
+    public CategoryLayout(Context context, String category, List<DetailDTO> details) {
+        super(context);
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        if (inflater != null) {
+            inflater.inflate(R.layout.category_layout, this, true);
+        }
 
+        mContext = context;
+        mLayout = findViewById(R.id.detail_list);
+        mAddButton = findViewById(R.id.add_detail_button);
+        mExpandButton = findViewById(R.id.expand_details_button);
+        mCategory = category;
+        mDetails = details;
+
+        setUpButtons();
     }
 
+    /**
+     * Launches the add detail dialog to allow user to add detail types
+     */
     public void add()
     {
         //launch add dialog
@@ -85,13 +102,16 @@ public class CategoryLayout extends ConstraintLayout implements AddDetailsDialog
             bundle.putBoolean(mDetail.detailType, true);;
         }
 
-
         AddDetailsDialog fragment = new AddDetailsDialog();
         fragment.setArguments(bundle);
         fragment.setListener(this);
         fragment.show(((Activity)mContext).getFragmentManager(), "AddDetailsDialog");
     }
 
+    /**
+     * Retrieve the data from this layout
+     * @return a list of detail dto, one for each row
+     */
     public List<DetailDTO> onSave()
     {
         List<DetailDTO> dtoList = new ArrayList<>();
@@ -107,6 +127,9 @@ public class CategoryLayout extends ConstraintLayout implements AddDetailsDialog
         return dtoList;
     }
 
+    /**
+     * Create a row for each detail in this entry
+     */
     public void expand()
     {
         for (DetailDTO detail : mDetails) {
@@ -114,6 +137,10 @@ public class CategoryLayout extends ConstraintLayout implements AddDetailsDialog
         }
     }
 
+    /**
+     * Call back from add detail dialog. Adds new detail types to variables and layouts
+     * @param detailTypes list of detail types to add
+     */
     @Override
     public void onPositiveResult(List<String> detailTypes) {
         for (String detailType : detailTypes) {

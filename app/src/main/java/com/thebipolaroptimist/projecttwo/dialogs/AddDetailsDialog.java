@@ -3,7 +3,6 @@ package com.thebipolaroptimist.projecttwo.dialogs;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -11,10 +10,8 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.thebipolaroptimist.projecttwo.R;
 import com.thebipolaroptimist.projecttwo.SettingsFragment;
@@ -43,7 +40,7 @@ public class AddDetailsDialog extends DialogFragment {
     }
 
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {  //use bundle to send category like in mood dialog
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         ViewGroup view = (ViewGroup) inflater.inflate(R.layout.diloag_add_details, null);
@@ -77,8 +74,10 @@ public class AddDetailsDialog extends DialogFragment {
             Log.w(TAG, "Created without category argument");
         }
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
+        //TODO Extract this?
+        //Get detail types from preferences
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         final List<String> activitiesFromPrefs = new ArrayList<>();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             activitiesFromPrefs.addAll(prefs.getStringSet(SettingsFragment.PREFERENCE_PREFIX + mCategory, new HashSet<String>()));
@@ -88,6 +87,7 @@ public class AddDetailsDialog extends DialogFragment {
             activitiesFromPrefs.addAll(Arrays.asList(activityString.split(",")));
         }
 
+        //Put detail types into useable data structures
         List<String> detailsTypes = new ArrayList<>();
         Map<String, String> detailTypesToColors = new HashMap<>();
         for (String preference : activitiesFromPrefs) {
@@ -100,7 +100,9 @@ public class AddDetailsDialog extends DialogFragment {
                 Log.w(TAG + mCategory, "Invalid activity type stored");
             }
         }
+        //
 
+        //Add lines to view for each detail type
         for (String detailsType : detailsTypes) {
             if(!args.containsKey(detailsType)) {
                 mDetailTypeList.addView(new SelectableWord(getActivity(), detailsType, detailTypesToColors.get(detailsType)));

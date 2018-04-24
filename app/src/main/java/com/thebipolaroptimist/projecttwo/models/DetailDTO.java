@@ -18,42 +18,6 @@ public class DetailDTO {
     public String detailDataUnit;
     public int color;
 
-    /**
-     *
-     * @return a string representing this details data
-     */
-    public String getDataString()
-    {
-        if(detailDataUnit.equals(UNITS_SCALE)) {
-            int dataValue = Integer.parseInt(detailData);
-            String scaleValue = "";
-            if(dataValue < 20)
-            {
-                scaleValue = "Very Low";
-            } else if(dataValue < 40)
-            {
-                scaleValue = "Low";
-            } else if(dataValue < 60)
-            {
-                scaleValue = "Mid";
-            } else if(dataValue < 80)
-            {
-                scaleValue = "High";
-            }else
-            {
-                scaleValue = "Very High";
-            }
-            return scaleValue;
-        } else if(detailDataUnit.equals(UNITS_MINUTES))
-        {
-            return detailData + " " + detailDataUnit;
-        } else
-        {
-            return detailData;
-        }
-
-    }
-
     //TODO consider using map or settings
     public static String getUnits(String category)
     {

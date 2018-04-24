@@ -9,6 +9,9 @@ import android.widget.TextView;
 
 import com.thebipolaroptimist.projecttwo.R;
 
+/**
+ * A layout that's a word, check box and color
+ */
 public class SelectableWord extends LinearLayout {
     final private CheckBox mBox;
     private final String mWord;
