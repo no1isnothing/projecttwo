@@ -64,7 +64,7 @@ public class CustomListPreference extends DialogPreference {
 
     private void addRow(String title, String color)
     {
-        mLayout.addView(new ActionRow(getContext(),title, color, new ActionRow.OnClickListener() {
+        mLayout.addView(new ActionRow(getContext(),title, color, R.drawable.ic_delete_black, new ActionRow.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mLayout.removeView(view);

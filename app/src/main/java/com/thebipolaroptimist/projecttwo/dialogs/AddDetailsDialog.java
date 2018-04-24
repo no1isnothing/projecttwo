@@ -10,11 +10,14 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.thebipolaroptimist.projecttwo.R;
 import com.thebipolaroptimist.projecttwo.SettingsFragment;
+import com.thebipolaroptimist.projecttwo.views.ActionRow;
 import com.thebipolaroptimist.projecttwo.views.SelectableWord;
 
 import java.util.ArrayList;
@@ -29,6 +32,9 @@ public class AddDetailsDialog extends DialogFragment {
     public static final String TAG = "AddDetailDialog";
     private Listener mListener;
     private LinearLayout mDetailTypeList;
+    private Button mButtonAddDetailType;
+    final List<String> mDetailTypeFromPrefs = new ArrayList<>();
+    private String mCategory = "";
 
     public interface Listener{
          void onPositiveResult(List<String> detailTypes);
@@ -52,21 +58,48 @@ public class AddDetailsDialog extends DialogFragment {
                 int count = mDetailTypeList.getChildCount();
                 for(int i = 0; i < count; i++)
                 {
-                    SelectableWord word = (SelectableWord) mDetailTypeList.getChildAt(i);
-                    if(word.isChecked())
+                    try {
+                        SelectableWord word = (SelectableWord) mDetailTypeList.getChildAt(i);
+                        if (word.isChecked()) {
+                            list.add(word.getWord() + ":" + word.getColor());
+                        }
+                    } catch(ClassCastException e)
                     {
-                        list.add(word.getWord() + ":" + word.getColor());
+                        Log.i(TAG, "Details saved with empty action row");
                     }
                 }
                 mListener.onPositiveResult(list);
+                dismiss();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dismiss();
+            }
+        });
+        mDetailTypeList = view.findViewById(R.id.detail_type_list);
+        mButtonAddDetailType = view.findViewById(R.id.add_detail_type_button);
+
+        mButtonAddDetailType.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ActionRow actionRow = new ActionRow(getActivity(), null, null, R.drawable.ic_add_black, new ActionRow.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //Add values from action row to view
+                        ActionRow row = (ActionRow) view;
+                        mDetailTypeFromPrefs.add(row.getName() + ":" + row.getColor());
+                        storeDetailTypesInPrefs();
+                        mDetailTypeList.removeView(view);
+                        mDetailTypeList.addView(new SelectableWord(getActivity(), row.getName(), row.getColor()));
+                    }
+                });
+                mDetailTypeList.addView(actionRow);
             }
         });
 
-        mDetailTypeList = view.findViewById(R.id.detail_type_list);
-
         Bundle args = getArguments();
-
-        String mCategory = "";
         if (args != null && args.containsKey("category")) {
             mCategory = args.getString("category");
         } else
@@ -74,23 +107,12 @@ public class AddDetailsDialog extends DialogFragment {
             Log.w(TAG, "Created without category argument");
         }
 
-
-        //TODO Extract this?
-        //Get detail types from preferences
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        final List<String> activitiesFromPrefs = new ArrayList<>();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            activitiesFromPrefs.addAll(prefs.getStringSet(SettingsFragment.PREFERENCE_PREFIX + mCategory, new HashSet<String>()));
-        } else
-        {
-            String activityString = prefs.getString(SettingsFragment.PREFERENCE_PREFIX + mCategory, "");
-            activitiesFromPrefs.addAll(Arrays.asList(activityString.split(",")));
-        }
+        getDetailTypesFromPrefs();
 
         //Put detail types into useable data structures
         List<String> detailsTypes = new ArrayList<>();
         Map<String, String> detailTypesToColors = new HashMap<>();
-        for (String preference : activitiesFromPrefs) {
+        for (String preference : mDetailTypeFromPrefs) {
             String[] pieces = preference.split(":");
             if(pieces.length >1) {
                 detailsTypes.add(pieces[0]);
@@ -100,7 +122,6 @@ public class AddDetailsDialog extends DialogFragment {
                 Log.w(TAG + mCategory, "Invalid activity type stored");
             }
         }
-        //
 
         //Add lines to view for each detail type
         for (String detailsType : detailsTypes) {
@@ -110,5 +131,28 @@ public class AddDetailsDialog extends DialogFragment {
         }
 
         return builder.create();
+    }
+
+    public void storeDetailTypesInPrefs()
+    {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        SharedPreferences.Editor prefEditor = prefs.edit();
+
+        prefEditor.putStringSet(SettingsFragment.PREFERENCE_PREFIX + mCategory, new HashSet(mDetailTypeFromPrefs));
+
+        prefEditor.commit();
+    }
+
+    public void getDetailTypesFromPrefs()
+    {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            mDetailTypeFromPrefs.addAll(prefs.getStringSet(SettingsFragment.PREFERENCE_PREFIX + mCategory, new HashSet<String>()));
+        } else
+        {
+            String activityString = prefs.getString(SettingsFragment.PREFERENCE_PREFIX + mCategory, "");
+            mDetailTypeFromPrefs.addAll(Arrays.asList(activityString.split(",")));
+        }
     }
 }
