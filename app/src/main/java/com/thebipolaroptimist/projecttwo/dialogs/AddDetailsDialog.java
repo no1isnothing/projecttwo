@@ -81,25 +81,7 @@ public class AddDetailsDialog extends DialogFragment {
         mDetailTypeList = view.findViewById(R.id.detail_type_list);
         mButtonAddDetailType = view.findViewById(R.id.add_detail_type_button);
 
-        mButtonAddDetailType.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ActionRow actionRow = new ActionRow(getActivity(), null, null, R.drawable.ic_add_black, new ActionRow.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        //Add values from action row to view
-                        ActionRow row = (ActionRow) view;
-                        mDetailTypeFromPrefs.add(row.getName() + ":" + row.getColor());
-                        storeDetailTypesInPrefs();
-                        mDetailTypeList.removeView(view);
-                        mDetailTypeList.addView(new SelectableWord(getActivity(), row.getName(), row.getColor()));
-                    }
-                });
-                mDetailTypeList.addView(actionRow);
-            }
-        });
-
-        Bundle args = getArguments();
+        final Bundle args = getArguments();
         if (args != null && args.containsKey("category")) {
             mCategory = args.getString("category");
         } else
@@ -129,6 +111,32 @@ public class AddDetailsDialog extends DialogFragment {
                 mDetailTypeList.addView(new SelectableWord(getActivity(), detailsType, detailTypesToColors.get(detailsType)));
             }
         }
+
+        final ActionRow actionRow = new ActionRow(getActivity(), null, null,  R.drawable.ic_add_black, new ActionRow.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Add values from action row to view
+                ActionRow row = (ActionRow) view;
+                mDetailTypeFromPrefs.add(row.getName() + ":" + row.getColor());
+                storeDetailTypesInPrefs();
+                mDetailTypeList.addView(new SelectableWord(getActivity(), row.getName(), row.getColor()));
+                view.setVisibility(View.INVISIBLE);
+                mButtonAddDetailType.setVisibility(View.VISIBLE);
+                row.clearName();
+            }
+        });
+
+        actionRow.setVisibility(View.INVISIBLE);
+        LinearLayout linearLayout = view.findViewById(R.id.add_detail_layout2);
+        linearLayout.addView(actionRow);
+
+        mButtonAddDetailType.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                actionRow.setVisibility(View.VISIBLE);
+                v.setVisibility(View.INVISIBLE);
+            }
+        });
 
         return builder.create();
     }

@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.realm.Realm;
+import io.realm.RealmObject;
 
 public class ProjectTwoDataSource {
     private static final String TAG = "ProjectTwoDataSource";
@@ -108,6 +109,17 @@ public class ProjectTwoDataSource {
         return realm.where(Entry.class).equalTo("id", entryId).findFirst();
     }
 
+    public void deleteEntry(final String entryId)
+    {
+        final RealmObject entry = realm.where(Entry.class).equalTo("id", entryId).findFirst();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+
+                entry.deleteFromRealm();
+            }
+        });
+    }
     /**
      * Change time from millisecond to MM DD YYYY representation
      * @param time string representing in milliseconds

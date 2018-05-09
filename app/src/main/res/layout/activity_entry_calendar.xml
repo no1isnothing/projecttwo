@@ -1,57 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.thebipolaroptimist.projecttwo.EntryCalendarActivity"
-    >
+    tools:context="com.thebipolaroptimist.projecttwo.EntryCalendarActivity">
 
-    <android.support.design.widget.CoordinatorLayout
+    <LinearLayout
+        android:id="@+id/calendar1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <android.support.design.widget.AppBarLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/my_toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:fitsSystemWindows="true"
-                android:elevation="4dp"
-                app:popupTheme="@style/PopupMenuStyle"
-                 />
-            <LinearLayout
-                android:id="@+id/calendar1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-            </LinearLayout>
-        </android.support.design.widget.AppBarLayout>
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab_add"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="16dp"
-            app:srcCompat="@android:drawable/ic_input_add"
-            android:tint="@color/white"
-            android:tooltipText="Add Entry"/>
-    </android.support.design.widget.CoordinatorLayout>
-
-
-    <!-- The navigation drawer -->
-    <android.support.design.widget.NavigationView
-        android:id="@+id/navigation"
+    <Button
+        android:id="@+id/calendar_add_entry"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        app:menu="@menu/navigation_items" />
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="Add Entry"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/calendar1" />
 
-</android.support.v4.widget.DrawerLayout>
+    <Button
+        android:id="@+id/calendar_to_summary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Summary"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/calendar_add_entry" />
+
+</android.support.constraint.ConstraintLayout>

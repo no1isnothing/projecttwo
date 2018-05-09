@@ -4,7 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 
 import com.roomorama.caldroid.CaldroidFragment;
 import com.roomorama.caldroid.CaldroidListener;
@@ -15,7 +19,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
-public class EntryCalendarActivity extends BaseActivity {
+public class EntryCalendarActivity extends AppCompatActivity {
 
     private ProjectTwoDataSource mDataSource;
     public static final String DATE_FIELD = "date_field";
@@ -35,11 +39,20 @@ public class EntryCalendarActivity extends BaseActivity {
         caldroidFragment = new CaldroidCustomFragment();
         setupCaldroid(savedInstanceState);
 
-        FloatingActionButton fab = findViewById(R.id.fab_add);
+        Button fab = findViewById(R.id.calendar_add_entry);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), EntryCreateActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        Button summaryButton = findViewById(R.id.calendar_to_summary);
+        summaryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), SummaryActivity.class);
                 startActivity(intent);
             }
         });
@@ -114,6 +127,24 @@ public class EntryCalendarActivity extends BaseActivity {
         if (caldroidFragment != null) {
             caldroidFragment.saveStatesToKey(outState, CALDROID_SAVE_KEY);
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle your other action bar items...
+        if(item.getItemId() == R.id.action_settings)
+        {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
     }
 }
 

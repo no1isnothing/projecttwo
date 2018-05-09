@@ -3,7 +3,6 @@ package com.thebipolaroptimist.projecttwo.views;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-
 import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -60,11 +59,16 @@ public class CustomListPreference extends DialogPreference {
                 addRow(parts[0], parts[1]);
             }
         }
+
+        if(mValues.size() == 0)
+        {
+            addRow(null, null);
+        }
     }
 
     private void addRow(String title, String color)
     {
-        mLayout.addView(new ActionRow(getContext(),title, color, R.drawable.ic_delete_black, new ActionRow.OnClickListener() {
+        mLayout.addView(new ActionRow(mContext, title, color, R.drawable.ic_delete_black, new ActionRow.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mLayout.removeView(view);
@@ -81,7 +85,9 @@ public class CustomListPreference extends DialogPreference {
             ActionRow row = (ActionRow) mLayout.getChildAt(i);
             String name = row.getName();
             String color = row.getColor();
-            mValues.add(name + ":" + color);
+            if(!name.isEmpty() && color != null) {
+                mValues.add(name + ":" + color);
+            }
         }
     }
 

@@ -12,6 +12,8 @@ import com.thebipolaroptimist.projecttwo.views.MoodDetailRow;
 public class SettingsFragment extends PreferenceFragment {
     public static final String[] CATEGORIES_ARRAY = {MoodDetailRow.CATEGORY, ActivityDetailRow.CATEGORY, IncidentDetailRow.CATEGORY};
     public static final String PREFERENCE_PREFIX = "preference_";
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,7 +24,7 @@ public class SettingsFragment extends PreferenceFragment {
 
         //Create a custom list preference for each category and add to screen
         for (String category : CATEGORIES_ARRAY) {
-            CustomListPreference preference = new CustomListPreference(preferenceScreen.getContext(), null);
+            CustomListPreference preference = new CustomListPreference(getActivity(), null);
             preference.setTitle(category);
             preference.setKey(PREFERENCE_PREFIX + category);
             preferenceScreen.addPreference(preference);

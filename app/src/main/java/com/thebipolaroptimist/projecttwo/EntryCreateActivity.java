@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 
 import com.thebipolaroptimist.projecttwo.db.ProjectTwoDataSource;
+import com.thebipolaroptimist.projecttwo.dialogs.ConfirmDeleteDialog;
 import com.thebipolaroptimist.projecttwo.dialogs.ConfirmDiscardDialog;
 import com.thebipolaroptimist.projecttwo.models.Entry;
 import com.thebipolaroptimist.projecttwo.models.EntryDTO;
@@ -21,7 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 
-public class EntryCreateActivity extends AppCompatActivity implements ConfirmDiscardDialog.ConfirmDiscardDialogListener {
+public class EntryCreateActivity extends AppCompatActivity implements ConfirmDiscardDialog.ConfirmDiscardDialogListener, ConfirmDeleteDialog.ConfirmDeleteDialogListener {
     public static final String TAG = "EntryCreate";
     public static final int SEEKBAR_MIDDLE_VALUE = 50;
     private ProjectTwoDataSource mDataSource;
@@ -66,6 +67,10 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
             onSave();
         } else if (item.getItemId() == android.R.id.home) {
             onBackPressed();
+        } else if(item.getItemId() == R.id.nav_item_ec_delete)
+        {
+            DialogFragment dialogFragment = new ConfirmDeleteDialog();
+            dialogFragment.show(getSupportFragmentManager(), "ConfirmDeleteDialog");
         }
         return true;
     }
@@ -142,8 +147,18 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
     }
 
     @Override
-    public void onConfirmDialogNegativeClick(DialogFragment dialog) {
+    public void onConfirmDialogNegativeClick(DialogFragment dialog)
+    {
         onSave();
+    }
+
+    @Override
+    public void onConfirmDeletePositiveClick(DialogFragment dialogFragment) {
+        if(mId != null) {
+            mDataSource.deleteEntry(mId);
+        }
+        super.onBackPressed();
+        finish();
     }
 }
 

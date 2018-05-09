@@ -7,10 +7,9 @@ import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.thebipolaroptimist.projecttwo.R;
@@ -26,7 +25,7 @@ import java.util.List;
  * The list of details are editable and new detail types can be added
  */
 public class CategoryLayout extends ConstraintLayout implements AddDetailsDialog.Listener {
-    private final ImageButton mAddButton;
+    private final Button mAddButton;
     private final LinearLayout mLayout;
     private final String mCategory;
     private final Context mContext;
