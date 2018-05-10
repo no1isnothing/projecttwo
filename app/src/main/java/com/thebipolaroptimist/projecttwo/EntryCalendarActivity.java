@@ -39,8 +39,8 @@ public class EntryCalendarActivity extends AppCompatActivity {
         caldroidFragment = new CaldroidCustomFragment();
         setupCaldroid(savedInstanceState);
 
-        Button fab = findViewById(R.id.calendar_add_entry);
-        fab.setOnClickListener(new View.OnClickListener() {
+        Button addEntryButton = findViewById(R.id.calendar_add_entry);
+        addEntryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), EntryCreateActivity.class);

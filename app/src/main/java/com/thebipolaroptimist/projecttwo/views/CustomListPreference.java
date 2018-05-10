@@ -24,7 +24,7 @@ import java.util.Set;
  * Custom Preference Class
  * A list of action rows representing detail types
  * On creation a row is added for each existing detail type
- * The user can add new rows or remove existing rowd
+ * The user can add new rows or remove existing rows
  */
 public class CustomListPreference extends DialogPreference {
     public static final String TAG ="CustomListPreference";

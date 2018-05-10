@@ -12,7 +12,7 @@ public class DetailDTO {
     public static final String UNITS_SCALE = "scale";
     public static final String UNITS_MINUTES = "minutes";
 
-    public String category; //
+    public String category;
     public String detailType;
     public String detailData;
     public String detailDataUnit;

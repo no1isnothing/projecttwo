@@ -21,8 +21,7 @@ import com.thebipolaroptimist.projecttwo.R;
  * The constructor receives text and a color to display
  * and a listener to be called when the button is clicked
  */
-public class
-ActionRow extends LinearLayout {
+public class ActionRow extends LinearLayout {
     private EditText mTextPrefName;
     private String mColor;
     OnClickListener mListener;
