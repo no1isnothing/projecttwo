@@ -1,7 +1,13 @@
 package com.thebipolaroptimist.projecttwo.models;
 
 
+import com.thebipolaroptimist.projecttwo.EntryCalendarActivity;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -94,6 +100,78 @@ public class EntryDTO {
                 entryDTO.categoriesToDetails.put(detailDTO.category, detailMap);
             }
             detailMap.put(detailDTO.detailType, detailDTO);
+        }
+    }
+
+    /**
+     * Add the list of details to this entry
+     * details should all be for the same category
+     * @param detailList list of details to add to entry
+     * @param category category to add details to
+     */
+    public void saveList(List<DetailDTO> detailList, String category) {
+        if(detailList.size() > 0) {
+            Map<String, DetailDTO> detailDTOMap = categoriesToDetails.get(category);
+            if (detailDTOMap == null) {
+                detailDTOMap = new HashMap<>();
+                categoriesToDetails.put(category, detailDTOMap);
+                detailCategories.add(category);
+            }
+
+            for (DetailDTO dto : detailList) {
+                detailDTOMap.put(dto.detailType, dto);
+            }
+        }
+    }
+
+    /**
+     * Retrieves details of given type for this entry
+     * @param category Category to get details for
+     * @return list of details
+     */
+    public List<DetailDTO> getDetailList(String category)
+    {
+        List<DetailDTO> details = new ArrayList<>();
+        if(categoriesToDetails != null) {
+            Map<String, DetailDTO> detailDTOMap = categoriesToDetails.get(category);
+            if(detailDTOMap != null) {
+                Set<String> keys = detailDTOMap.keySet();
+                for (String key : keys) {
+                    details.add(detailDTOMap.get(key));
+                }
+            }
+        }
+        return details;
+    }
+
+    /**
+     * Update the lastEditedTime and set entryTime for new entries
+     * @param dateString previous date
+     */
+    public void updateTimes(String dateString)
+    {
+        SimpleDateFormat format = new SimpleDateFormat(EntryCalendarActivity.DATE_FORMAT_PATTERN);
+        Long time = System.currentTimeMillis();
+        if(dateString != null && !dateString.isEmpty()) {
+            try {
+                Date date = format.parse(dateString);
+
+                Calendar calendar = Calendar.getInstance();
+                int hour = calendar.get(Calendar.HOUR);
+                int minute = calendar.get(Calendar.MINUTE);
+
+                calendar.setTimeInMillis(date.getTime());
+                calendar.set(Calendar.HOUR, hour);
+                calendar.set(Calendar.MINUTE, minute);
+                time = calendar.getTimeInMillis();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        lastEditedTime = time.toString();
+
+        if (entryTime == null) {
+            entryTime = lastEditedTime;
         }
     }
 }

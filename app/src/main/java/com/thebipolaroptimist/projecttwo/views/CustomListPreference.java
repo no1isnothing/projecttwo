@@ -3,7 +3,6 @@ package com.thebipolaroptimist.projecttwo.views;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-
 import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -23,9 +22,9 @@ import java.util.Set;
 
 /**
  * Custom Preference Class
- * Contains a list of string values of the format "string:hex_color"
- * The user can enter text and select a color and add them to the list with the add button
- * The user can remove items from the list with a - button
+ * A list of action rows representing detail types
+ * On creation a row is added for each existing detail type
+ * The user can add new rows or remove existing rows
  */
 public class CustomListPreference extends DialogPreference {
     public static final String TAG ="CustomListPreference";
@@ -60,11 +59,16 @@ public class CustomListPreference extends DialogPreference {
                 addRow(parts[0], parts[1]);
             }
         }
+
+        if(mValues.size() == 0)
+        {
+            addRow(null, null);
+        }
     }
 
     private void addRow(String title, String color)
     {
-        mLayout.addView(new ActionRow(getContext(),title, color, new ActionRow.OnClickListener() {
+        mLayout.addView(new ActionRow(mContext, title, color, R.drawable.ic_delete_black, new ActionRow.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mLayout.removeView(view);
@@ -81,7 +85,9 @@ public class CustomListPreference extends DialogPreference {
             ActionRow row = (ActionRow) mLayout.getChildAt(i);
             String name = row.getName();
             String color = row.getColor();
-            mValues.add(name + ":" + color);
+            if(!name.isEmpty() && color != null) {
+                mValues.add(name + ":" + color);
+            }
         }
     }
 

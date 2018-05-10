@@ -12,8 +12,8 @@ import com.thebipolaroptimist.projecttwo.R;
 public class ConfirmDiscardDialog extends DialogFragment {
 
     public interface ConfirmDiscardDialogListener {
-        void onDialogPositiveClick(DialogFragment dialog);
-        void onDialogNegativeClick(DialogFragment dialog);
+        void onConfirmDialogPositiveClick(DialogFragment dialog);
+        void onConfirmDialogNegativeClick(DialogFragment dialog);
     }
 
     ConfirmDiscardDialogListener mListener;
@@ -36,12 +36,12 @@ public class ConfirmDiscardDialog extends DialogFragment {
         builder.setMessage(R.string.discard_message)
                 .setPositiveButton(R.string.discard, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        mListener.onDialogPositiveClick(ConfirmDiscardDialog.this);
+                        mListener.onConfirmDialogPositiveClick(ConfirmDiscardDialog.this);
                     }
                 })
                 .setNegativeButton(R.string.save, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        mListener.onDialogNegativeClick(ConfirmDiscardDialog.this);
+                        mListener.onConfirmDialogNegativeClick(ConfirmDiscardDialog.this);
                     }
                 });
 

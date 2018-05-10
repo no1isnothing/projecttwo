@@ -4,13 +4,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.ColorInt;
+import android.support.annotation.DrawableRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.pes.androidmaterialcolorpickerdialog.ColorPicker;
 import com.pes.androidmaterialcolorpickerdialog.ColorPickerCallback;
@@ -42,14 +42,17 @@ public class ActionRow extends LinearLayout {
         return mColor;
     }
 
-    public ActionRow(Context context, String title, String color, OnClickListener listener) {
+    public void clearName(){ mTextPrefName.setText("");}
+
+    public ActionRow(Context context, String title, String color, @DrawableRes int resourceId, OnClickListener listener) {
         super(context);
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (inflater != null) {
             inflater.inflate(R.layout.view_action_row, this, true);
         }
         mListener = listener;
-        ImageButton button = findViewById(R.id.action_row_delete_button);
+        ImageButton button = findViewById(R.id.action_row_button);
+        button.setImageResource(resourceId);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
