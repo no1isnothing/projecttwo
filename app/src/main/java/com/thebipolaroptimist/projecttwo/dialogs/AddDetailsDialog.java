@@ -4,10 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,17 +13,14 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.thebipolaroptimist.projecttwo.R;
-import com.thebipolaroptimist.projecttwo.SettingsFragment;
+import com.thebipolaroptimist.projecttwo.SettingsManager;
 import com.thebipolaroptimist.projecttwo.views.ActionRow;
 import com.thebipolaroptimist.projecttwo.views.SelectableWord;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class AddDetailsDialog extends DialogFragment {
 
@@ -36,6 +30,7 @@ public class AddDetailsDialog extends DialogFragment {
     private Button mButtonAddDetailType;
     final private List<String> mDetailTypeFromPrefs = new ArrayList<>();
     private String mCategory = "";
+    private SettingsManager mSettingsManager;
 
     public interface Listener{
          void onPositiveResult(List<String> detailTypes);
@@ -44,6 +39,12 @@ public class AddDetailsDialog extends DialogFragment {
     public void setListener(Listener listener)
     {
         mListener = listener;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mSettingsManager = new SettingsManager(getActivity());
     }
 
     @Override
@@ -90,7 +91,7 @@ public class AddDetailsDialog extends DialogFragment {
             Log.w(TAG, "Created without category argument");
         }
 
-        getDetailTypesFromPrefs();
+        mDetailTypeFromPrefs.addAll(mSettingsManager.getDetailTypesForCategory(mCategory));
 
         //Put detail types into usable data structures
         List<String> detailsTypes = new ArrayList<>();
@@ -119,7 +120,7 @@ public class AddDetailsDialog extends DialogFragment {
                 //Add values from action row to view
                 ActionRow row = (ActionRow) view;
                 mDetailTypeFromPrefs.add(row.getName() + ":" + row.getColor());
-                storeDetailTypesInPrefs();
+                mSettingsManager.storeDetailTypeForCategory(mCategory, mDetailTypeFromPrefs);
                 mDetailTypeList.addView(new SelectableWord(getActivity(), row.getName(), row.getColor()));
                 view.setVisibility(View.INVISIBLE);
                 mButtonAddDetailType.setVisibility(View.VISIBLE);
@@ -140,29 +141,5 @@ public class AddDetailsDialog extends DialogFragment {
         });
 
         return builder.create();
-    }
-
-    private void storeDetailTypesInPrefs()
-    {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        SharedPreferences.Editor prefEditor = prefs.edit();
-
-        Set<String> set = new HashSet(mDetailTypeFromPrefs);
-        prefEditor.putStringSet(SettingsFragment.PREFERENCE_PREFIX + mCategory, set);
-
-        prefEditor.commit();
-    }
-
-    private void getDetailTypesFromPrefs()
-    {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            mDetailTypeFromPrefs.addAll(prefs.getStringSet(SettingsFragment.PREFERENCE_PREFIX + mCategory, new HashSet<String>()));
-        } else
-        {
-            String activityString = prefs.getString(SettingsFragment.PREFERENCE_PREFIX + mCategory, "");
-            mDetailTypeFromPrefs.addAll(Arrays.asList(activityString.split(",")));
-        }
     }
 }
