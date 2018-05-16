@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import io.realm.Realm;
@@ -88,7 +89,15 @@ public class ProjectTwoDataSource {
         Map<String,Object>  dayToEntries = new HashMap<>();
         for (Entry entry : entries) {
             String key = getFormattedTime(entry.getEntryTime());
-            List<Entry> entriesForToday = (List<Entry>) dayToEntries.get(key);
+            List<Entry> entriesForToday  = null;
+
+            try {
+
+                entriesForToday = (List<Entry>) dayToEntries.get(key);
+            } catch(ClassCastException e)
+            {
+                Log.w(TAG, "Failed to cast List<Entry> to List<Object>");
+            }
             if(entriesForToday == null)
             {
                 entriesForToday= new ArrayList<>();
@@ -127,7 +136,7 @@ public class ProjectTwoDataSource {
      */
     private String getFormattedTime(String time)
     {
-        final SimpleDateFormat formatter = new SimpleDateFormat(EntryCalendarActivity.DATE_FORMAT_PATTERN);
+        final SimpleDateFormat formatter = new SimpleDateFormat(EntryCalendarActivity.DATE_FORMAT_PATTERN, Locale.getDefault());
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(Long.parseLong(time));
         return formatter.format(calendar.getTime());

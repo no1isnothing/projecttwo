@@ -23,7 +23,7 @@ public class EntryListActivity extends AppCompatActivity {
     private EntryAdapter mAdapter;
     public static final String ENTRY_FIELD_ID = "entry_id";
     private String mDay;
-    List<Entry> mEntries;
+    private List<Entry> mEntries;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,9 +50,11 @@ public class EntryListActivity extends AppCompatActivity {
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+        }
     }
 
     @Override

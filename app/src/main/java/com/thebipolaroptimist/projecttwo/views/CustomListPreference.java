@@ -2,7 +2,6 @@ package com.thebipolaroptimist.projecttwo.views;
 
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -27,10 +26,10 @@ import java.util.Set;
  * The user can add new rows or remove existing rows
  */
 public class CustomListPreference extends DialogPreference {
-    public static final String TAG ="CustomListPreference";
-    Set<String> mValues;
-    LinearLayout mLayout;
-    Context mContext;
+    private static final String TAG ="CustomListPreference";
+    private Set<String> mValues;
+    private LinearLayout mLayout;
+    private final Context mContext;
 
     public CustomListPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -127,11 +126,6 @@ public class CustomListPreference extends DialogPreference {
         } else {
             Log.i(TAG, "Not persisting values");
         }
-    }
-
-    @Override
-    protected Object onGetDefaultValue(TypedArray a, int index) {
-        return super.onGetDefaultValue(a, index);
     }
 
     //TODO test this code. Wrote it based on the android docs

@@ -13,8 +13,10 @@ public class SettingsActivity extends AppCompatActivity {
                 .replace(android.R.id.content, new SettingsFragment())
                 .commit();
 
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     @Override

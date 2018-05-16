@@ -26,14 +26,15 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class AddDetailsDialog extends DialogFragment {
 
-    public static final String TAG = "AddDetailDialog";
+    private static final String TAG = "AddDetailDialog";
     private Listener mListener;
     private LinearLayout mDetailTypeList;
     private Button mButtonAddDetailType;
-    final List<String> mDetailTypeFromPrefs = new ArrayList<>();
+    final private List<String> mDetailTypeFromPrefs = new ArrayList<>();
     private String mCategory = "";
 
     public interface Listener{
@@ -91,7 +92,7 @@ public class AddDetailsDialog extends DialogFragment {
 
         getDetailTypesFromPrefs();
 
-        //Put detail types into useable data structures
+        //Put detail types into usable data structures
         List<String> detailsTypes = new ArrayList<>();
         Map<String, String> detailTypesToColors = new HashMap<>();
         for (String preference : mDetailTypeFromPrefs) {
@@ -107,7 +108,7 @@ public class AddDetailsDialog extends DialogFragment {
 
         //Add lines to view for each detail type
         for (String detailsType : detailsTypes) {
-            if(!args.containsKey(detailsType)) {
+            if(args != null && !args.containsKey(detailsType)) {
                 mDetailTypeList.addView(new SelectableWord(getActivity(), detailsType, detailTypesToColors.get(detailsType)));
             }
         }
@@ -141,17 +142,18 @@ public class AddDetailsDialog extends DialogFragment {
         return builder.create();
     }
 
-    public void storeDetailTypesInPrefs()
+    private void storeDetailTypesInPrefs()
     {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         SharedPreferences.Editor prefEditor = prefs.edit();
 
-        prefEditor.putStringSet(SettingsFragment.PREFERENCE_PREFIX + mCategory, new HashSet(mDetailTypeFromPrefs));
+        Set<String> set = new HashSet(mDetailTypeFromPrefs);
+        prefEditor.putStringSet(SettingsFragment.PREFERENCE_PREFIX + mCategory, set);
 
         prefEditor.commit();
     }
 
-    public void getDetailTypesFromPrefs()
+    private void getDetailTypesFromPrefs()
     {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 

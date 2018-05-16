@@ -11,7 +11,7 @@ import com.thebipolaroptimist.projecttwo.models.DetailDTO;
 public class ActivityDetailRow extends DetailRow {
     public static final String CATEGORY = "Activity";
     final private DetailDTO mDetail;
-    EditText mEditText;
+    final private EditText mEditText;
 
     public ActivityDetailRow(Context context, DetailDTO detail) {
         super(context);

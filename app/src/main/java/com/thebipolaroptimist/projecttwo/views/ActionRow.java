@@ -22,9 +22,9 @@ import com.thebipolaroptimist.projecttwo.R;
  * and a listener to be called when the button is clicked
  */
 public class ActionRow extends LinearLayout {
-    private EditText mTextPrefName;
+    private final EditText mTextPrefName;
     private String mColor;
-    OnClickListener mListener;
+    private final OnClickListener mListener;
 
     public interface OnClickListener
     {
@@ -85,7 +85,7 @@ public class ActionRow extends LinearLayout {
                 cp.setCallback(new ColorPickerCallback() {
                     @Override
                     public void onColorChosen(@ColorInt int color) {
-                        mColor = String.format("#%08X", (0xFFFFFFFF & color));
+                        mColor = String.format("#%08X", (color));
                         colorButton.setBackgroundColor(Color.parseColor(mColor));
                         cp.dismiss();
                     }

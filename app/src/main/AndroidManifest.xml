@@ -28,11 +28,12 @@
             android:name=".SettingsActivity"
             android:theme="@style/AppTheme.ActionBar" />
 
-        <activity android:name=".EntryCreateActivity"
+        <activity
+            android:name=".EntryCreateActivity"
             android:parentActivityName=".EntryCalendarActivity"
             android:theme="@style/AppTheme.ActionBar"
             android:windowSoftInputMode="stateUnchanged"
-            android:label="Entry:"></activity>
+            android:label="Entry:" />
     </application>
 
 </manifest>

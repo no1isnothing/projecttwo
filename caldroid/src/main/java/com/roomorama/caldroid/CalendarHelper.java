@@ -33,7 +33,7 @@ public class CalendarHelper {
      */
     public static ArrayList<DateTime> getFullWeeks(int month, int year,
                                                    int startDayOfWeek, boolean sixWeeksInCalendar) {
-        ArrayList<DateTime> datetimeList = new ArrayList<DateTime>();
+        ArrayList<DateTime> datetimeList = new ArrayList<>();
 
         DateTime firstDateOfMonth = new DateTime(year, month, 1, 0, 0, 0, 0);
         DateTime lastDateOfMonth = firstDateOfMonth.plusDays(firstDateOfMonth
@@ -180,7 +180,7 @@ public class CalendarHelper {
 
     public static ArrayList<String> convertToStringList(
             ArrayList<DateTime> dateTimes) {
-        ArrayList<String> list = new ArrayList<String>();
+        ArrayList<String> list = new ArrayList<>();
         for (DateTime dateTime : dateTimes) {
             list.add(dateTime.format("YYYY-MM-DD"));
         }

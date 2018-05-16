@@ -1,7 +1,6 @@
 package com.thebipolaroptimist.projecttwo.views;
 
 import android.content.Context;
-import android.view.View;
 import android.widget.LinearLayout;
 
 import com.thebipolaroptimist.projecttwo.models.DetailDTO;

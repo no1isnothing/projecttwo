@@ -164,8 +164,8 @@ public class CaldroidFragment extends DialogFragment {
     protected String dialogTitle;
     protected int month = -1;
     protected int year = -1;
-    protected ArrayList<DateTime> disableDates = new ArrayList<DateTime>();
-    protected ArrayList<DateTime> selectedDates = new ArrayList<DateTime>();
+    protected ArrayList<DateTime> disableDates = new ArrayList<>();
+    protected ArrayList<DateTime> selectedDates = new ArrayList<>();
     protected DateTime minDateTime;
     protected DateTime maxDateTime;
     protected ArrayList<DateTime> dateInMonthsList;
@@ -189,7 +189,7 @@ public class CaldroidFragment extends DialogFragment {
      * textColorForDateMap holds color for text for each date
      */
     protected Map<DateTime, Integer> textColorForDateTimeMap = new HashMap<>();
-    ;
+
 
     /**
      * First column of calendar is Sunday
@@ -205,7 +205,7 @@ public class CaldroidFragment extends DialogFragment {
     /**
      * datePagerAdapters hold 4 adapters, meant to be reused
      */
-    protected ArrayList<CaldroidGridAdapter> datePagerAdapters = new ArrayList<CaldroidGridAdapter>();
+    protected ArrayList<CaldroidGridAdapter> datePagerAdapters = new ArrayList<>();
 
     /**
      * To control the navigation
@@ -1257,12 +1257,12 @@ public class CaldroidFragment extends DialogFragment {
         View view = localInflater.inflate(R.layout.calendar_view, container, false);
 
         // For the monthTitleTextView
-        monthTitleTextView = (TextView) view
+        monthTitleTextView = view
                 .findViewById(R.id.calendar_month_year_textview);
 
         // For the left arrow button
-        leftArrowButton = (Button) view.findViewById(R.id.calendar_left_arrow);
-        rightArrowButton = (Button) view
+        leftArrowButton = view.findViewById(R.id.calendar_left_arrow);
+        rightArrowButton = view
                 .findViewById(R.id.calendar_right_arrow);
 
         // Navigate to previous month when user click
@@ -1287,7 +1287,7 @@ public class CaldroidFragment extends DialogFragment {
         setShowNavigationArrows(showNavigationArrows);
 
         // For the weekday gridview ("SUN, MON, TUE, WED, THU, FRI, SAT")
-        weekdayGridView = (GridView) view.findViewById(R.id.weekday_gridview);
+        weekdayGridView = view.findViewById(R.id.weekday_gridview);
         WeekdayArrayAdapter weekdaysAdapter = getNewWeekdayAdapter(themeResource);
         weekdayGridView.setAdapter(weekdaysAdapter);
 
@@ -1373,7 +1373,7 @@ public class CaldroidFragment extends DialogFragment {
         // Setup InfiniteViewPager and InfinitePagerAdapter. The
         // InfinitePagerAdapter is responsible
         // for reuse the fragments
-        dateViewPager = (InfiniteViewPager) view
+        dateViewPager = view
                 .findViewById(R.id.months_infinite_pager);
 
         // Set enable swipe
@@ -1423,7 +1423,7 @@ public class CaldroidFragment extends DialogFragment {
      * @return "SUN, MON, TUE, WED, THU, FRI, SAT"
      */
     protected ArrayList<String> getDaysOfWeek() {
-        ArrayList<String> list = new ArrayList<String>();
+        ArrayList<String> list = new ArrayList<>();
 
         SimpleDateFormat fmt = new SimpleDateFormat("EEE", Locale.getDefault());
 
@@ -1615,9 +1615,7 @@ public class CaldroidFragment extends DialogFragment {
             childFragmentManager.setAccessible(true);
             childFragmentManager.set(this, null);
 
-        } catch (NoSuchFieldException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
+        } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     }

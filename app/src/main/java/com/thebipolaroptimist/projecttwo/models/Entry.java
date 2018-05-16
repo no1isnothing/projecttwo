@@ -46,11 +46,10 @@ public class Entry extends RealmObject
 
     public String getEntrySummary()
     {
-        StringBuilder builder = new StringBuilder();
+        String summary = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT)
+                .format(new Date(Long.parseLong(entryTime)));
 
-        builder.append(DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT)
-                .format(new Date(Long.parseLong(entryTime))));
-        return builder.toString();
+        return summary;
     }
 
     public void setEntryNote(String entryNote) {

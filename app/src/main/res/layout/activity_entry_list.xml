@@ -2,22 +2,19 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.thebipolaroptimist.projecttwo.EntryListActivity"
+    tools:mContext="com.thebipolaroptimist.projecttwo.EntryListActivity"
     >
         <FrameLayout
-            android:id="@+id/content_frame"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <!-- This text view will be hidden by the recylcer view if it has data -->
+            <!-- This text view will be hidden by the recycler view if it has data -->
             <TextView
-                android:id="@+id/no_entries_message"
-                android:text="No entries for this day"
+                android:text="@string/no_entries_for_this_day"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
@@ -34,7 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
-        android:text="Add Entry"
+        android:text="@string/add_entry"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

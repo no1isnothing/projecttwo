@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="8dp"
-    tools:context="com.thebipolaroptimist.projecttwo.EntryCreateActivity"
+    tools:mContext="com.thebipolaroptimist.projecttwo.EntryCreateActivity"
     tools:layout_editor_absoluteY="81dp">
 
     <LinearLayout
@@ -39,6 +39,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/notes"
             android:paddingTop="16dp"
+            android:inputType="text"
             android:maxLines="4"
             android:scrollbars="vertical"
             app:layout_constraintBottom_toTopOf="@id/category_layout_list"

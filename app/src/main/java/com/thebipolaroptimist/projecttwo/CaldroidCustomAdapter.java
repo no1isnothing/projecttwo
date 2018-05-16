@@ -4,6 +4,7 @@ package com.thebipolaroptimist.projecttwo;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.GradientDrawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import java.util.Map;
 import hirondelle.date4j.DateTime;
 
 public class CaldroidCustomAdapter extends CaldroidGridAdapter{
+    private static final String TAG = "CaldroidCustomAdapter";
     public static final String DATE_FORMAT_PATTERN = "MMM DD YYYY";
     public CaldroidCustomAdapter(Context context, int month, int year,
                                  Map<String, Object> caldroidData, Map<String, Object> extraData)
@@ -34,7 +36,7 @@ public class CaldroidCustomAdapter extends CaldroidGridAdapter{
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View cellView = convertView;
-        if(cellView == null)
+        if(cellView == null && inflater != null)
         {
             cellView = inflater.inflate(R.layout.custom_calendar_cell, null);
         }
@@ -45,7 +47,7 @@ public class CaldroidCustomAdapter extends CaldroidGridAdapter{
 
         //Set day number
         TextView tv1 = cellView.findViewById(R.id.tv1);
-        tv1.setText("" + dateTime.getDay());
+        tv1.setText(dateTime.getDay().toString());
 
         // Dim color for dates in previous / next month
         if (dateTime.getMonth() != month) {
@@ -63,7 +65,13 @@ public class CaldroidCustomAdapter extends CaldroidGridAdapter{
 
         //Set up colored dots matching details for this day
         String key = dateTime.format(DATE_FORMAT_PATTERN, Locale.US);
-        List<Entry> entries = (List<Entry>) extraData.get(key);
+        List<Entry> entries = null;
+        try {
+            entries = (List<Entry>) extraData.get(key);
+        }catch( ClassCastException e)
+        {
+            Log.w(TAG, "Failed to cast extra data to type List<Entry>");
+        }
 
         //List of ids for views to draw dots in
         //If this code ends up changing often, pull the ids from the layout

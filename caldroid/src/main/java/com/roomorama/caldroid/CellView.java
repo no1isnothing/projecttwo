@@ -17,7 +17,7 @@ public class CellView extends TextView {
     public static final int STATE_DISABLED = R.attr.state_date_disabled;
     public static final int STATE_PREV_NEXT_MONTH = R.attr.state_date_prev_next_month;
 
-    private ArrayList<Integer> customStates = new ArrayList<Integer>();
+    private ArrayList<Integer> customStates = new ArrayList<>();
 
     public CellView(Context context) {
         super(context);
@@ -34,7 +34,7 @@ public class CellView extends TextView {
     }
 
     private void init() {
-        if (null == customStates) customStates = new ArrayList<Integer>();
+        if (null == customStates) customStates = new ArrayList<>();
     }
 
     public void resetCustomStates() {

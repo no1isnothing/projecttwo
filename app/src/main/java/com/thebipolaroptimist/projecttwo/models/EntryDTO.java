@@ -10,6 +10,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -26,7 +27,6 @@ import io.realm.RealmList;
  * This makes interacting with the UI and updating details easier
  */
 public class EntryDTO {
-    public String id = UUID.randomUUID().toString();
     public String entryNote;
     public String entryTime;
     public String lastEditedTime;
@@ -150,7 +150,7 @@ public class EntryDTO {
      */
     public void updateTimes(String dateString)
     {
-        SimpleDateFormat format = new SimpleDateFormat(EntryCalendarActivity.DATE_FORMAT_PATTERN);
+        SimpleDateFormat format = new SimpleDateFormat(EntryCalendarActivity.DATE_FORMAT_PATTERN, Locale.getDefault());
         Long time = System.currentTimeMillis();
         if(dateString != null && !dateString.isEmpty()) {
             try {
