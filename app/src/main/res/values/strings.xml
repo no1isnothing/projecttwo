@@ -16,4 +16,5 @@
     <string name="enter_new_type">Enter New Type</string>
     <string name="content_button">Button</string>
     <string name="summary">Summary</string>
+    <string name="duration">Duration</string>
 </resources>
