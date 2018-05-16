@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="8dp"
-    tools:mContext="com.thebipolaroptimist.projecttwo.EntryCreateActivity"
+    tools:context="com.thebipolaroptimist.projecttwo.EntryCreateActivity"
     tools:layout_editor_absoluteY="81dp">
 
     <LinearLayout
