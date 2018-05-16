@@ -245,14 +245,7 @@ public class CaldroidGridAdapter extends BaseAdapter {
             // Get background resource for the dateTime
             Drawable drawable = backgroundForDateTimeMap.get(dateTime);
 
-            // Set it
-            if (drawable != null) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    backgroundView.setBackground(drawable);
-                } else {
-                    backgroundView.setBackgroundDrawable(drawable);
-                }
-            }
+            backgroundView.setBackground(drawable);
         }
 
         // Set custom text color

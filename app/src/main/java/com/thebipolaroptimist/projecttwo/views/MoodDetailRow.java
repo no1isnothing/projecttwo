@@ -1,7 +1,6 @@
 package com.thebipolaroptimist.projecttwo.views;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.widget.SeekBar;
 import android.widget.TextView;

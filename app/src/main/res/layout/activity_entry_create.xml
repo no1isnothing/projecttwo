@@ -39,6 +39,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/notes"
             android:paddingTop="16dp"
+            android:inputType="text"
             android:maxLines="4"
             android:scrollbars="vertical"
             app:layout_constraintBottom_toTopOf="@id/category_layout_list"

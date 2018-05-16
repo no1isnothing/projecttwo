@@ -2,7 +2,6 @@ package com.thebipolaroptimist.projecttwo;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -17,6 +16,7 @@ import com.thebipolaroptimist.projecttwo.db.ProjectTwoDataSource;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Map;
 
 public class EntryCalendarActivity extends AppCompatActivity {
@@ -25,8 +25,8 @@ public class EntryCalendarActivity extends AppCompatActivity {
     public static final String DATE_FIELD = "date_field";
     public static final String DATE_FORMAT_PATTERN = "MMM dd yyyy";
     public static final String CALDROID_SAVE_KEY = "CALDROID_SAVED_STATE";
-    CaldroidFragment caldroidFragment;
-    Map<String, Object> mAdapterData;
+    private CaldroidFragment caldroidFragment;
+    private Map<String, Object> mAdapterData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,7 +106,7 @@ public class EntryCalendarActivity extends AppCompatActivity {
     public void openEntryListForDay(Date date)
     {
         Intent intent = new Intent(getApplicationContext(), EntryListActivity.class);
-        final SimpleDateFormat mFormatter = new SimpleDateFormat(DATE_FORMAT_PATTERN);
+        final SimpleDateFormat mFormatter = new SimpleDateFormat(DATE_FORMAT_PATTERN, Locale.getDefault());
         String key = mFormatter.format(date);
         intent.putExtra(EntryCalendarActivity.DATE_FIELD, key);
 

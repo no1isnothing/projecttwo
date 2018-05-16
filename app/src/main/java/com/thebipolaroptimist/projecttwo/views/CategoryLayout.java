@@ -10,9 +10,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.thebipolaroptimist.projecttwo.R;
+import com.thebipolaroptimist.projecttwo.SettingsFragment;
 import com.thebipolaroptimist.projecttwo.dialogs.AddDetailsDialog;
 import com.thebipolaroptimist.projecttwo.models.DetailDTO;
 
@@ -31,6 +33,7 @@ public class CategoryLayout extends ConstraintLayout implements AddDetailsDialog
     private final Context mContext;
     private final List<DetailDTO> mDetails;
     private final ToggleButton mExpandButton;
+    private final TextView mDetailDataTypeLabel;
 
     public String getCategory()
     {
@@ -44,6 +47,8 @@ public class CategoryLayout extends ConstraintLayout implements AddDetailsDialog
         mExpandButton.setTextOn(mCategory);
         mExpandButton.setText(mCategory);
         mAddButton.setVisibility(INVISIBLE);
+        mDetailDataTypeLabel.setVisibility(INVISIBLE);
+        mDetailDataTypeLabel.setText(SettingsFragment.getLabel(mCategory));
         mAddButton.setEnabled(false);
 
         mExpandButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -54,6 +59,7 @@ public class CategoryLayout extends ConstraintLayout implements AddDetailsDialog
                     buttonView.setButtonDrawable(R.drawable.ic_expand_less_black);
                     mAddButton.setVisibility(VISIBLE);
                     mAddButton.setEnabled(true);
+                    mDetailDataTypeLabel.setVisibility(VISIBLE);
                     expand();
                 }else
                 {
@@ -61,6 +67,7 @@ public class CategoryLayout extends ConstraintLayout implements AddDetailsDialog
                     mLayout.removeAllViews();
                     mAddButton.setVisibility(INVISIBLE);
                     mAddButton.setEnabled(false);
+                    mDetailDataTypeLabel.setVisibility(INVISIBLE);
                 }
             }
         });
@@ -82,6 +89,7 @@ public class CategoryLayout extends ConstraintLayout implements AddDetailsDialog
         mLayout = findViewById(R.id.detail_list);
         mAddButton = findViewById(R.id.add_detail_button);
         mExpandButton = findViewById(R.id.expand_details_button);
+        mDetailDataTypeLabel = findViewById(R.id.detail_data_type_label);
         mCategory = category;
         mDetails = details;
 
@@ -91,14 +99,14 @@ public class CategoryLayout extends ConstraintLayout implements AddDetailsDialog
     /**
      * Launches the add detail dialog to allow user to add detail types
      */
-    public void add()
+    private void add()
     {
         //launch add dialog
         Bundle bundle = new Bundle();
         bundle.putString("category", mCategory);
 
         for (DetailDTO mDetail : mDetails) {
-            bundle.putBoolean(mDetail.detailType, true);;
+            bundle.putBoolean(mDetail.detailType, true);
         }
 
         AddDetailsDialog fragment = new AddDetailsDialog();
@@ -129,7 +137,7 @@ public class CategoryLayout extends ConstraintLayout implements AddDetailsDialog
     /**
      * Create a row for each detail in this entry
      */
-    public void expand()
+    private void expand()
     {
         for (DetailDTO detail : mDetails) {
             mLayout.addView(DetailRowFactory.getDetailRow(mContext, detail));

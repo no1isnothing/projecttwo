@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -12,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="TextView"
+        android:text="@null"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
     <ImageView
@@ -23,6 +21,7 @@
         android:minHeight="15dp"
         android:padding="2dp"
         android:visibility="invisible"
+        android:contentDescription="@null"
         app:layout_constraintTop_toBottomOf="@id/tv1"
         app:layout_constraintStart_toStartOf="parent"/>
     <ImageView
@@ -33,6 +32,7 @@
         android:minHeight="15dp"
         android:padding="2dp"
         android:visibility="invisible"
+        android:contentDescription="@null"
         app:layout_constraintTop_toBottomOf="@id/image_view_1"
         app:layout_constraintStart_toStartOf="parent"/>
     <ImageView
@@ -43,6 +43,7 @@
         android:minHeight="15dp"
         android:padding="2dp"
         android:visibility="invisible"
+        android:contentDescription="@null"
         app:layout_constraintTop_toBottomOf="@id/tv1"
         app:layout_constraintStart_toEndOf="@id/image_view_1"/>
     <ImageView
@@ -53,6 +54,7 @@
         android:minHeight="15dp"
         android:padding="2dp"
         android:visibility="invisible"
+        android:contentDescription="@null"
         app:layout_constraintTop_toBottomOf="@id/image_view_3"
         app:layout_constraintStart_toEndOf="@id/image_view_2"/>
     <ImageView
@@ -63,6 +65,7 @@
         android:minHeight="15dp"
         android:padding="2dp"
         android:visibility="invisible"
+        android:contentDescription="@null"
         app:layout_constraintTop_toBottomOf="@id/tv1"
         app:layout_constraintStart_toEndOf="@id/image_view_3"/>
     <ImageView
@@ -73,6 +76,7 @@
         android:minHeight="15dp"
         android:padding="2dp"
         android:visibility="invisible"
+        android:contentDescription="@null"
         app:layout_constraintTop_toBottomOf="@id/image_view_5"
         app:layout_constraintStart_toEndOf="@id/image_view_4"/>
 </android.support.constraint.ConstraintLayout>

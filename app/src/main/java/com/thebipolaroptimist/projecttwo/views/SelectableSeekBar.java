@@ -13,8 +13,8 @@ import android.widget.TextView;
 import com.thebipolaroptimist.projecttwo.R;
 
 public class SelectableSeekBar extends LinearLayout {
-    final SeekBar bar;
-    String mTextColor;
+    final private SeekBar bar;
+    private String mTextColor;
     public SelectableSeekBar(Context context, AttributeSet set) {
         super(context);
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

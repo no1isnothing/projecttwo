@@ -20,17 +20,18 @@ import com.thebipolaroptimist.projecttwo.views.CategoryLayout;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 
 public class EntryCreateActivity extends AppCompatActivity implements ConfirmDiscardDialog.ConfirmDiscardDialogListener, ConfirmDeleteDialog.ConfirmDeleteDialogListener {
-    public static final String TAG = "EntryCreate";
+    private static final String TAG = "EntryCreate";
     public static final int SEEKBAR_MIDDLE_VALUE = 50;
     private ProjectTwoDataSource mDataSource;
     private EditText mEditNote;
     private String mId;
     private SeekBar mSeekBarMood;
     private EntryDTO mEntryDTO;
-    String mDate;
+    private String mDate;
     private LinearLayout mCategoryLayoutList;
 
     @Override
@@ -51,7 +52,9 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
 
         fillInUI();
 
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_black);
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_black);
+        }
     }
 
     @Override
@@ -63,14 +66,17 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.nav_item_ec_save) {
-            onSave();
-        } else if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
-        } else if(item.getItemId() == R.id.nav_item_ec_delete)
-        {
-            DialogFragment dialogFragment = new ConfirmDeleteDialog();
-            dialogFragment.show(getSupportFragmentManager(), "ConfirmDeleteDialog");
+        switch (item.getItemId()) {
+            case R.id.nav_item_ec_save:
+                onSave();
+                break;
+            case android.R.id.home:
+                onBackPressed();
+                break;
+            case R.id.nav_item_ec_delete:
+                DialogFragment dialogFragment = new ConfirmDeleteDialog();
+                dialogFragment.show(getSupportFragmentManager(), "ConfirmDeleteDialog");
+                break;
         }
         return true;
     }
@@ -105,7 +111,8 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
     private void fillInUI()
     {
         mSeekBarMood.setProgress(SEEKBAR_MIDDLE_VALUE);
-        SimpleDateFormat format = new SimpleDateFormat(EntryCalendarActivity.DATE_FORMAT_PATTERN);
+
+        SimpleDateFormat format = new SimpleDateFormat(EntryCalendarActivity.DATE_FORMAT_PATTERN, Locale.getDefault());
         if (mEntryDTO == null) {
             mEntryDTO = new EntryDTO();
         }
@@ -141,19 +148,19 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
     }
 
     @Override
-    public void onConfirmDialogPositiveClick(DialogFragment dialog) {
+    public void onConfirmDialogPositiveClick() {
         super.onBackPressed();
         finish();
     }
 
     @Override
-    public void onConfirmDialogNegativeClick(DialogFragment dialog)
+    public void onConfirmDialogNegativeClick()
     {
         onSave();
     }
 
     @Override
-    public void onConfirmDeletePositiveClick(DialogFragment dialogFragment) {
+    public void onConfirmDeletePositiveClick() {
         if(mId != null) {
             mDataSource.deleteEntry(mId);
         }

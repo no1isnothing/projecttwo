@@ -8,15 +8,13 @@ public class DetailRowFactory {
 
     public static DetailRow getDetailRow(Context context, DetailDTO detail)
     {
-        if(detail.category.equals(MoodDetailRow.CATEGORY))
-        {
-            return new MoodDetailRow(context,detail);
-        } else if(detail.category.equals(ActivityDetailRow.CATEGORY))
-        {
-            return new ActivityDetailRow(context, detail);
-        } else if(detail.category.equals(IncidentDetailRow.CATEGORY))
-        {
-            return new IncidentDetailRow(context, detail);
+        switch (detail.category) {
+            case MoodDetailRow.CATEGORY:
+                return new MoodDetailRow(context, detail);
+            case ActivityDetailRow.CATEGORY:
+                return new ActivityDetailRow(context, detail);
+            case IncidentDetailRow.CATEGORY:
+                return new IncidentDetailRow(context, detail);
         }
         return null;
     }
