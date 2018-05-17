@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.thebipolaroptimist.projecttwo">
 
+    <!--TODO make indexable by google search and look into automatic backup-->
     <application
         android:name=".ProjectTwo"
         android:allowBackup="true"
@@ -10,30 +11,35 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".EntryCalendarActivity"
+        <activity
+            android:name=".EntryCalendarActivity"
             android:theme="@style/AppTheme.ActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
-        <activity android:name=".EntryListActivity"
+        <activity
+            android:name=".EntryListActivity"
+            android:label="Entries:"
             android:parentActivityName=".EntryCalendarActivity"
-            android:theme="@style/AppTheme.ActionBar"
-            android:label="Entries:"/>
-        <activity android:name=".SummaryActivity"
+            android:theme="@style/AppTheme.ActionBar" />
+        <activity
+            android:name=".SummaryActivity"
             android:parentActivityName=".EntryCalendarActivity"
-            android:theme="@style/AppTheme.ActionBar"/>
+            android:theme="@style/AppTheme.ActionBar" />
         <activity
             android:name=".SettingsActivity"
             android:theme="@style/AppTheme.ActionBar" />
-
         <activity
             android:name=".EntryCreateActivity"
+            android:label="Entry:"
             android:parentActivityName=".EntryCalendarActivity"
             android:theme="@style/AppTheme.ActionBar"
-            android:windowSoftInputMode="stateUnchanged"
-            android:label="Entry:" />
+            android:windowSoftInputMode="stateUnchanged" />
+        <activity android:name=".WelcomeActvity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

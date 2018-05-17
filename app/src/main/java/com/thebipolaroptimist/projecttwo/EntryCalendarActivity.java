@@ -2,8 +2,10 @@ package com.thebipolaroptimist.projecttwo;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,6 +14,7 @@ import android.widget.Button;
 import com.roomorama.caldroid.CaldroidFragment;
 import com.roomorama.caldroid.CaldroidListener;
 import com.thebipolaroptimist.projecttwo.db.ProjectTwoDataSource;
+import com.thebipolaroptimist.projecttwo.dialogs.WelcomeDialog;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -21,6 +24,7 @@ import java.util.Map;
 
 public class EntryCalendarActivity extends AppCompatActivity {
 
+    private static final String TAG = "EntryCalendarActivity";
     private ProjectTwoDataSource mDataSource;
     public static final String DATE_FIELD = "date_field";
     public static final String DATE_FORMAT_PATTERN = "MMM dd yyyy";
@@ -56,6 +60,18 @@ public class EntryCalendarActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        Intent intent = getIntent();
+
+        if(intent.hasExtra(SettingsManager.FIRST_LAUNCH))
+        {
+            Log.i(TAG, "First Launch");
+            DialogFragment welcomeDialog = new WelcomeDialog();
+            getSupportFragmentManager().beginTransaction().add(welcomeDialog, "Welcome Dialog").commit();
+        } else
+        {
+            Log.i(TAG, "NOt first launch");
+        }
     }
 
     public void setupCaldroid(Bundle savedInstanceState)

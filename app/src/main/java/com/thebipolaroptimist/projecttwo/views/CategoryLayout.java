@@ -46,8 +46,8 @@ public class CategoryLayout extends ConstraintLayout implements AddDetailsDialog
         mExpandButton.setTextOff(mCategory);
         mExpandButton.setTextOn(mCategory);
         mExpandButton.setText(mCategory);
-        mAddButton.setVisibility(INVISIBLE);
-        mDetailDataTypeLabel.setVisibility(INVISIBLE);
+        mAddButton.setVisibility(GONE);
+        mDetailDataTypeLabel.setVisibility(GONE);
         mDetailDataTypeLabel.setText(SettingsFragment.getLabel(mCategory));
         mAddButton.setEnabled(false);
 
@@ -65,9 +65,9 @@ public class CategoryLayout extends ConstraintLayout implements AddDetailsDialog
                 {
                     buttonView.setButtonDrawable(R.drawable.ic_expand_more_black);
                     mLayout.removeAllViews();
-                    mAddButton.setVisibility(INVISIBLE);
+                    mAddButton.setVisibility(GONE);
                     mAddButton.setEnabled(false);
-                    mDetailDataTypeLabel.setVisibility(INVISIBLE);
+                    mDetailDataTypeLabel.setVisibility(GONE);
                 }
             }
         });
