@@ -10,7 +10,7 @@ import com.thebipolaroptimist.projecttwo.views.MoodDetailRow;
  */
 public class DetailDTO {
     public static final String UNITS_SCALE = "scale";
-    public static final String UNITS_MINUTES = "minutes";
+    public static final String UNITS_TIME = "time";
 
     public String category;
     public String detailType;
@@ -26,7 +26,7 @@ public class DetailDTO {
             return UNITS_SCALE;
         } else if(category.equals(ActivityDetailRow.CATEGORY))
         {
-            return UNITS_MINUTES;
+            return UNITS_TIME;
         }
         return "";
     }

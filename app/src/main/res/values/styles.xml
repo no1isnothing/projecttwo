@@ -23,5 +23,5 @@
         <item name="android:textColorPrimaryInverse">@color/inverseTextColor</item>
         <!--<item name="android:background">@color/primaryDarkColor</item>-->
     </style>
-
+    
 </resources>

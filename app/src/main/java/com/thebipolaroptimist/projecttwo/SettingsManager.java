@@ -23,14 +23,14 @@ public class SettingsManager {
     //TODO does first launch need a value?
     public boolean isFirstLaunch()
     {
-        return !preferences.contains(FIRST_LAUNCH);
+        return preferences.getBoolean(FIRST_LAUNCH, true);
     }
 
-    public void setLaunched()
+    public void setFirstLaunch(boolean launched)
     {
         //TODO make class variable?
         SharedPreferences.Editor prefEditor = preferences.edit();
-        prefEditor.putBoolean(FIRST_LAUNCH, false);
+        prefEditor.putBoolean(FIRST_LAUNCH, launched);
         prefEditor.apply();
     }
 

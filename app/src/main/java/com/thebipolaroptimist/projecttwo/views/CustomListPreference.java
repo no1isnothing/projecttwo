@@ -31,9 +31,10 @@ public class CustomListPreference extends DialogPreference {
     private LinearLayout mLayout;
     private final Context mContext;
 
-    public CustomListPreference(Context context, AttributeSet attrs) {
+    public CustomListPreference(Context context, AttributeSet attrs, String category) {
         super(context, attrs);
         setDialogLayoutResource(R.layout.custom_list_preference_dialog);
+        setDialogTitle(category + " Types");
         setPositiveButtonText(android.R.string.ok);
         setNegativeButtonText(android.R.string.cancel);
         mContext = context;
