@@ -1,6 +1,8 @@
 package com.thebipolaroptimist.projecttwo.views;
 
 import android.content.Context;
+import android.support.constraint.ConstraintLayout;
+import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -8,47 +10,91 @@ import android.widget.TextView;
 import com.thebipolaroptimist.projecttwo.R;
 import com.thebipolaroptimist.projecttwo.models.DetailDTO;
 
+import org.w3c.dom.Attr;
+
 public class ActivityDetailRow extends DetailRow {
     public static final String CATEGORY = "Activity";
     final private DetailDTO mDetail;
-    final private EditText mHourText;
-    final private EditText mMinuteText;
+    private EditText mHourText;
+    private EditText mMinuteText;
+
+    public ActivityDetailRow(Context context)
+    {
+        super(context);
+        mDetail= new DetailDTO();
+        setupUI();
+    }
+
+    public ActivityDetailRow(Context context, AttributeSet set)
+    {
+        super(context, set);
+        mDetail = new DetailDTO();
+        setupUI();
+    }
 
     public ActivityDetailRow(Context context, DetailDTO detail) {
         super(context);
 
         mDetail = detail;
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        setupUI();
+    }
+
+    private void setupUI()
+    {
+        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (inflater != null) {
             inflater.inflate(R.layout.detail_row_activity, this, true);
         }
         TextView textView = findViewById(R.id.dra_detail_type);
-        textView.setText(detail.detailType);
-        textView.setTextColor(detail.color);
+        textView.setText(mDetail.detailType);
+        textView.setTextColor(mDetail.color);
 
         mHourText = findViewById(R.id.dra_detail_duration_hr_edit);
         mMinuteText = findViewById(R.id.dra_detail_duration_min_edit);
-        if(!detail.detailData.isEmpty())
+        if(!mDetail.detailData.isEmpty())
         {
-            //TODO pull this out
-            int totalMinutes = Integer.parseInt(detail.detailData);
-            mHourText.setText(Integer.toString(totalMinutes/60));
-            mMinuteText.setText(Integer.toString(totalMinutes%60));
+            int totalMinutes = Integer.parseInt(mDetail.detailData);
+            Time time = new Time(totalMinutes);
+            mHourText.setText(time.hour);
+            mMinuteText.setText(time.minute);
         }
     }
 
     @Override
     public DetailDTO getDetailDTO()
     {
-        //THIS TOO
-        int hour = 0;
-        int minute = 0;
         String hourText = mHourText.getText().toString();
         String minuteText = mMinuteText.getText().toString();
-        if(!hourText.isEmpty()) hour = Integer.parseInt(hourText);
-        if(!minuteText.isEmpty()) minute = Integer.parseInt(minuteText);
-        minute +=hour*60;
-        mDetail.detailData = Integer.toString(minute);
+        Time time = new Time(hourText, minuteText);
+        mDetail.detailData = Integer.toString(time.totalMinutes);
         return mDetail;
+    }
+
+    class Time
+    {
+        int totalMinutes;
+        String hour;
+        String minute;
+
+        Time(int time)
+        {
+            totalMinutes = time;
+            hour = Integer.toString(totalMinutes/60);
+            minute = Integer.toString(totalMinutes%60);
+        }
+
+
+        Time(String hour, String minute)
+        {
+            this.hour = hour;
+            this.minute = minute;
+
+            int hourTime = 0;
+            totalMinutes = 0;
+            if(!this.hour.isEmpty()) hourTime = Integer.parseInt(this.hour);
+            if(!this.minute.isEmpty()) totalMinutes = Integer.parseInt(this.minute);
+            totalMinutes +=hourTime*60;
+        }
+
     }
 }

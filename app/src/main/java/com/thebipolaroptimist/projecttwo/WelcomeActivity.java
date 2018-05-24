@@ -40,20 +40,7 @@ public class WelcomeActivity extends FragmentActivity {
         if(mSettingsManager.isFirstLaunch())
         {
             Log.i(TAG, "First launch");
-            //TODO make this static somewhere? is it really worth it?
-            List<String> moodDetailTypes = new ArrayList<>();
-            moodDetailTypes.add("depressed:#530052FF");
-            moodDetailTypes.add("manic:#FFFF7A00");
-            moodDetailTypes.add("anxiety:#61FFFF00");
-            mSettingsManager.storeDetailTypeForCategory(MoodDetailRow.CATEGORY, moodDetailTypes);
-            List<String> activityDetailTypes = new ArrayList<>();
-            activityDetailTypes.add("running:#FF00CD1B");
-            activityDetailTypes.add("yoga:#7B7C007F");
-            activityDetailTypes.add("boxing:#FF980000");
-            List<String> incidentDetailTypes = new ArrayList<>();
-            incidentDetailTypes.add("panic attack:#FFFFFF00");
-            mSettingsManager.storeDetailTypeForCategory(IncidentDetailRow.CATEGORY, incidentDetailTypes);
-            mSettingsManager.storeDetailTypeForCategory(ActivityDetailRow.CATEGORY, activityDetailTypes);
+            mSettingsManager.setupDefaultDetails();
 
             mViewPager = findViewById(R.id.view_pager);
             mDotsLayout = findViewById(R.id.layoutDots);
@@ -154,7 +141,7 @@ public class WelcomeActivity extends FragmentActivity {
 
     private void launchHomeScreen() {
         mSettingsManager.setFirstLaunch(false);
-        Intent intent = new Intent(getApplicationContext(), EntryCalendarActivity.class);
+        Intent intent = new Intent(this, EntryCalendarActivity.class);
         startActivity(intent);
         finish();
     }

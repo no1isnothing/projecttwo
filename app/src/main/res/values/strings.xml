@@ -11,7 +11,6 @@
     <string name="add_detail">Add Detail</string>
     <string name="no_entries_for_this_day">No entries for this day</string>
     <string name="add_entry">Add Entry</string>
-    <string name="check_detail_type_to_add_to_entry">Mood Select</string>
     <string name="add_new_type">Add New Type</string>
     <string name="enter_new_type">Enter New Type</string>
     <string name="content_button">Button</string>
@@ -27,6 +26,6 @@
     <string name="welcome_calendar_button">Finish: To Calendar</string>
     <string name="welcome_entry">Enter as much or as little detail as you want in each entry. And you can have more than one entry per day!</string>
     <string name="welcome_entry_button">Create Entry</string>
-    <string name="select">Select</string>
+    <string name="select"> Select</string>
     <string name="welcome_settings">Track custom moods, activities, and incidents.Go to settings now to replace default settings with your own.</string>
 </resources>

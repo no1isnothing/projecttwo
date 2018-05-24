@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,15 +16,13 @@ import android.widget.TextView;
 import com.thebipolaroptimist.projecttwo.R;
 import com.thebipolaroptimist.projecttwo.SettingsManager;
 import com.thebipolaroptimist.projecttwo.views.ActionRow;
+import com.thebipolaroptimist.projecttwo.views.DetailRowFactory;
 import com.thebipolaroptimist.projecttwo.views.SelectableWord;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static android.app.AlertDialog.THEME_DEVICE_DEFAULT_DARK;
-import static android.app.AlertDialog.THEME_HOLO_LIGHT;
 
 public class AddDetailsDialog extends DialogFragment {
 
@@ -67,11 +64,11 @@ public class AddDetailsDialog extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         ViewGroup view = (ViewGroup) inflater.inflate(R.layout.diloag_add_details, null);
         builder.setView(view);
-        builder.setTitle(getString(R.string.check_detail_type_to_add_to_entry));
+
         View titleView = inflater.inflate(R.layout.dialog_add_details_title, null);
         TextView title = titleView.findViewById(R.id.dadi_title);
-        title.setText(mCategory + title.getText());
-        //titleView.setBackgroundColor(Color.BLUE); //TODO pick colors for categories
+        title.setText(mCategory + " " + title.getText());
+        titleView.setBackgroundColor(DetailRowFactory.getColorForCategory(mCategory));
         builder.setCustomTitle(titleView);
         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             @Override

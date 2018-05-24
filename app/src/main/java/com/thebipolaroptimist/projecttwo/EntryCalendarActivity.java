@@ -142,7 +142,6 @@ public class EntryCalendarActivity extends AppCompatActivity {
             SettingsManager settingsManager = new SettingsManager(this);
             settingsManager.setFirstLaunch(true);
             Intent intent = new Intent(this, WelcomeActivity.class);
-            //set launched to false
             startActivity(intent);
         }
 
