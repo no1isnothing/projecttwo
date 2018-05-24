@@ -21,6 +21,7 @@ import java.util.Map;
 
 public class EntryCalendarActivity extends AppCompatActivity {
 
+    private static final String TAG = "EntryCalendarActivity";
     private ProjectTwoDataSource mDataSource;
     public static final String DATE_FIELD = "date_field";
     public static final String DATE_FORMAT_PATTERN = "MMM dd yyyy";
@@ -135,6 +136,12 @@ public class EntryCalendarActivity extends AppCompatActivity {
         if(item.getItemId() == R.id.action_settings)
         {
             Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
+        } else if(item.getItemId() == R.id.action_tutorial)
+        {
+            SettingsManager settingsManager = new SettingsManager(this);
+            settingsManager.setFirstLaunch(true);
+            Intent intent = new Intent(this, WelcomeActivity.class);
             startActivity(intent);
         }
 

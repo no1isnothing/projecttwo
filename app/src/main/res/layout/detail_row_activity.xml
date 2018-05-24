@@ -4,14 +4,32 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/activity_detail_row_type"
+        android:id="@+id/dra_detail_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <EditText
+        android:id="@+id/dra_detail_duration_hr_edit"
+        android:hint="@string/hours"
+        android:inputType="number"
+        android:gravity="end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/dra_detail_duration_label"
+        android:text="@string/hours"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
     <EditText
-        android:id="@+id/activity_detail_row_edit"
-        android:hint="@string/duration"
+        android:id="@+id/dra_detail_duration_min_edit"
+        android:hint="@string/minutes"
         android:inputType="number"
+        android:gravity="end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:id="@+id/dra_detail_duration_min_label"
+        android:text="@string/minutes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 </LinearLayout>

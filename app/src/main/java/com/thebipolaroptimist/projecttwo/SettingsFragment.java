@@ -35,7 +35,7 @@ public class SettingsFragment extends PreferenceFragment {
 
         //Create a custom list preference for each category and add to screen
         for (String category : CATEGORIES_ARRAY) {
-            CustomListPreference preference = new CustomListPreference(getActivity(), null);
+            CustomListPreference preference = new CustomListPreference(getActivity(), null, category);
             preference.setTitle(category + " Types");
             preference.setKey(PREFERENCE_PREFIX + category);
             preferenceScreen.addPreference(preference);

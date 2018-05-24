@@ -40,7 +40,7 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryAdapter.ViewHolder> 
     }
 
     public String getEntryId(int position) {
-        if(position < mEntries.length -1) {
+        if(position <= mEntries.length -1) {
             return mEntries[position].getId();
         }
         return "";
