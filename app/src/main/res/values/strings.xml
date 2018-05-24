@@ -26,6 +26,6 @@
     <string name="welcome_calendar_button">Finish: To Calendar</string>
     <string name="welcome_entry">Enter as much or as little detail as you want in each entry. And you can have more than one entry per day!</string>
     <string name="welcome_entry_button">Create Entry</string>
-    <string name="select"> Select</string>
+    <string name="select">Select</string>
     <string name="welcome_settings">Track custom moods, activities, and incidents.Go to settings now to replace default settings with your own.</string>
 </resources>

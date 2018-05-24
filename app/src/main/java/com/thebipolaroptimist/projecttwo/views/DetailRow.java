@@ -1,7 +1,6 @@
 package com.thebipolaroptimist.projecttwo.views;
 
 import android.content.Context;
-import android.support.constraint.ConstraintLayout;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 

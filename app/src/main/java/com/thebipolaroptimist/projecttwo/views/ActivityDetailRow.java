@@ -1,7 +1,6 @@
 package com.thebipolaroptimist.projecttwo.views;
 
 import android.content.Context;
-import android.support.constraint.ConstraintLayout;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.EditText;
@@ -9,8 +8,6 @@ import android.widget.TextView;
 
 import com.thebipolaroptimist.projecttwo.R;
 import com.thebipolaroptimist.projecttwo.models.DetailDTO;
-
-import org.w3c.dom.Attr;
 
 public class ActivityDetailRow extends DetailRow {
     public static final String CATEGORY = "Activity";
