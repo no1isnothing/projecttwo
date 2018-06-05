@@ -1,5 +1,6 @@
 package com.thebipolaroptimist.projecttwo;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -11,28 +12,21 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 
-import com.thebipolaroptimist.projecttwo.db.ProjectTwoDataSource;
 import com.thebipolaroptimist.projecttwo.dialogs.ConfirmDeleteDialog;
 import com.thebipolaroptimist.projecttwo.dialogs.ConfirmDiscardDialog;
-import com.thebipolaroptimist.projecttwo.models.Entry;
-import com.thebipolaroptimist.projecttwo.models.EntryDTO;
+import com.thebipolaroptimist.projecttwo.models.DetailDTO;
 import com.thebipolaroptimist.projecttwo.views.CategoryLayout;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
+import java.util.Map;
 
 
 public class EntryCreateActivity extends AppCompatActivity implements ConfirmDiscardDialog.ConfirmDiscardDialogListener, ConfirmDeleteDialog.ConfirmDeleteDialogListener {
     private static final String TAG = "EntryCreate";
-    public static final int SEEKBAR_MIDDLE_VALUE = 50;
-    private ProjectTwoDataSource mDataSource;
+
     private EditText mEditNote;
-    private String mId;
     private SeekBar mSeekBarMood;
-    private EntryDTO mEntryDTO;
-    private String mDate;
     private LinearLayout mCategoryLayoutList;
+    private EntryCreateViewModel mViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,12 +37,11 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
         mSeekBarMood = findViewById(R.id.seekbar_overall_mood);
         mCategoryLayoutList = findViewById(R.id.category_layout_list);
 
-        mDataSource = new ProjectTwoDataSource();
-        mDataSource.open();
+        mViewModel = ViewModelProviders.of(this).get(EntryCreateViewModel.class);
 
         Intent intent = getIntent();
-        mId = intent.getStringExtra(EntryListActivity.ENTRY_FIELD_ID);
-        mDate = intent.getStringExtra(EntryCalendarActivity.DATE_FIELD);
+        mViewModel.setId(intent.getStringExtra(EntryListActivity.ENTRY_FIELD_ID));
+        mViewModel.setDate(intent.getStringExtra(EntryCalendarActivity.DATE_FIELD));
 
         fillInUI();
 
@@ -83,62 +76,47 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
 
     @Override
     protected void onDestroy() {
-        mDataSource.close();
         super.onDestroy();
     }
 
     private void onSave() {
-        if (mEntryDTO == null) {
-            mEntryDTO = new EntryDTO();
-        }
-        mEntryDTO.entryNote = mEditNote.getText().toString();
+        storeData();
+        mViewModel.updateEntryTime();
+        mViewModel.updateEntry();
+        finish();
+    }
 
-        mEntryDTO.updateTimes(mDate);
-
-        mEntryDTO.overallMood = mSeekBarMood.getProgress();
+    private void storeData()
+    {
+        mViewModel.mEntryDTO.entryNote = mEditNote.getText().toString();
+        mViewModel.mEntryDTO.overallMood = mSeekBarMood.getProgress();
 
         int count = mCategoryLayoutList.getChildCount();
 
         for (int i = 0; i < count; i++) {
             CategoryLayout layout = (CategoryLayout) mCategoryLayoutList.getChildAt(i);
-            mEntryDTO.saveList(layout.onSave(), layout.getCategory());
+            mViewModel.mEntryDTO.saveList(layout.onSave(), layout.getCategory());
         }
 
-        mDataSource.updateEntry(mId, mEntryDTO);
-        finish();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        storeData();
     }
 
     private void fillInUI()
     {
-        mSeekBarMood.setProgress(SEEKBAR_MIDDLE_VALUE);
+        mEditNote.setText(mViewModel.mEntryDTO.entryNote);
+        mSeekBarMood.setProgress(mViewModel.mEntryDTO.overallMood);
 
-        SimpleDateFormat format = new SimpleDateFormat(EntryCalendarActivity.DATE_FORMAT_PATTERN, Locale.getDefault());
-        if (mEntryDTO == null) {
-            mEntryDTO = new EntryDTO();
-        }
-
-        if (mId != null) {
-            Entry entry = mDataSource.getEntry(mId);
-            EntryDTO.EntryToEntryDTO(entry, mEntryDTO);
-            mEditNote.setText(mEntryDTO.entryNote);
-            mSeekBarMood.setProgress(mEntryDTO.overallMood);
-            //fill in date with entry info
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(Long.parseLong(mEntryDTO.entryTime));
-            setTitle(getTitle() + format.format(calendar.getTime()));
-        } else if (mDate != null) {
-            //fill in date with passed in date
-            setTitle(getTitle() + " " + mDate);
-        } else {
-            //fill in date with current date
-            setTitle(getTitle() + format.format(System.currentTimeMillis()));
-        }
+        setTitle(mViewModel.getActivityTitle(getTitle()));
 
         String[] categories = SettingsFragment.CATEGORIES_ARRAY;
         for (String category : categories) {
-            mCategoryLayoutList.addView(new CategoryLayout(this, category, mEntryDTO.getDetailList(category)));
+            mCategoryLayoutList.addView(new CategoryLayout(this, category, mViewModel.mEntryDTO.getDetailList(category)));
         }
-
     }
 
     @Override
@@ -161,9 +139,7 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
 
     @Override
     public void onConfirmDeletePositiveClick() {
-        if(mId != null) {
-            mDataSource.deleteEntry(mId);
-        }
+        mViewModel.deleteEntry();
         super.onBackPressed();
         finish();
     }
