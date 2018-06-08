@@ -139,7 +139,7 @@ public class EntryCalendarActivity extends AppCompatActivity {
             startActivity(intent);
         } else if(item.getItemId() == R.id.action_tutorial)
         {
-            SettingsManager settingsManager = new SettingsManager(this);
+            SettingsManager settingsManager = new SettingsManager(getApplication());
             settingsManager.setFirstLaunch(true);
             Intent intent = new Intent(this, WelcomeActivity.class);
             startActivity(intent);
