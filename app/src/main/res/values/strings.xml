@@ -28,5 +28,5 @@
     <string name="welcome_entry_button">Create Entry</string>
     <string name="select">Select</string>
     <string name="welcome_settings">Track custom moods, activities, and incidents.Go to settings now to replace default settings with your own.</string>
-    <string name="default_color">#00000000</string>
+    <string name="default_color">#FF000000</string>
 </resources>

@@ -77,7 +77,7 @@ public class ActionRow extends LinearLayout {
         if (inflater != null) {
             inflater.inflate(R.layout.view_action_row, this, true);
         }
-        //mListener = listener;
+
         mImageButton = findViewById(R.id.action_row_button);
 
         mImageButton.setOnClickListener(new View.OnClickListener() {
@@ -99,7 +99,7 @@ public class ActionRow extends LinearLayout {
             mColor = color;
         }else
         {
-            mColor = "#000000";
+            mColor = mContext.getString(R.string.default_color);
         }
 
         int parsedColor = Color.parseColor(mColor);

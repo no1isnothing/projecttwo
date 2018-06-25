@@ -1,6 +1,8 @@
 package com.thebipolaroptimist.projecttwo.models;
 
-public class SelectableWordData {
+import android.support.annotation.NonNull;
+
+public class SelectableWordData implements Comparable<SelectableWordData> {
     private String mWord;
     private String mColor;
     private boolean mChecked;
@@ -34,5 +36,10 @@ public class SelectableWordData {
 
     public void setChecked(boolean checked) {
         mChecked = checked;
+    }
+
+    @Override
+    public int compareTo(@NonNull SelectableWordData o) {
+        return mWord.compareTo(o.getWord());
     }
 }

@@ -1,22 +1,27 @@
 package com.thebipolaroptimist.projecttwo.views;
 
 
-import android.content.Context;
-import android.os.Build;
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.preference.DialogPreference;
-import android.util.AttributeSet;
-import android.util.Log;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.arch.lifecycle.ViewModelProviders;
+import android.content.DialogInterface;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 
 import com.thebipolaroptimist.projecttwo.R;
+import com.thebipolaroptimist.projecttwo.SettingsFragmentViewModel;
+import com.thebipolaroptimist.projecttwo.models.SelectableWordData;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
+
+import static com.thebipolaroptimist.projecttwo.SettingsFragment.CATEGORY_KEY;
 
 
 /**
@@ -25,50 +30,104 @@ import java.util.Set;
  * On creation a row is added for each existing detail type
  * The user can add new rows or remove existing rows
  */
-public class CustomListPreference extends DialogPreference {
+public class CustomListPreference extends DialogFragment {
     private static final String TAG ="CustomListPreference";
-    private Set<String> mValues;
-    private LinearLayout mLayout;
-    private final Context mContext;
 
-    public CustomListPreference(Context context, AttributeSet attrs, String category) {
-        super(context, attrs);
-        setDialogLayoutResource(R.layout.custom_list_preference_dialog);
-        setDialogTitle(category + " Types");
-        setPositiveButtonText(android.R.string.ok);
-        setNegativeButtonText(android.R.string.cancel);
-        mContext = context;
-        mValues = new HashSet<>();
+    private LinearLayout mLayout;
+    private String mCategory;
+    private Set<SelectableWordData> mValues;
+    private Listener mListener;
+
+    public interface Listener
+    {
+        void onPositiveResult(String category, Set<SelectableWordData> data);
     }
 
+    public CustomListPreference() {
+    }
+
+    public void setData(Set<SelectableWordData> data)
+    {
+        mValues = data;
+    }
+
+    public void setListener(Listener listener)
+    {
+        mListener = listener;
+    }
+
+    @NonNull
     @Override
-    protected void onBindDialogView(final View view) {
-        super.onBindDialogView(view);
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        ViewGroup view = (ViewGroup) inflater.inflate(R.layout.custom_list_preference_dialog, null);
+        builder.setView(view);
+        Bundle bundle = getArguments();
+        if(bundle != null && bundle.containsKey(CATEGORY_KEY)) mCategory = bundle.getString("category");
         mLayout = view.findViewById(R.id.pref_list);
+        final ScrollView scroll = view.findViewById(R.id.pref_list_scroll);
         Button addItemButton = view.findViewById(R.id.pref_list_add_button);
         addItemButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 addRow(null, null);
+                scroll.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        scroll.fullScroll(View.FOCUS_DOWN);
+                    }
+                }, 200);
+
             }
         });
 
-        for (final String s : mValues) {
-            String[] parts = s.split(":");
-            if(parts.length > 1) {
-                addRow(parts[0], parts[1]);
-            }
+        if(mValues == null)
+        {
+            SettingsFragmentViewModel model = ViewModelProviders.of(this).get(SettingsFragmentViewModel.class);
+            mValues = model.getDetails(mCategory);
+        }
+
+        for(SelectableWordData data : mValues)
+        {
+            addRow(data.getWord(), data.getColor());
         }
 
         if(mValues.size() == 0)
         {
             addRow(null, null);
         }
+
+        builder.setTitle(mCategory + " Types ");
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                getValuesFromUI();
+                SettingsFragmentViewModel model = ViewModelProviders.of(CustomListPreference.this).get(SettingsFragmentViewModel.class);
+                model.setDetailsAndStore(mCategory, mValues);
+            }
+        });
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dismiss();
+            }
+        });
+
+        return builder.create();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putString("category", mCategory);
+        getValuesFromUI();
+        SettingsFragmentViewModel model = ViewModelProviders.of(CustomListPreference.this).get(SettingsFragmentViewModel.class);
+        model.setDetails(mCategory, mValues);
     }
 
     private void addRow(String title, String color)
     {
-        mLayout.addView(new ActionRow(mContext, title, color, R.drawable.ic_delete_black, new ActionRow.OnClickListener() {
+        mLayout.addView(new ActionRow(getActivity(), title, color, R.drawable.ic_delete_black, new ActionRow.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mLayout.removeView(view);
@@ -86,117 +145,9 @@ public class CustomListPreference extends DialogPreference {
             String name = row.getName();
             String color = row.getColor();
             if(!name.isEmpty() && color != null) {
-                mValues.add(name + ":" + color);
+                mValues.add(new SelectableWordData(name, color, true));
             }
         }
-    }
-
-    @Override
-    protected void onDialogClosed(boolean positiveResult) {
-        // When the user selects "OK", persist the new value
-        if (positiveResult) {
-            getValuesFromUI();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                persistStringSet(mValues);
-            } else
-            {
-                StringBuilder builder = new StringBuilder();
-                for (String mValue : mValues) {
-                    builder.append(mValue).append(",");
-                }
-                boolean result = persistString(builder.toString());
-                Log.i(TAG, "Result " + result);
-            }
-        }
-    }
-
-    @Override
-    protected void onSetInitialValue(boolean restorePersistedValue, Object defaultValue) {
-        if (restorePersistedValue) {
-            // Restore existing state
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                //String set does not get persisted if it is the same instance that
-                //comes from the get method, even if it's been modified
-                //creating a copy of the set insures that it gets persisted
-                mValues = new HashSet<>(this.getPersistedStringSet(new HashSet<String>()));
-            } else
-            {
-                String values = this.getPersistedString("");
-                mValues = new HashSet<>(Arrays.asList(values.split(",")));
-            }
-        } else {
-            Log.i(TAG, "Not persisting values");
-        }
-    }
-
-    //TODO test this code. Wrote it based on the android docs
-    @Override
-    protected Parcelable onSaveInstanceState() {
-        final Parcelable superState = super.onSaveInstanceState();
-        // Check whether this Preference is persistent (continually saved)
-        if (isPersistent()) {
-            // No need to save instance state since it's persistent,
-            // use superclass state
-            return superState;
-        }
-
-        // Create instance of custom BaseSavedState
-        final SavedState myState = new SavedState(superState);
-        // Set the state's value with the class member that holds current
-        // setting value
-        myState.value = mValues.toArray(new String[mValues.size()]);
-        return myState;
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Parcelable state) {
-        // Check whether we saved the state in onSaveInstanceState
-        if (state == null || !state.getClass().equals(SavedState.class)) {
-            // Didn't save the state, so call superclass
-            super.onRestoreInstanceState(state);
-            return;
-        }
-
-        // Cast state to custom BaseSavedState and pass to superclass
-        SavedState myState = (SavedState) state;
-        super.onRestoreInstanceState(myState.getSuperState());
-
-        // Set this Preference's widget to reflect the restored state
-        mValues = new HashSet<>(Arrays.asList(myState.value));
-    }
-
-    private static class SavedState extends BaseSavedState {
-        String[] value;
-
-        public SavedState(Parcelable superState) {
-            super(superState);
-        }
-
-        public SavedState(Parcel source) {
-            super(source);
-            // Get the current preference's value
-            source.readStringArray(value);
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            super.writeToParcel(dest, flags);
-            // Write the preference's value
-            dest.writeStringArray(value);
-        }
-
-        // Standard creator object using an instance of this class
-        public static final Creator<SavedState> CREATOR =
-                new Creator<SavedState>() {
-
-                    public SavedState createFromParcel(Parcel in) {
-                        return new SavedState(in);
-                    }
-
-                    public SavedState[] newArray(int size) {
-                        return new SavedState[size];
-                    }
-                };
     }
 }
 
