@@ -8,19 +8,37 @@ import com.thebipolaroptimist.projecttwo.models.EntryDTO;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 public class EntryCreateViewModel extends ViewModel {
     private ProjectTwoDataSource mDataSource;
     private String mId;
     public EntryDTO mEntryDTO;
     private String mDate;
+    private Map<String, Boolean> mCategoryExpandedMap;
 
     public EntryCreateViewModel()
     {
         mDataSource = new ProjectTwoDataSource();
         mDataSource.open();
         mEntryDTO = new EntryDTO();
+        mCategoryExpandedMap = new HashMap<>();
+    }
+
+    public boolean isCategoryExpanded(String category)
+    {
+        if(mCategoryExpandedMap.get(category) != null)
+        {
+            return mCategoryExpandedMap.get(category);
+        }
+        return false;
+    }
+
+    public void storeCategoryExpanded(String category, boolean expanded)
+    {
+        mCategoryExpandedMap.put(category, expanded);
     }
 
     @Override

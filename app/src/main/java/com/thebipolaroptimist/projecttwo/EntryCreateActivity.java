@@ -12,15 +12,13 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 
+import com.thebipolaroptimist.projecttwo.dialogs.AddDetailsDialog;
 import com.thebipolaroptimist.projecttwo.dialogs.ConfirmDeleteDialog;
 import com.thebipolaroptimist.projecttwo.dialogs.ConfirmDiscardDialog;
-import com.thebipolaroptimist.projecttwo.models.DetailDTO;
 import com.thebipolaroptimist.projecttwo.views.CategoryLayout;
 
-import java.util.Map;
 
-
-public class EntryCreateActivity extends AppCompatActivity implements ConfirmDiscardDialog.ConfirmDiscardDialogListener, ConfirmDeleteDialog.ConfirmDeleteDialogListener {
+public class EntryCreateActivity extends AppCompatActivity implements ConfirmDiscardDialog.ConfirmDiscardDialogListener, ConfirmDeleteDialog.ConfirmDeleteDialogListener  {
     private static final String TAG = "EntryCreate";
 
     private EditText mEditNote;
@@ -40,10 +38,23 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
         mViewModel = ViewModelProviders.of(this).get(EntryCreateViewModel.class);
 
         Intent intent = getIntent();
-        mViewModel.setId(intent.getStringExtra(EntryListActivity.ENTRY_FIELD_ID));
-        mViewModel.setDate(intent.getStringExtra(EntryCalendarActivity.DATE_FIELD));
+        if(savedInstanceState == null) {
+            mViewModel.setId(intent.getStringExtra(EntryListActivity.ENTRY_FIELD_ID));
+            mViewModel.setDate(intent.getStringExtra(EntryCalendarActivity.DATE_FIELD));
+        }
 
         fillInUI();
+
+        if(savedInstanceState != null)
+        {
+            for(int i = 0; i < mCategoryLayoutList.getChildCount(); i++) {
+                CategoryLayout categoryLayout = (CategoryLayout) mCategoryLayoutList.getChildAt(i);
+                AddDetailsDialog fragment = (AddDetailsDialog) getSupportFragmentManager().findFragmentByTag("AddDetailsDialog_" + categoryLayout.getCategory());
+                if (fragment != null) {
+                    fragment.setListener(categoryLayout);
+                }
+            }
+        }
 
         if(getSupportActionBar() != null) {
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_black);
@@ -74,11 +85,6 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
         return true;
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
     private void onSave() {
         storeData();
         mViewModel.updateEntryTime();
@@ -96,6 +102,7 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
         for (int i = 0; i < count; i++) {
             CategoryLayout layout = (CategoryLayout) mCategoryLayoutList.getChildAt(i);
             mViewModel.mEntryDTO.saveList(layout.onSave(), layout.getCategory());
+            mViewModel.storeCategoryExpanded(layout.getCategory(), layout.isExpanded());
         }
 
     }
@@ -104,6 +111,14 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         storeData();
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        //For some reason this was causing all the seekbars to get set to the same value as the last one
+        //when mWindow.restoreHierarchyState(windowState); is called in the base Activity class
+        //The functional problem is fixed. Need to check this doens't have unintended consequences
+        //super.onRestoreInstanceState(savedInstanceState);
     }
 
     private void fillInUI()
@@ -115,7 +130,8 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
 
         String[] categories = SettingsFragment.CATEGORIES_ARRAY;
         for (String category : categories) {
-            mCategoryLayoutList.addView(new CategoryLayout(this, category, mViewModel.mEntryDTO.getDetailList(category)));
+            mCategoryLayoutList.addView(new CategoryLayout(this, category,
+                    mViewModel.mEntryDTO.getDetailList(category), mViewModel.isCategoryExpanded(category)));
         }
     }
 

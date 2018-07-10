@@ -1,6 +1,5 @@
 package com.thebipolaroptimist.projecttwo.views;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -40,7 +39,7 @@ public class CategoryLayout extends ConstraintLayout implements AddDetailsDialog
     private ToggleButton mExpandButton;
     private TextView mDetailDataTypeLabel;
 
-    public CategoryLayout(Context context, String category, List<DetailDTO> details) {
+    public CategoryLayout(Context context, String category, List<DetailDTO> details, boolean expanded) {
         super(context);
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (inflater != null) {
@@ -51,6 +50,8 @@ public class CategoryLayout extends ConstraintLayout implements AddDetailsDialog
         mCategory = category;
         mDetails = details;
         setupUI();
+
+        if(expanded) expand();
     }
 
     public CategoryLayout(Context context)
@@ -68,7 +69,7 @@ public class CategoryLayout extends ConstraintLayout implements AddDetailsDialog
         mContext = context;
         mCategory = "";
         mDetails = new ArrayList<>();
-        setupUI();;
+        setupUI();
     }
 
     private void setupUI()
@@ -101,18 +102,11 @@ public class CategoryLayout extends ConstraintLayout implements AddDetailsDialog
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked)
                 {
-                    buttonView.setButtonDrawable(R.drawable.ic_expand_less_black);
-                    mAddButton.setVisibility(VISIBLE);
-                    mAddButton.setEnabled(true);
                     expand();
-                    if(hasDetails()) {
-                        mDetailDataTypeLabel.setVisibility(VISIBLE);
-                    }
                 }else
                 {
                     buttonView.setButtonDrawable(R.drawable.ic_expand_more_black);
-                    Log.w(TAG, "Removing views from layout");
-                    mLayout.removeAllViews();
+                    mLayout.removeAllViews(); //TODO should be remove or hide? hide is more efficient
                     mAddButton.setVisibility(GONE);
                     mAddButton.setEnabled(false);
                     mDetailDataTypeLabel.setVisibility(GONE);
@@ -143,7 +137,7 @@ public class CategoryLayout extends ConstraintLayout implements AddDetailsDialog
         AddDetailsDialog fragment = new AddDetailsDialog();
         fragment.setArguments(bundle);
         fragment.setListener(this);
-        fragment.show(((AppCompatActivity)mContext).getSupportFragmentManager(), "AddDetailsDialog");
+        fragment.show(((AppCompatActivity)mContext).getSupportFragmentManager(), "AddDetailsDialog_" + mCategory);
     }
 
     /**
@@ -165,6 +159,10 @@ public class CategoryLayout extends ConstraintLayout implements AddDetailsDialog
         return dtoList;
     }
 
+    public boolean isExpanded()
+    {
+        return mAddButton.isEnabled();
+    }
     /**
      * Return whether or not this view contains details
      */
@@ -178,9 +176,17 @@ public class CategoryLayout extends ConstraintLayout implements AddDetailsDialog
      */
     private void expand()
     {
+        mExpandButton.setButtonDrawable(R.drawable.ic_expand_less_black);
+        mAddButton.setVisibility(VISIBLE);
+        mAddButton.setEnabled(true);
+
         for (DetailDTO detail : mDetails) {
             Log.w(TAG, "Exp: Adding view Type: " + detail.detailType + " Color: " + detail.color);
             mLayout.addView(DetailRowFactory.getDetailRow(mContext, detail));
+        }
+
+        if(hasDetails()) {
+            mDetailDataTypeLabel.setVisibility(VISIBLE);
         }
     }
 
