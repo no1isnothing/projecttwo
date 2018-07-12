@@ -30,14 +30,14 @@ public class EntryCreateActivityTest {
             new ActivityTestRule<>(EntryCreateActivity.class, true, false);
 
     @Test
-    public void testSomething()
+    public void testActionBarDisplayed()
     {
         Resources resources = getInstrumentation().getTargetContext().getResources();
         int actionBarId = resources.getIdentifier("action_bar_container", "id", "android");
         activityRule.launchActivity(null);
 
         onView(withId(actionBarId)).check(matches(isDisplayed()));
-        //onView(allOf(instanceOf(TextView.class), withParent(withId(actionBarId))))
-           //     .check(matches(withText("Entry:")));
     }
+
+    //TODO fill in tests
 }

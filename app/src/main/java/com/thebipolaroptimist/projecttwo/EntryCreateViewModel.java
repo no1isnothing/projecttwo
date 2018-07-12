@@ -47,10 +47,10 @@ public class EntryCreateViewModel extends ViewModel {
         mDataSource.close();
     }
 
-    public void setId(String id)
+    public void setupEntry(String entryId)
     {
-        if(id != null) {
-            mId = id;
+        if(entryId != null) {
+            mId = entryId;
             Entry entry = mDataSource.getEntry(mId);
             EntryDTO.EntryToEntryDTO(entry, mEntryDTO);
         }
@@ -85,11 +85,11 @@ public class EntryCreateViewModel extends ViewModel {
         mEntryDTO.updateTimes(mDate);
     }
 
-    public void updateEntry() {
+    public void updateEntryInDB() {
         mDataSource.updateEntry(mId, mEntryDTO);
     }
 
-    public void deleteEntry() {
+    public void deleteEntryFromDB() {
         if(mId != null) {
             mDataSource.deleteEntry(mId);
         }

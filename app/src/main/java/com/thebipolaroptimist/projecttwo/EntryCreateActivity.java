@@ -18,7 +18,8 @@ import com.thebipolaroptimist.projecttwo.dialogs.ConfirmDiscardDialog;
 import com.thebipolaroptimist.projecttwo.views.CategoryLayout;
 
 
-public class EntryCreateActivity extends AppCompatActivity implements ConfirmDiscardDialog.ConfirmDiscardDialogListener, ConfirmDeleteDialog.ConfirmDeleteDialogListener  {
+public class EntryCreateActivity extends AppCompatActivity implements ConfirmDiscardDialog.ConfirmDiscardDialogListener,
+        ConfirmDeleteDialog.ConfirmDeleteDialogListener  {
     private static final String TAG = "EntryCreate";
 
     private EditText mEditNote;
@@ -37,14 +38,16 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
 
         mViewModel = ViewModelProviders.of(this).get(EntryCreateViewModel.class);
 
-        Intent intent = getIntent();
+        //Setup data in the ViewModel if it's the first time onCreate is called
         if(savedInstanceState == null) {
-            mViewModel.setId(intent.getStringExtra(EntryListActivity.ENTRY_FIELD_ID));
+            Intent intent = getIntent();
+            mViewModel.setupEntry(intent.getStringExtra(EntryListActivity.ENTRY_FIELD_ID));
             mViewModel.setDate(intent.getStringExtra(EntryCalendarActivity.DATE_FIELD));
         }
 
         fillInUI();
 
+        //Check to see if AddDetailsDialog is opened and set listener if it is
         if(savedInstanceState != null)
         {
             for(int i = 0; i < mCategoryLayoutList.getChildCount(); i++) {
@@ -86,13 +89,13 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
     }
 
     private void onSave() {
-        storeData();
+        storeDataInViewModel();
         mViewModel.updateEntryTime();
-        mViewModel.updateEntry();
+        mViewModel.updateEntryInDB();
         finish();
     }
 
-    private void storeData()
+    private void storeDataInViewModel()
     {
         mViewModel.mEntryDTO.entryNote = mEditNote.getText().toString();
         mViewModel.mEntryDTO.overallMood = mSeekBarMood.getProgress();
@@ -110,7 +113,7 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        storeData();
+        storeDataInViewModel();
     }
 
     @Override
@@ -155,7 +158,7 @@ public class EntryCreateActivity extends AppCompatActivity implements ConfirmDis
 
     @Override
     public void onConfirmDeletePositiveClick() {
-        mViewModel.deleteEntry();
+        mViewModel.deleteEntryFromDB();
         super.onBackPressed();
         finish();
     }

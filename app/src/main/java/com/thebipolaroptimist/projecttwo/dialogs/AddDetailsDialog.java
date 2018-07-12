@@ -23,6 +23,13 @@ import com.thebipolaroptimist.projecttwo.views.SelectableWord;
 
 import java.util.List;
 
+
+/**
+ * Dialog with a list of checkable detail types
+ * And a row to add a new detail type that can be toggled to be visible
+ * Dialog returns a list of details types.
+ * If there's data in the add row when the dialog exits positively, it's added to the return list
+ */
 public class AddDetailsDialog extends DialogFragment {
 
     private static final String TAG = "AddDetailDialog";
@@ -30,7 +37,7 @@ public class AddDetailsDialog extends DialogFragment {
     private Listener mListener;
     private LinearLayout mDetailTypeList;
     private Button mButtonAddDetailType;
-    private ActionRow mActionRow;
+    private ActionRow mNewDetailTypeRow;
     private AddDetailsViewModel mViewModel;
 
     public interface Listener{
@@ -51,11 +58,11 @@ public class AddDetailsDialog extends DialogFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if( mActionRow.getVisibility() == View.VISIBLE) {
+        if( mNewDetailTypeRow.getVisibility() == View.VISIBLE) {
             mViewModel.addedSelectableWordData = getNewDetailType();
         }
         updateViewModel();
-        outState.putInt(ACTION_ROW_VISIBLE, mActionRow.getVisibility());
+        outState.putInt(ACTION_ROW_VISIBLE, mNewDetailTypeRow.getVisibility());
     }
 
     @NonNull
@@ -107,14 +114,14 @@ public class AddDetailsDialog extends DialogFragment {
         mDetailTypeList = view.findViewById(R.id.detail_type_list);
         mButtonAddDetailType = view.findViewById(R.id.add_detail_type_button);
 
-        //Add lines to view for each detail type
+        //Add lines to view for each detail type not passed in
         for (SelectableWordData selectableWordData : mViewModel.getSelectableWordData().values()) {
             if(args != null && !args.containsKey(selectableWordData.getWord())) {
                 mDetailTypeList.addView(new SelectableWord(getActivity(), selectableWordData.getWord(), selectableWordData.getColor(), selectableWordData.isChecked()));
             }
         }
 
-        mActionRow = new ActionRow(getActivity(), null, null,  R.drawable.ic_add_black, new ActionRow.OnClickListener() {
+        mNewDetailTypeRow = new ActionRow(getActivity(), null, null,  R.drawable.ic_add_black, new ActionRow.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //Add values from action row to view
@@ -127,34 +134,36 @@ public class AddDetailsDialog extends DialogFragment {
             }
         });
 
-        mActionRow.setVisibility(View.INVISIBLE);
+        mNewDetailTypeRow.setVisibility(View.INVISIBLE);
         LinearLayout linearLayout = view.findViewById(R.id.add_detail_layout2);
-        linearLayout.addView(mActionRow);
+        linearLayout.addView(mNewDetailTypeRow);
 
         mButtonAddDetailType.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mActionRow.setVisibility(View.VISIBLE);
+                mNewDetailTypeRow.setVisibility(View.VISIBLE);
                 v.setVisibility(View.INVISIBLE);
             }
         });
 
+        //Return visibility state of new type row
         if(savedInstanceState != null) {
             int visible = savedInstanceState.getInt(ACTION_ROW_VISIBLE);
 
             if( visible == View.VISIBLE)
             {
-                mActionRow.setVisibility(View.VISIBLE);
+                mNewDetailTypeRow.setVisibility(View.VISIBLE);
                 mButtonAddDetailType.setVisibility(View.INVISIBLE);
                 if(mViewModel.addedSelectableWordData != null) {
-                    mActionRow.setName(mViewModel.addedSelectableWordData.getWord());
-                    mActionRow.setColor(mViewModel.addedSelectableWordData.getColor());
+                    mNewDetailTypeRow.setName(mViewModel.addedSelectableWordData.getWord());
+                    mNewDetailTypeRow.setColor(mViewModel.addedSelectableWordData.getColor());
                 }
             }
         }
         return builder.create();
     }
 
+    //Update the checked state of detail types
     private void updateViewModel()
     {
         int count = mDetailTypeList.getChildCount();
@@ -171,14 +180,16 @@ public class AddDetailsDialog extends DialogFragment {
         }
     }
 
+    //Get newly added detail type
+    //Return null if new type row isn't visible
     private SelectableWordData getNewDetailType()
     {
-        if(mActionRow.getVisibility() == View.VISIBLE)
+        if(mNewDetailTypeRow.getVisibility() == View.VISIBLE)
         {
-            if(!mActionRow.getName().isEmpty() && mActionRow.getColor()!= null)
+            if(!mNewDetailTypeRow.getName().isEmpty() && mNewDetailTypeRow.getColor()!= null)
             {
-                return new SelectableWordData(mActionRow.getName(),
-                        mActionRow.getColor(), true);
+                return new SelectableWordData(mNewDetailTypeRow.getName(),
+                        mNewDetailTypeRow.getColor(), true);
             }
         }
         return null;

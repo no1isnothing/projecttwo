@@ -36,12 +36,7 @@ public class CustomListPreference extends DialogFragment {
     private LinearLayout mLayout;
     private String mCategory;
     private Set<SelectableWordData> mValues;
-    private Listener mListener;
-
-    public interface Listener
-    {
-        void onPositiveResult(String category, Set<SelectableWordData> data);
-    }
+    private SettingsFragmentViewModel mViewModel;
 
     public CustomListPreference() {
     }
@@ -49,11 +44,6 @@ public class CustomListPreference extends DialogFragment {
     public void setData(Set<SelectableWordData> data)
     {
         mValues = data;
-    }
-
-    public void setListener(Listener listener)
-    {
-        mListener = listener;
     }
 
     @NonNull
@@ -72,6 +62,7 @@ public class CustomListPreference extends DialogFragment {
             @Override
             public void onClick(View v) {
                 addRow(null, null);
+                //Return scroll to the bottom after adding a new row
                 scroll.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -82,10 +73,11 @@ public class CustomListPreference extends DialogFragment {
             }
         });
 
+        mViewModel = ViewModelProviders.of(this).get(SettingsFragmentViewModel.class);
+
         if(mValues == null)
         {
-            SettingsFragmentViewModel model = ViewModelProviders.of(this).get(SettingsFragmentViewModel.class);
-            mValues = model.getDetails(mCategory);
+            mValues = mViewModel.getDetails(mCategory);
         }
 
         for(SelectableWordData data : mValues)
@@ -103,8 +95,7 @@ public class CustomListPreference extends DialogFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 getValuesFromUI();
-                SettingsFragmentViewModel model = ViewModelProviders.of(CustomListPreference.this).get(SettingsFragmentViewModel.class);
-                model.setDetailsAndStore(mCategory, mValues);
+                mViewModel.setDetailsAndStore(mCategory, mValues);
             }
         });
         builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
@@ -121,8 +112,7 @@ public class CustomListPreference extends DialogFragment {
     public void onSaveInstanceState(Bundle outState) {
         outState.putString("category", mCategory);
         getValuesFromUI();
-        SettingsFragmentViewModel model = ViewModelProviders.of(CustomListPreference.this).get(SettingsFragmentViewModel.class);
-        model.setDetails(mCategory, mValues);
+        mViewModel.setDetails(mCategory, mValues);
     }
 
     private void addRow(String title, String color)

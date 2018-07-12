@@ -159,10 +159,14 @@ public class CategoryLayout extends ConstraintLayout implements AddDetailsDialog
         return dtoList;
     }
 
+    /**
+     * Return whether or not the layout is showing details
+     */
     public boolean isExpanded()
     {
         return mAddButton.isEnabled();
     }
+
     /**
      * Return whether or not this view contains details
      */

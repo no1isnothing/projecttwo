@@ -19,11 +19,12 @@ import com.thebipolaroptimist.projecttwo.views.MoodDetailRow;
 
 import java.util.Set;
 
-public class SettingsFragment extends Fragment implements CustomListPreference.Listener {
+public class SettingsFragment extends Fragment {
     public static final String[] CATEGORIES_ARRAY = {MoodDetailRow.CATEGORY, ActivityDetailRow.CATEGORY, IncidentDetailRow.CATEGORY};
     public static final String PREFERENCE_PREFIX = "preference_";
     private SettingsFragmentViewModel mViewModel;
     public static final String CATEGORY_KEY = "category";
+    CustomListPreference mCustomListPreference = new CustomListPreference();
 
     public static String getLabel(String category)
     {
@@ -53,19 +54,13 @@ public class SettingsFragment extends Fragment implements CustomListPreference.L
                 public void onClick(View v) {
                     Bundle bundle = new Bundle();
                     bundle.putString(CATEGORY_KEY, category);
-                    CustomListPreference preference = new CustomListPreference(); //have just one for class?
-                    preference.setArguments(bundle);
-                    preference.setData(mViewModel.getDetails(category));
-                    preference.setListener(SettingsFragment.this);
-                    preference.show(getFragmentManager(), category);
+
+                    mCustomListPreference.setArguments(bundle);
+                    mCustomListPreference.setData(mViewModel.getDetails(category));
+                    mCustomListPreference.show(getFragmentManager(), category);
                 }
             });
         }
             return view;
-    }
-
-    @Override
-    public void onPositiveResult(String category, Set<SelectableWordData> data) {
-        mViewModel.setDetailsAndStore(category, data);
     }
 }

@@ -44,19 +44,18 @@ public class SettingsFragmentViewModel extends AndroidViewModel {
         return mCategoryToDetailType.get(category);
     }
 
-    public List<String> setDetails(String category, Set<SelectableWordData> data)
+    public void setDetails(String category, Set<SelectableWordData> data)
     {
         mCategoryToDetailType.put(category, data);
+    }
+    public void setDetailsAndStore(String category, Set<SelectableWordData> data)
+    {
+        setDetails(category, data);
         List<String> details = new ArrayList<>();
         for(SelectableWordData word : data)
         {
             details.add(word.getWord() + ":" + word.getColor());
         }
-        return details;
-    }
-    public void setDetailsAndStore(String category, Set<SelectableWordData> data)
-    {
-        List<String> details = setDetails(category, data);
         mSettingsManager.storeDetailTypeForCategory(category, details);
     }
 }
