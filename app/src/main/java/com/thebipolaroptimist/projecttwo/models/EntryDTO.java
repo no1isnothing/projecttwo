@@ -30,7 +30,8 @@ public class EntryDTO {
     public String entryNote;
     public String entryTime;
     public String lastEditedTime;
-    public int overallMood;
+    public static final int DEFAULT_MOOD = 50;
+    public int overallMood = DEFAULT_MOOD;
     public List<String> detailCategories;
     public Map<String, Map<String,DetailDTO>> categoriesToDetails;
 

@@ -35,7 +35,7 @@ public class WelcomeActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
 
-        mSettingsManager = new SettingsManager(this);
+        mSettingsManager = new SettingsManager(getApplication());
 
         if(mSettingsManager.isFirstLaunch())
         {

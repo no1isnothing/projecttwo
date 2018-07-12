@@ -1,6 +1,7 @@
 package com.thebipolaroptimist.projecttwo;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.preference.PreferenceManager;
@@ -18,9 +19,9 @@ import java.util.Set;
 
 public class SettingsManager {
     final private SharedPreferences mRreferences;
-    public static final String FIRST_LAUNCH = "first_launch";
+    private static final String FIRST_LAUNCH = "first_launch";
 
-    public SettingsManager(Activity context)
+    public SettingsManager(Context context)
     {
         mRreferences = PreferenceManager.getDefaultSharedPreferences(context);
     }

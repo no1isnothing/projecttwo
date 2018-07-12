@@ -1,10 +1,11 @@
 package com.thebipolaroptimist.projecttwo.views;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
+import android.support.v7.app.AppCompatActivity;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,7 @@ import com.thebipolaroptimist.projecttwo.R;
 import com.thebipolaroptimist.projecttwo.SettingsFragment;
 import com.thebipolaroptimist.projecttwo.dialogs.AddDetailsDialog;
 import com.thebipolaroptimist.projecttwo.models.DetailDTO;
+import com.thebipolaroptimist.projecttwo.models.SelectableWordData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,13 +31,55 @@ import java.util.List;
  */
 public class CategoryLayout extends ConstraintLayout implements AddDetailsDialog.Listener {
     private static final String TAG = "CategoryLayout";
-    private final Button mAddButton;
-    private final LinearLayout mLayout;
+    private Button mAddButton;
+    private LinearLayout mLayout;
     private final String mCategory;
     private final Context mContext;
     private final List<DetailDTO> mDetails;
-    private final ToggleButton mExpandButton;
-    private final TextView mDetailDataTypeLabel;
+    private ToggleButton mExpandButton;
+    private TextView mDetailDataTypeLabel;
+
+    public CategoryLayout(Context context, String category, List<DetailDTO> details, boolean expanded) {
+        super(context);
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        if (inflater != null) {
+            inflater.inflate(R.layout.category_layout, this, true);
+        }
+
+        mContext = context;
+        mCategory = category;
+        mDetails = details;
+        setupUI();
+
+        if(expanded) expand();
+    }
+
+    public CategoryLayout(Context context)
+    {
+        super(context);
+        mContext = context;
+        mCategory = "";
+        mDetails = new ArrayList<>();
+        setupUI();
+    }
+
+    public CategoryLayout(Context context, AttributeSet set)
+    {
+        super(context);
+        mContext = context;
+        mCategory = "";
+        mDetails = new ArrayList<>();
+        setupUI();
+    }
+
+    private void setupUI()
+    {
+        mLayout = findViewById(R.id.detail_list);
+        mAddButton = findViewById(R.id.add_detail_button);
+        mExpandButton = findViewById(R.id.expand_details_button);
+        mDetailDataTypeLabel = findViewById(R.id.detail_data_type_label);
+        setUpButtons();
+    }
 
     public String getCategory()
     {
@@ -58,18 +102,11 @@ public class CategoryLayout extends ConstraintLayout implements AddDetailsDialog
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked)
                 {
-                    buttonView.setButtonDrawable(R.drawable.ic_expand_less_black);
-                    mAddButton.setVisibility(VISIBLE);
-                    mAddButton.setEnabled(true);
                     expand();
-                    if(hasDetails()) {
-                        mDetailDataTypeLabel.setVisibility(VISIBLE);
-                    }
                 }else
                 {
                     buttonView.setButtonDrawable(R.drawable.ic_expand_more_black);
-                    Log.w(TAG, "Removing views from layout");
-                    mLayout.removeAllViews();
+                    mLayout.removeAllViews(); //TODO should be remove or hide? hide is more efficient
                     mAddButton.setVisibility(GONE);
                     mAddButton.setEnabled(false);
                     mDetailDataTypeLabel.setVisibility(GONE);
@@ -82,23 +119,6 @@ public class CategoryLayout extends ConstraintLayout implements AddDetailsDialog
                 add();
             }
         });
-    }
-    public CategoryLayout(Context context, String category, List<DetailDTO> details) {
-        super(context);
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        if (inflater != null) {
-            inflater.inflate(R.layout.category_layout, this, true);
-        }
-
-        mContext = context;
-        mLayout = findViewById(R.id.detail_list);
-        mAddButton = findViewById(R.id.add_detail_button);
-        mExpandButton = findViewById(R.id.expand_details_button);
-        mDetailDataTypeLabel = findViewById(R.id.detail_data_type_label);
-        mCategory = category;
-        mDetails = details;
-
-        setUpButtons();
     }
 
     /**
@@ -117,7 +137,7 @@ public class CategoryLayout extends ConstraintLayout implements AddDetailsDialog
         AddDetailsDialog fragment = new AddDetailsDialog();
         fragment.setArguments(bundle);
         fragment.setListener(this);
-        fragment.show(((Activity)mContext).getFragmentManager(), "AddDetailsDialog");
+        fragment.show(((AppCompatActivity)mContext).getSupportFragmentManager(), "AddDetailsDialog_" + mCategory);
     }
 
     /**
@@ -140,6 +160,14 @@ public class CategoryLayout extends ConstraintLayout implements AddDetailsDialog
     }
 
     /**
+     * Return whether or not the layout is showing details
+     */
+    public boolean isExpanded()
+    {
+        return mAddButton.isEnabled();
+    }
+
+    /**
      * Return whether or not this view contains details
      */
     private boolean hasDetails()
@@ -152,32 +180,36 @@ public class CategoryLayout extends ConstraintLayout implements AddDetailsDialog
      */
     private void expand()
     {
+        mExpandButton.setButtonDrawable(R.drawable.ic_expand_less_black);
+        mAddButton.setVisibility(VISIBLE);
+        mAddButton.setEnabled(true);
+
         for (DetailDTO detail : mDetails) {
             Log.w(TAG, "Exp: Adding view Type: " + detail.detailType + " Color: " + detail.color);
             mLayout.addView(DetailRowFactory.getDetailRow(mContext, detail));
+        }
+
+        if(hasDetails()) {
+            mDetailDataTypeLabel.setVisibility(VISIBLE);
         }
     }
 
     /**
      * Call back from add detail dialog. Adds new detail types to variables and layouts
-     * @param detailTypes list of detail types to add
+     * @param results list of detail types to add
      */
     @Override
-    public void onPositiveResult(List<String> detailTypes) {
-        Log.w(TAG, "On Positive Result. List size " + detailTypes.size());
-        for (String detailType : detailTypes) {
-            String[] pieces = detailType.split(":");
-            if(pieces.length > 1)
-            {
-                DetailDTO detail = new DetailDTO();
-                detail.detailType = pieces[0];
-                detail.color = Color.parseColor(pieces[1]);
-                detail.detailData = "";
-                detail.category = mCategory;
-                mDetails.add(detail);
-                Log.w(TAG, "OnPR: Adding view Type: " + detail.detailType + " Color: " + detail.color);
-                mLayout.addView(DetailRowFactory.getDetailRow(mContext, detail));
-            }
+    public void onPositiveResult(List<SelectableWordData> results) {
+        Log.w(TAG, "On Positive Result. List size " + results.size());
+        for (SelectableWordData result : results) {
+                    DetailDTO detail = new DetailDTO();
+                    detail.detailType = result.getWord();
+                    detail.color = Color.parseColor(result.getColor());
+                    detail.detailData = "";
+                    detail.category = mCategory;
+                    mDetails.add(detail);
+                    Log.w(TAG, "OnPR: Adding view Type: " + detail.detailType + " Color: " + detail.color);
+                    mLayout.addView(DetailRowFactory.getDetailRow(mContext, detail));
         }
 
         if(hasDetails())

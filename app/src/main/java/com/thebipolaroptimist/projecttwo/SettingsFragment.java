@@ -1,17 +1,30 @@
 package com.thebipolaroptimist.projecttwo;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
-import android.preference.PreferenceFragment;
-import android.preference.PreferenceScreen;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
 
+import com.thebipolaroptimist.projecttwo.models.SelectableWordData;
 import com.thebipolaroptimist.projecttwo.views.ActivityDetailRow;
 import com.thebipolaroptimist.projecttwo.views.CustomListPreference;
 import com.thebipolaroptimist.projecttwo.views.IncidentDetailRow;
 import com.thebipolaroptimist.projecttwo.views.MoodDetailRow;
 
-public class SettingsFragment extends PreferenceFragment {
+import java.util.Set;
+
+public class SettingsFragment extends Fragment {
     public static final String[] CATEGORIES_ARRAY = {MoodDetailRow.CATEGORY, ActivityDetailRow.CATEGORY, IncidentDetailRow.CATEGORY};
     public static final String PREFERENCE_PREFIX = "preference_";
+    private SettingsFragmentViewModel mViewModel;
+    public static final String CATEGORY_KEY = "category";
+    CustomListPreference mCustomListPreference = new CustomListPreference();
 
     public static String getLabel(String category)
     {
@@ -25,20 +38,29 @@ public class SettingsFragment extends PreferenceFragment {
         return "";
     }
 
+    @Nullable
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_settings, container, false);
+        LinearLayout layout = view.findViewById(R.id.fragment_settings_layout);
+        mViewModel = ViewModelProviders.of(this).get(SettingsFragmentViewModel.class);
 
-        // Load the preferences from an XML resource
-        addPreferencesFromResource(R.xml.preferences);
-        PreferenceScreen preferenceScreen = getPreferenceScreen();
+        for (final String category : CATEGORIES_ARRAY) {
+            Button button = new Button(getActivity());
+            button.setText(category + " Types");
+            layout.addView(button);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString(CATEGORY_KEY, category);
 
-        //Create a custom list preference for each category and add to screen
-        for (String category : CATEGORIES_ARRAY) {
-            CustomListPreference preference = new CustomListPreference(getActivity(), null, category);
-            preference.setTitle(category + " Types");
-            preference.setKey(PREFERENCE_PREFIX + category);
-            preferenceScreen.addPreference(preference);
+                    mCustomListPreference.setArguments(bundle);
+                    mCustomListPreference.setData(mViewModel.getDetails(category));
+                    mCustomListPreference.show(getFragmentManager(), category);
+                }
+            });
         }
+            return view;
     }
 }
