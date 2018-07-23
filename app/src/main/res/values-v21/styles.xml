@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="CustomButtonStyle" parent="@style/Widget.AppCompat.Button.Colored">
+        <item name="android:color">@color/primaryColor</item>
+        <item name="android:colorBackground">@color/primaryColor</item>
+        <item name="android:backgroundTint">@color/primaryColor</item>
+
+    </style>
+
+    <style name="CustomButtonStyle2" parent="@style/Widget.AppCompat.Button.Colored">
+        <item name="android:backgroundTint">#00FFFFFF</item>
+
+    </style>
+</resources>

@@ -2,7 +2,9 @@ package com.thebipolaroptimist.projecttwo.views;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.v4.content.res.ResourcesCompat;
 
+import com.thebipolaroptimist.projecttwo.R;
 import com.thebipolaroptimist.projecttwo.models.DetailDTO;
 
 public class DetailRowFactory {
@@ -22,16 +24,16 @@ public class DetailRowFactory {
         return null;
     }
 
-    public static int getColorForCategory(String category)
+    public static int getColorForCategory(String category, Context context)
     {
         switch (category)
         {
             case MoodDetailRow.CATEGORY:
-                return Color.BLUE;
+                return ResourcesCompat.getColor(context.getResources(),R.color.mood_color ,null);
             case ActivityDetailRow.CATEGORY:
-                return Color.YELLOW;
+                return ResourcesCompat.getColor(context.getResources(),R.color.activity_color ,null);
             case IncidentDetailRow.CATEGORY:
-                return Color.RED;
+                return ResourcesCompat.getColor(context.getResources(),R.color.incident_color ,null);
         }
         return Color.WHITE;
     }
