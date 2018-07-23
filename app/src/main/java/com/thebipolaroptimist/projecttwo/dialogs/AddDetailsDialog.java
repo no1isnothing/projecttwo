@@ -85,7 +85,9 @@ public class AddDetailsDialog extends DialogFragment {
         View titleView = inflater.inflate(R.layout.dialog_add_details_title, null);
         TextView title = titleView.findViewById(R.id.dadi_title);
         title.setText(mViewModel.mCategory + " " + title.getText());
+
         titleView.setBackgroundColor(DetailRowFactory.getColorForCategory(mViewModel.mCategory, getActivity()));
+
         builder.setCustomTitle(titleView);
 
         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
