@@ -40,6 +40,14 @@ public class SettingsManager {
 
     public void setupDefaultDetails()
     {
+        //Don't set up defaults if there's already settings
+        for(String category : SettingsFragment.CATEGORIES_ARRAY) {
+            if(getDetailTypesForCategory(category).size() > 0)
+            {
+                return;
+            }
+        }
+
         List<String> moodDetailTypes = new ArrayList<>();
         moodDetailTypes.add("depressed:#530052FF");
         moodDetailTypes.add("manic:#FFFF7A00");

@@ -5,7 +5,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:focusable="true"
-    android:focusableInTouchMode="true" >
+    android:focusableInTouchMode="true"
+    android:buttonStyle="@style/CustomButtonStyle2">
 
     <EditText
         android:id="@+id/pref_list_edit_text"
@@ -22,6 +23,8 @@
         </EditText>
 
     <Button
+        style="@style/CustomButtonStyle2"
+        android:backgroundTintMode="src_atop"
         android:id="@+id/color_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
